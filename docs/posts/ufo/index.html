@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Tomer Zipori">
-<meta name="dcterms.date" content="2023-05-06">
+<meta name="dcterms.date" content="2023-04-16">
 <meta name="description" content="Visualizing UFO reports per state capita">
 
 <title>Tomer - Who is the leading US state in UFO reports? probably not what you thought</title>
@@ -101,10 +101,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -207,7 +207,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 6, 2023</p>
+        <p class="date">April 16, 2023</p>
       </div>
     </div>
     
@@ -249,13 +249,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="background" class="level1">
 <h1>Background</h1>
-<p>Some time ago, when the fall semester began I’ve enrolled on a course called <em>Data science lab</em> as part of the ‘Data Science for the Social Sciences’ program. One of the assignments was to make some <code>tidyverse</code> contribution and to present it in class. Although this is not what I’ve presented in class (see the post about that one), this was made shortly after and I think it came out quite nice :)</p>
+<p>Some time ago, when the fall semester began I’ve enrolled on a course called <em>Data science lab</em> as part of the ‘Data Science for the Social Sciences’ program. One of the assignments was to make some <code>TidyTuesday</code> contribution and present it in class. Although this is not what I’ve presented in class (see the post about that one here), this was made shortly after and I think it came out quite nice :)</p>
 </section>
 <section id="the-data" class="level1">
 <h1>The Data</h1>
 <section id="from-the-github-repo" class="level5">
 <h5 class="anchored" data-anchor-id="from-the-github-repo">From the Github <a href="https://github.com/tomerzipori/tidytuesday/tree/master/data/2019/2019-06-25">repo</a>:</h5>
-<p><em>This data includes &gt;80,000 recorded UFO “sightings” around the world, including the UFO shape,</em> <em>lat/long and state/country of where the sighting occurred, duration of the “event” and the</em> <em>data_time when it occurred. </em></p>
+<p><em>This data includes &gt;80,000 recorded UFO “sightings” around the world, including the UFO shape,</em> <em>lat/long and state/country of where the sighting occurred, duration of the “event” and the</em> <em>data_time when it occurred.</em></p>
 <p><em>Data comes originally from <a href="http://www.nuforc.org/">NUFORC</a>, was cleaned and uploaded to Github by <a href="https://github.com/planetsig/ufo-reports">Sigmond Axel</a>, and some exploratory plots were created by <a href="https://www.kaggle.com/jonathanbouchet/e-t-phone-home-but-mostly-after-8-00pm">Jonathan Bouchet</a> a few years back.</em></p>
 <p>Let’s start!</p>
 </section>
@@ -293,6 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(region, mean_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>US population info taken from the <a href="https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html#par_textimage_1873399417">United States Census Bureau</a>.</p>
 </section>
 <section id="glimpsing-at-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="glimpsing-at-the-data">Glimpsing at the data</h2>
@@ -314,7 +315,6 @@ $ latitude                   &lt;dbl&gt; 29.88306, 29.38421, 53.20000, 28.97833,
 $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.6458…</code></pre>
 </div>
 </div>
-<p>Us population info taken from the <a href="https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html#par_textimage_1873399417">United States Census Bureau</a>.</p>
 </section>
 <section id="defining-functions" class="level2">
 <h2 class="anchored" data-anchor-id="defining-functions">Defining functions</h2>
@@ -351,7 +351,8 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 </section>
 <section id="data-pre-processing" class="level2">
 <h2 class="anchored" data-anchor-id="data-pre-processing">Data pre-processing</h2>
-<p>Preparing the data for plotting. I did several things in here: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Leaving only reports from the US.<br>
+<p>Preparing the data for plotting. I did several things in here:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Leaving only reports from the US.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Leaving only reports for <em>continental</em> US.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Selecting the relevant variables.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. Calculating decades.</p>
@@ -364,7 +365,7 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">decade =</span> <span class="fu">as.factor</span>(purrr<span class="sc">::</span><span class="fu">map_dbl</span>(date, <span class="sc">~</span><span class="fu">floor_decade</span>(.)))) <span class="sc">%&gt;%</span> <span class="co"># Create decade variable</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(decade)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>After some experimenting I’ve decided to make a heat map to visualize the number of UFO reports per state. But first, some more data processing. I first counted the number of cases per state (<em>by_state</em>), and them combined it with the USA map data frame (<em>by_state2</em>).</p>
+<p>After some experimenting I’ve decided to make a heat map to visualize the number of UFO reports per state. But first, some more data processing. I first counted the number of cases per state (<em>by_state</em>), and then combined it with the USA map data frame (<em>by_state2</em>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>by_state <span class="ot">&lt;-</span> ufo <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(state, decade, <span class="at">.drop =</span> F) <span class="sc">%&gt;%</span></span>
@@ -401,7 +402,7 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 <p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Looking at these results, I thought that of course California has the most reports, it has the most people!<br>
+<p>Looking at these results, I thought that of course California, Texas and Florida have the most reports, they also have the most people!<br>
 A <em>per capita</em> measure will probably be more informative.</p>
 <p>Calculating reports per capita.</p>
 <div class="cell">
@@ -434,7 +435,7 @@ A <em>per capita</em> measure will probably be more informative.</p>
 </section>
 <section id="heatmap3" class="level2">
 <h2 class="anchored" data-anchor-id="heatmap3">Heatmap3</h2>
-<p>Let’s add some aesthetics because why not (I’ve only spend 6 hours on Google researching color theory and ggplot2’s internal logic). Unfold the code chunk if you are interested in seeing the monstrosity.</p>
+<p>Let’s add some aesthetics because why not (I’ve only spent 6 hours on Google researching color theory and ggplot2’s internal logic). Unfold the code chunk if you are interested in seeing the monstrosity.</p>
 <div class="cell" data-fig.dpi="96">
 <details>
 <summary>Code</summary>
@@ -466,7 +467,8 @@ A <em>per capita</em> measure will probably be more informative.</p>
 <span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"bottom"</span>, <span class="at">legend.box =</span> <span class="st">"horizontal"</span>, <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"#5dff00"</span>, <span class="at">family =</span> <span class="st">"mono"</span>, <span class="at">size =</span> <span class="dv">14</span>))</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>heatmap3 <span class="ot">&lt;-</span> <span class="fu">ggbackground</span>(heatmap3, nightsky_img)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>heatmap3 <span class="ot">&lt;-</span> <span class="fu">ggbackground</span>(heatmap3, nightsky_img)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="quarto-figure quarto-figure-center">

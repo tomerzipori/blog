@@ -21,7 +21,7 @@ website:
         href: www.linkedin.com/in/tomer-zipori
 format:
   html:
-    theme: darkly
+    theme: cosmo
     css: styles.css
 
 editor: visual
