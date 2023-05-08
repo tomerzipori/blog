@@ -32,6 +32,7 @@ Some time ago, when the fall semester began I've enrolled on a course called *Da
 Let's start!
 
 # Setup
+
 ```{r}
 #| output: false
 library(tidyverse)    # for data wrangling and pre-processing
@@ -45,7 +46,9 @@ library(showtext)     # fonts
 ```
 
 # Loading data
+
 ## Initial pre-processing
+
 ```{r}
 #| output: false
 ufo_sightings <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-25/ufo_sightings.csv")
@@ -63,17 +66,20 @@ uspop <- read_excel("uspop.xlsx", col_names = c("region", "pop_2010", "pop_2011"
   ungroup() %>%
   select(region, mean_pop)
 ```
+
 US population info taken from the [United States Census Bureau](https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html#par_textimage_1873399417).
 
 ## Glimpsing at the data
+
 ```{r}
 glimpse(ufo_sightings)
 ```
 
-
 ## Defining functions
+
 Some helper function will help us later, mainly to work with dates.\
 `convert_to_date` takes a vector of character formatted dates and converts it to lubridate's *date* format. `floor_decade` takes a vector of dates and converts it to a vector of decades.
+
 ```{r}
 convert_to_date <- function(x) { 
   sub_string <- str_sub(x, 1, 10)
@@ -86,6 +92,7 @@ floor_decade <- function(x){
 ```
 
 ### Converting the dates
+
 ```{r}
 #| cache: true
 ufo_sightings <- ufo_sightings %>%
@@ -93,7 +100,9 @@ ufo_sightings <- ufo_sightings %>%
 ```
 
 ## Globals
+
 Here I'm loading some images and fonts that will be of use later to beautify the plot.
+
 ```{r}
 nightsky_img <- "nightsky2.jpg"
 
@@ -103,11 +112,13 @@ showtext_auto()
 ```
 
 ## Data pre-processing
-Preparing the data for plotting. I did several things in here:  
+
+Preparing the data for plotting. I did several things in here:\
       1. Leaving only reports from the US.\
       2. Leaving only reports for *continental* US.\
       3. Selecting the relevant variables.\
       4. Calculating decades.
+
 ```{r}
 ufo <- ufo_sightings %>%
   filter(country == "us") %>% # Leaving only sightings in US
@@ -132,6 +143,7 @@ by_state2 <- left_join(usa, by_state, by = c("region" = "state"), multiple = "al
 ```
 
 Now I need to summarize the number of cases per state.
+
 ```{r}
 cases_per_state <- by_state2 %>%
   group_by(region) %>%
@@ -139,6 +151,7 @@ cases_per_state <- by_state2 %>%
 ```
 
 And finally merge it back together with the geographic data.
+
 ```{r}
 by_state2 <- left_join(by_state2, select(cases_per_state, region, cases_total = cases), by = "region")
 ```
@@ -146,6 +159,7 @@ by_state2 <- left_join(by_state2, select(cases_per_state, region, cases_total = 
 ## Heatmap 1
 
 And now for the heat map... *drum roll*
+
 ```{r}
 heatmap <- ggplot(by_state2, aes(x = long, y = lat, fill = cases_total, group = group)) +
   geom_polygon(color = "black", show.legend = T) +
@@ -160,6 +174,7 @@ Looking at these results, I thought that of course California, Texas and Florida
 A *per capita* measure will probably be more informative.
 
 Calculating reports per capita.
+
 ```{r}
 cases_per_capita <- by_state2 %>%
   group_by(region) %>%
@@ -169,11 +184,13 @@ cases_per_capita <- by_state2 %>%
 ```
 
 Merging again with the geographical data.
+
 ```{r}
 by_state2 <- left_join(by_state2, select(cases_per_capita, region, cases_per_capita, cases_total = cases), by = "region")
 ```
 
 ## Heatmap 2
+
 ```{r}
 heatmap2 <- ggplot(by_state2, aes(x = long, y = lat, fill = cases_per_capita, group = group)) +
   geom_polygon(color = "black", show.legend = T) +
@@ -189,6 +206,7 @@ Nice!
 ## Heatmap3
 
 Let's add some aesthetics because why not (I've only spent 6 hours on Google researching color theory and ggplot2's internal logic). Unfold the code chunk if you are interested in seeing the monstrosity.
+
 ```{r}
 #| code-fold: true
 #| eval: false
