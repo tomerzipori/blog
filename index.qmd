@@ -9,13 +9,13 @@ about:
       href: https://twitter.com/ZiporiTomer
     - icon: linkedin
       text: LinkedIn
-      href: www.linkedin.com/in/tomer-zipori
+      href: https://linkedin.com/in/tomer-zipori
     - icon: github
       text: Github
       href: https://github.com/tomerzipori
     - icon: envelope
       text: Email me
-      href: tomerzip@mail.huji.ac.il
+      href: mailto:tomerzip@mail.huji.ac.il
 ---
 
 Data science & data visualization nerd. I'm studying for my MA in Cognitive Psychology at Ben-Gurion University of the Negev. I hope to record and share my journey in studying and applying cool data-science stuff!

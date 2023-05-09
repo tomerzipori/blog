@@ -1,0 +1,163 @@
+---
+title: "Tomer Zipori's resume"
+author: Tomer Zipori
+date: "`r Sys.Date()`"
+draft: true
+output:
+  pagedown::html_resume:
+    # set it to true for a self-contained HTML page but it'll take longer to render
+    self_contained: false
+# uncomment this line to produce HTML and PDF in RStudio:
+#knit: pagedown::chrome_print
+---
+
+# Aside
+
+![Tomer Zipori](https://avatars1.githubusercontent.com/u/895125?s=400&v=4){width="80%"}
+
+## Contact Info {#contact}
+
+-   <i class="fa fa-envelope"></i> [tomerzip\@post.bgu.ac.il](mailto:tomerzip@post.bgu.ac.il){.email}
+-   <i class="fa fa-github"></i> [github.com/tomerzipori](https://github.com/tomerzipori)
+-   <i class="fa fa-phone"></i> 054-2520843
+-   For more information, please contact me via email.
+
+## Skills {#skills}
+
+-   Experienced in statistical analysis, statistical learning models, optimization methods and data visualization.
+
+-   Highly skilled in R and Python.
+
+# Main
+
+## Tomer Zipori {#title}
+
+## Education {data-icon="graduation-cap" data-concise="true"}
+
+### Hebrew University in Jerusalem
+
+B.A. in Psychology and Philosophy
+
+Jerusalem, Israel
+
+2018 - 2021
+
+Participation in excellence program in developmental sciences. Graduation in honors with a final grade of: 95.7.
+
+### Ben-Gurion University of the Negev
+
+M.A. in Cognitive Psychology
+
+Be'er Sheva, Israel
+
+2022 - Now
+
+Participation in the "Psychological Data Science" program that includes advanced courses in practical data science skills, Data visualization and Machine Learning.
+
+Thesis: Effects of social-status on face perception and memory.
+
+## Research Experience {data-icon="laptop"}
+
+### Graduate Research Assistant
+
+Beijing Institute of Genomics, Chinese Academy of Sciences
+
+Beijing, China
+
+2011 - 2014
+
+-   Performed computational biology research towards understanding regulation of alternative splicing in human and mouse transcriptome.
+-   Found EGFR pathway related mutations, aimed to understand the impacts of cancer mutations on EGFR signaling pathway.
+
+### Bioinformatican
+
+My Health Gene Technology Co., Ltd.
+
+Beijing, China
+
+2015 - 2016
+
+-   Investigated how cancer cells spread to other parts of the body at the single cell level.
+
+### Visiting Scientist
+
+University of Alabama at Birmingham
+
+AL, USA
+
+2016 - 2018
+
+-   Investigated the role of mitochondria in development of cancer.
+-   Investigated the evolution of genome architecture and its role in important evolutionary events.
+-   Detected thrombotic thrombocytopenic purpura related mutations in mutiple patients' blood genome.
+
+## Professional Experience {data-icon="suitcase"}
+
+### Data Scientist, intern
+
+SupStat Inc.
+
+Beijing, China
+
+2014
+
+::: concise
+-   Taught R language to beginners.
+-   Wrote Shiny app demos.
+-   Converted statistical tutorials from SPSS to R language.
+:::
+
+### Bioinformatician
+
+My Health Gene Technology Co., Ltd.
+
+Beijing, China
+
+2015 - 2016
+
+::: concise
+-   Analyzed whole-exome sequencing data.
+-   Wrote analysis pipelines of ChIP-seq, single cell DNA-seq and single cell RNA-seq.
+-   Studied tumor metastasis and wrote research reports.
+-   Also did case studies to identify the genetic defect causing rare disease.
+:::
+
+## Teaching Experience {data-icon="chalkboard-teacher"}
+
+### Introduction to R Language for Beginners.
+
+Instructor of R and Data Mining Training Courses at SupStat Inc.
+
+Beijing, China
+
+2014
+
+### Computational Biology and Bioinformatics.
+
+Teaching assistant of GBS CB2-201 courses at UAB
+
+AL, USA
+
+2016 - 2017
+
+## Selected Publications and Posters {data-icon="file"}
+
+### Genetic and epigenetic signals are found predictive to the distribution of intra-individual divergence of alternative splicing.
+
+Poster for 2013 International Conference of Genomics
+
+Qingdao, China
+
+2014
+
+**Yu L**, Chen B, Zhang Z.
+
+### ESCRT-0 complex modulates Rbf mutant cell survival by regulating Rhomboid endosomal trafficking and EGFR signaling.
+
+J Cell Sci. 2016 May 15;129(10):2075-84.
+
+N/A
+
+2016
+
+Sheng Z, **Yu L**, Zhang T, Pei X, Li X, Zhang Z and Du W.

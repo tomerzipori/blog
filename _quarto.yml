@@ -5,7 +5,7 @@ project:
 website:
   title: "Tomer"
   navbar:
-    background: primary
+    background: "#c76767"
     search: true
     left:
       - text: "About me"
@@ -21,7 +21,9 @@ website:
         href: www.linkedin.com/in/tomer-zipori
 format:
   html:
-    theme: cosmo
+    theme:
+      light: cosmo
+      dark: darkly
     css: styles.css
 
 editor: visual
