@@ -4,6 +4,11 @@ project:
 
 website:
   title: "Tomer"
+  twitter-card:
+    title: "Tomer's data-science blog"
+    description: "Posting about more and less interesting things I learn"
+    card-style: summary
+    creator: "@tomerzipori"
   navbar:
     background: "#c76767"
     search: true
