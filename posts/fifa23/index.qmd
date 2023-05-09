@@ -3,7 +3,7 @@ title: "What makes FIFA 23 players good?"
 description: "Experimentation with Elastic -net regression and decision tree boosting."
 author: "Tomer Zipori"
 date: 2023-05-06
-categories: [code, analysis]
+categories: [code, analysis, Machine Learning]
 image: "reece.jpg"
 execute: 
   warning: false
