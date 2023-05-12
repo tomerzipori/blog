@@ -3,7 +3,6 @@ title: "Real Vs. Fake news"
 author: "Tomer Zipori"
 date: 05-12-2023
 categories: [code, analysis, Machine Learning, NLP]
-title-block-banner: "black"
 execute: 
   warning: false
   message: false
@@ -11,8 +10,7 @@ execute:
 format:
   html:
     theme: cosmo
-    backgroundcolor: "#f2efea"
-    fontcolor: "black"
+    backgroundcolor: "#e3e3e3"
     toc: true
     toc-depth: 2
     toc-location: right
@@ -218,7 +216,7 @@ lr_summary <- summary(lr_model) # summarizing the model
 coefs <- data.frame(lr_summary$estimated.feature.scores) # extracting coefficients
 
 
-col_vec <- c("#fc7753", "#f2efea", "#66d7d1", "black")
+col_vec <- c("#fc7753", "#e3e3e3", "#66d7d1", "black")
 
 coefs |>
   

@@ -1,0 +1,1373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Tomer</title>
+<link>https://tomerzipori.github.io/blog/blog.html</link>
+<atom:link href="https://tomerzipori.github.io/blog/blog.xml" rel="self" type="application/rss+xml"/>
+<description>Posting about more and less interesting things I learn</description>
+<generator>quarto-1.2.335</generator>
+<lastBuildDate>Thu, 11 May 2023 21:00:00 GMT</lastBuildDate>
+<item>
+  <title>Real Vs. Fake news</title>
+  <dc:creator>Tomer Zipori</dc:creator>
+  <link>https://tomerzipori.github.io/blog/posts/football_fake_news/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>As part of my data-science courses this fall semester, I have started also to get into <em>Natural Language Processing</em> (NLP, but of the good kind). This is the first time I have ever tried it, so let’s see how it went.</p>
+<p>Brief overview of the post:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Basic preprocessing and creation of <em>Data Feature Matrix</em> (DFM), using packages <code>stringr</code> and <code>quanteda</code>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Classification with Naive-Bayes method.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Classification with Logistic regression, and feature importance plot.</p>
+<section id="background" class="level1">
+<h1>Background</h1>
+<p>This dataset is the “Fake News football” dataset from uploaded to <a href="https://www.kaggle.com/datasets/shawkyelgendy/fake-news-football">Kaggle</a> by Shawky El-Gendy. It contains ~42,000 tweets about the Egyptian football league, some of them are fake new, and some are true.</p>
+<p>The work in this notebook is highly influenced by <span class="citation" data-cites="welbers2017">(Welbers, Van Atteveldt, and Benoit 2017)</span>.</p>
+</section>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_f83cbd2941e4f775713a49c35d3fdadb">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)           <span class="co" style="color: #5E5E5E;"># data loading, data preparation and stringr</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(quanteda)            <span class="co" style="color: #5E5E5E;"># text preprocessing and DFM creation</span></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(quanteda.textmodels) <span class="co" style="color: #5E5E5E;"># machine learning models</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(glue)                <span class="co" style="color: #5E5E5E;"># that's a secret</span></span></code></pre></div>
+</div>
+</section>
+<section id="loading-data" class="level1">
+<h1>Loading data</h1>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-2_88302c9135a715e213b3eddfca3aafc1">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">real <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">"real.csv"</span>, <span class="at" style="color: #657422;">show_col_types =</span> F)</span>
+<span id="cb2-2">fake <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">"fake.csv"</span>, <span class="at" style="color: #657422;">show_col_types =</span> F)</span></code></pre></div>
+</div>
+<section id="adding-labels" class="level2">
+<h2 class="anchored" data-anchor-id="adding-labels">Adding labels</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_9517af9cf6061d262bc187f6f63bf795">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">real<span class="sc" style="color: #5E5E5E;">$</span>label <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"real"</span></span>
+<span id="cb3-2">fake<span class="sc" style="color: #5E5E5E;">$</span>label <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"fake"</span></span></code></pre></div>
+</div>
+</section>
+<section id="combining-data-frames" class="level2">
+<h2 class="anchored" data-anchor-id="combining-data-frames">Combining data frames</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_999b31d14c8b3639c25eb42c31ccba48">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">tweets <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rbind</span>(real, fake) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;">drop_na</span>() <span class="sc" style="color: #5E5E5E;">|&gt;</span> <span class="co" style="color: #5E5E5E;"># dropping NA rows</span></span>
+<span id="cb4-3">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">tweet =</span> <span class="fu" style="color: #4758AB;">str_trim</span>(tweet) <span class="sc" style="color: #5E5E5E;">|&gt;</span> <span class="fu" style="color: #4758AB;">str_squish</span>()) <span class="co" style="color: #5E5E5E;"># removing white-spaces in the start and beginning of tweet, and between words</span></span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="text-preprocessing" class="level1">
+<h1>Text preprocessing</h1>
+<p>Creating a <code>corpus</code> object, which is basically a named character vector that also holds other variables such as the tweet’s label. These are called <code>docvars</code>.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_de1980b4bc624f3696b98deef71e6155">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">corp <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">corpus</span>(tweets, <span class="at" style="color: #657422;">text_field =</span> <span class="st" style="color: #20794D;">"tweet"</span>)</span>
+<span id="cb5-2"></span>
+<span id="cb5-3"><span class="fu" style="color: #4758AB;">head</span>(corp)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Corpus consisting of 6 documents and 1 docvar.
+text1 :
+"sun downs technical director: al-ahly respected us and playe..."
+
+text2 :
+"shawky gharib after the tie with enppi: our goal is to retur..."
+
+text3 :
+"egyptian sports news today, wednesday 1/25/2023, which is ma..."
+
+text4 :
+"the main referees committee of the egyptian football associa..."
+
+text5 :
+"haji bari, the striker of the future team, is undergoing a f..."
+
+text6 :
+"zamalek is preparing for a strong match against the arab con..."</code></pre>
+</div>
+</div>
+<section id="creating-dfms-cleaning-text" class="level2">
+<h2 class="anchored" data-anchor-id="creating-dfms-cleaning-text">Creating DFMs &amp; cleaning text</h2>
+<p>Creating a count-based DFM (frequency of each word in each document). Before creating the DFM I employ 3 steps of normalization:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Removing special characters and expressions (punctuation, urls…).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Converting words to their stem-form (the word <em>example</em> converts to <em>exampl</em>). This step should decrease &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the number of unique tokens, so that our DFM would be less sparse.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Converting every character to lower-case letters.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_ed23f8adb4dfd4373302b6f06c48f0f9">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">data_feature_mat <span class="ot" style="color: #003B4F;">&lt;-</span> corp <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;">tokens</span>(<span class="at" style="color: #657422;">remove_punct =</span> T, <span class="at" style="color: #657422;">remove_numbers =</span> T, <span class="at" style="color: #657422;">remove_url =</span> T, <span class="at" style="color: #657422;">remove_separators =</span> T, <span class="at" style="color: #657422;">remove_symbols =</span> T) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb7-3">  <span class="fu" style="color: #4758AB;">tokens_wordstem</span>() <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb7-4">  <span class="fu" style="color: #4758AB;">dfm</span>(<span class="at" style="color: #657422;">tolower =</span> T)</span>
+<span id="cb7-5"></span>
+<span id="cb7-6"><span class="fu" style="color: #4758AB;">head</span>(data_feature_mat)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Document-feature matrix of: 6 documents, 18,869 features (99.89% sparse) and 1 docvar.
+       features
+docs    sun down technic director al-ah respect us and play to
+  text1   1    1       1        1     1       1  1   1    1  1
+  text2   0    0       0        0     0       0  0   0    0  2
+  text3   0    0       1        1     0       0  0   0    0  0
+  text4   0    0       0        0     0       0  0   1    0  0
+  text5   0    0       0        0     0       0  0   0    0  1
+  text6   0    0       0        0     0       0  0   0    0  0
+[ reached max_nfeat ... 18,859 more features ]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="machine-learning" class="level1">
+<h1>Machine Learning</h1>
+<section id="base-rate" class="level3">
+<h3 class="anchored" data-anchor-id="base-rate">Base-rate</h3>
+<p>In classification tasks, it is important to check the initial base-rate of the different classes. Failing to notice a skewed sample will result in false interpretations of performance metrics.</p>
+<blockquote class="blockquote">
+<p><em>Imagine that a certain medical condition affects 1% of the population. A test that systematically gives negative results will have 99% accuracy!</em></p>
+</blockquote>
+<p>We will calculate the base-rate in the following way:<br>
+<img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%7BN_%7Breal%7D%7D%7BN_%7Breal%7D+N_%7Bfake%7D%7D%5C%0A"></p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_4c921829e68c7518f898087fdac185d2">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;">table</span>(<span class="fu" style="color: #4758AB;">docvars</span>(data_feature_mat, <span class="st" style="color: #20794D;">'label'</span>))[<span class="st" style="color: #20794D;">'real'</span>]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> real 
+21869 </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_6cef7703830f755dbcf373a62d7913eb">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">table</span>(<span class="fu" style="color: #4758AB;">docvars</span>(data_feature_mat, <span class="st" style="color: #20794D;">'label'</span>))[<span class="st" style="color: #20794D;">'fake'</span>]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> fake 
+19991 </code></pre>
+</div>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_7d8d98c235bcb280ce27a5bb25783e15">
+
+</div>
+<p>The base rate is <img src="https://latex.codecogs.com/png.latex?0.522">.</p>
+</section>
+<section id="train-test-split" class="level3">
+<h3 class="anchored" data-anchor-id="train-test-split">Train-test split</h3>
+<p>Usually it is advised that the Train-test split would occur before the creation of the DFM. That is because some methods of calculation are proportional and depends on other documents. Because we are employing a count-based DFM, the values in each cell of the matrix are independent of other documents. Therefore it is not necessary to split before creating the DFM’s.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_64bf58946f4146abc6a1d139d0e9aae8">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">14</span>)</span>
+<span id="cb13-2"></span>
+<span id="cb13-3">train_dfm <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">dfm_sample</span>(data_feature_mat, <span class="at" style="color: #657422;">size =</span> <span class="fl" style="color: #AD0000;">0.8</span> <span class="sc" style="color: #5E5E5E;">*</span> <span class="fu" style="color: #4758AB;">nrow</span>(data_feature_mat)) <span class="co" style="color: #5E5E5E;"># large sample, we can use 80-20 train-test split</span></span>
+<span id="cb13-4"></span>
+<span id="cb13-5">test_dfm <span class="ot" style="color: #003B4F;">&lt;-</span> data_feature_mat[<span class="fu" style="color: #4758AB;">setdiff</span>(<span class="fu" style="color: #4758AB;">docnames</span>(data_feature_mat), <span class="fu" style="color: #4758AB;">docnames</span>(train_dfm)),]</span></code></pre></div>
+</div>
+</section>
+<section id="naive-bayes-classifier" class="level2">
+<h2 class="anchored" data-anchor-id="naive-bayes-classifier">Naive-Bayes classifier</h2>
+<p>A Naive-Bayes classifier predicts the class (in this case of a document) in the following way:<br>
+1. The likelihood of each token to appear in documents of each class is calculated from the training data. For example, if the word <em>manager</em> appeared in <img src="https://latex.codecogs.com/png.latex?11">% of the documents in the first class, and in <img src="https://latex.codecogs.com/png.latex?2">% of the documents in the second class, the likelihood of it in each class is:<br>
+<img src="https://latex.codecogs.com/png.latex?%0A%5Cdisplaylines%7Bp(manager%5C%20%7C%5C%20class%5C%201)=0.11%5C%5Cp(manager%5C%20%7C%5C%20class%5C%202)=0.02%7D%0A"></p>
+<ol start="2" type="1">
+<li><p>The prior probability of each document to be classified to each class is also learned from the training data, and it is the base-rate frequencies of the two classes.<br>
+</p></li>
+<li><p>For each document in the test set, the likelihood of it given it is from each of the classes is calculated by multiplying the likelihoods of the tokens appearing in it. So if a document is for example the sentence <em>I like turtles</em>, then the likelihood of it to belong class 1 is:<br>
+<img src="https://latex.codecogs.com/png.latex?%0A%5Cdisplaylines%7Bp(I%5C%20%7C%5C%20class%5C%201)%5Ccdotp(like%5C%20%7C%5C%20class%5C%201)%5Ccdotp(turtles%5C%20%7C%5C%20class%5C%201)%7D%0A"><br>
+More formally, if a document belong to a certain class <img src="https://latex.codecogs.com/png.latex?k">, then it’s likelihood of being comprised of a set of tokens <img src="https://latex.codecogs.com/png.latex?t"> is:<br>
+<img src="https://latex.codecogs.com/png.latex?%0A%5Cprod_%7Bi=1%7D%5E%7Bn%7Dp(t_i%5C%20%7C%5C%20class%5C%20k)%0A"></p></li>
+<li><p>According to Bayes theorem, the probability of the document to belong to class <img src="https://latex.codecogs.com/png.latex?k"> - the posterior probability - is proportional to the product of the likelihood of it’s tokens given this class and the prior probability of any document to belong to this class:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Ap(class%5C%20k%5C%20%7C%5C%20t)%20%5Cpropto%20p(t%5C%20%7C%5C%20class%5C%20k)%5Ccdotp(class%5C%20k)%0A"></p></li>
+<li><p>Because the Naive-Bayes classifier is comparing between classes, the standardizing term is not needed. The class that has the largest product of prior and likelihood is the class the document will be classified to.</p></li>
+</ol>
+</section>
+<section id="fitting-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="fitting-the-model">Fitting the model</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_f55b3923c3f158039467b422086164b0">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">nb_model <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">textmodel_nb</span>(train_dfm, <span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">docvars</span>(train_dfm, <span class="st" style="color: #20794D;">"label"</span>))</span></code></pre></div>
+</div>
+</section>
+<section id="test-performance" class="level2">
+<h2 class="anchored" data-anchor-id="test-performance">Test performance</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_beb12728719c4087bb6aaf11ee589396">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">pred_nb <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">predict</span>(nb_model, <span class="at" style="color: #657422;">newdata =</span> test_dfm)</span>
+<span id="cb15-2"></span>
+<span id="cb15-3">(conmat_nb <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">table</span>(pred_nb, <span class="fu" style="color: #4758AB;">docvars</span>(test_dfm, <span class="st" style="color: #20794D;">"label"</span>)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       
+pred_nb fake real
+   fake 3893  380
+   real  143 3956</code></pre>
+</div>
+</div>
+<p>Seems nice, let’s look at some metrics.</p>
+<p>Confusion matrix</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-13_735f7120ab84f226ed04475a45185bd4">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">caret<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">confusionMatrix</span>(conmat_nb, <span class="at" style="color: #657422;">mode =</span> <span class="st" style="color: #20794D;">"everything"</span>, <span class="at" style="color: #657422;">positive =</span> <span class="st" style="color: #20794D;">"real"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+       
+pred_nb fake real
+   fake 3893  380
+   real  143 3956
+                                          
+               Accuracy : 0.9375          
+                 95% CI : (0.9321, 0.9426)
+    No Information Rate : 0.5179          
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.8752          
+                                          
+ Mcnemar's Test P-Value : &lt; 2.2e-16       
+                                          
+            Sensitivity : 0.9124          
+            Specificity : 0.9646          
+         Pos Pred Value : 0.9651          
+         Neg Pred Value : 0.9111          
+              Precision : 0.9651          
+                 Recall : 0.9124          
+                     F1 : 0.9380          
+             Prevalence : 0.5179          
+         Detection Rate : 0.4725          
+   Detection Prevalence : 0.4896          
+      Balanced Accuracy : 0.9385          
+                                          
+       'Positive' Class : real            
+                                          </code></pre>
+</div>
+</div>
+<p>Nice results!</p>
+</section>
+<section id="logistic-regression" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-regression">Logistic regression</h2>
+<p>The nice thing about the <code>textmodel_lr</code> method from the <code>quanteda.textmodels</code> package is that it does the Cross-Validation for us!</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-14_d4fac98c7a2fc4dca3848cdd0b6bfdc5">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">lr_model <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">textmodel_lr</span>(<span class="at" style="color: #657422;">x =</span> train_dfm, <span class="at" style="color: #657422;">y =</span> <span class="fu" style="color: #4758AB;">docvars</span>(train_dfm, <span class="st" style="color: #20794D;">"label"</span>))</span></code></pre></div>
+</div>
+</section>
+<section id="test-performance-1" class="level2">
+<h2 class="anchored" data-anchor-id="test-performance-1">Test performance</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-15_e52b1120af23c9cdafe78b7883525a9f">
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">pred_lr <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">predict</span>(lr_model, <span class="at" style="color: #657422;">newdata =</span> test_dfm)</span>
+<span id="cb20-2"></span>
+<span id="cb20-3">(conmat_lr <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">table</span>(pred_lr, <span class="fu" style="color: #4758AB;">docvars</span>(test_dfm, <span class="st" style="color: #20794D;">"label"</span>)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       
+pred_lr fake real
+   fake 3795  188
+   real  241 4148</code></pre>
+</div>
+</div>
+<p>Also seems nice.</p>
+<p>Confusion matrix</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-16_4427652dc6661c861efa1560aa3c48db">
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1">caret<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">confusionMatrix</span>(conmat_lr, <span class="at" style="color: #657422;">mode =</span> <span class="st" style="color: #20794D;">"everything"</span>, <span class="at" style="color: #657422;">positive =</span> <span class="st" style="color: #20794D;">"real"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+       
+pred_lr fake real
+   fake 3795  188
+   real  241 4148
+                                          
+               Accuracy : 0.9488          
+                 95% CI : (0.9438, 0.9534)
+    No Information Rate : 0.5179          
+    P-Value [Acc &gt; NIR] : &lt; 2e-16         
+                                          
+                  Kappa : 0.8973          
+                                          
+ Mcnemar's Test P-Value : 0.01205         
+                                          
+            Sensitivity : 0.9566          
+            Specificity : 0.9403          
+         Pos Pred Value : 0.9451          
+         Neg Pred Value : 0.9528          
+              Precision : 0.9451          
+                 Recall : 0.9566          
+                     F1 : 0.9508          
+             Prevalence : 0.5179          
+         Detection Rate : 0.4955          
+   Detection Prevalence : 0.5242          
+      Balanced Accuracy : 0.9485          
+                                          
+       'Positive' Class : real            
+                                          </code></pre>
+</div>
+</div>
+<p>Slight improvement…</p>
+</section>
+<section id="plot-important-words-for-classification" class="level2">
+<h2 class="anchored" data-anchor-id="plot-important-words-for-classification">Plot important words for classification</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-17_81d6f326a6f7b96659a8658fa7d609ec">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">lr_summary <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">summary</span>(lr_model) <span class="co" style="color: #5E5E5E;"># summarizing the model</span></span>
+<span id="cb24-2"></span>
+<span id="cb24-3">coefs <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(lr_summary<span class="sc" style="color: #5E5E5E;">$</span>estimated.feature.scores) <span class="co" style="color: #5E5E5E;"># extracting coefficients</span></span>
+<span id="cb24-4"></span>
+<span id="cb24-5"></span>
+<span id="cb24-6">col_vec <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"#fc7753"</span>, <span class="st" style="color: #20794D;">"#e3e3e3"</span>, <span class="st" style="color: #20794D;">"#66d7d1"</span>, <span class="st" style="color: #20794D;">"black"</span>)</span>
+<span id="cb24-7"></span>
+<span id="cb24-8">coefs <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb24-9">  </span>
+<span id="cb24-10">  <span class="co" style="color: #5E5E5E;"># preparing df for plot</span></span>
+<span id="cb24-11">  <span class="fu" style="color: #4758AB;">rownames_to_column</span>(<span class="at" style="color: #657422;">var =</span> <span class="st" style="color: #20794D;">"Token"</span>) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb24-12">  <span class="fu" style="color: #4758AB;">rename</span>(<span class="at" style="color: #657422;">Coefficient =</span> real) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb24-13">  <span class="fu" style="color: #4758AB;">filter</span>(Coefficient <span class="sc" style="color: #5E5E5E;">!=</span> <span class="dv" style="color: #AD0000;">0</span> <span class="sc" style="color: #5E5E5E;">&amp;</span> Token <span class="sc" style="color: #5E5E5E;">!=</span> <span class="st" style="color: #20794D;">"(Intercept)"</span>) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb24-14">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">bigger_then_0 =</span> Coefficient <span class="sc" style="color: #5E5E5E;">&gt;</span> <span class="dv" style="color: #AD0000;">0</span>) <span class="sc" style="color: #5E5E5E;">|&gt;</span></span>
+<span id="cb24-15">  </span>
+<span id="cb24-16">  <span class="co" style="color: #5E5E5E;"># ggplotting</span></span>
+<span id="cb24-17">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> Token, <span class="at" style="color: #657422;">y =</span> Coefficient, <span class="at" style="color: #657422;">color =</span> bigger_then_0)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-18">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-19">  <span class="fu" style="color: #4758AB;">scale_color_manual</span>(<span class="at" style="color: #657422;">values =</span> <span class="fu" style="color: #4758AB;">c</span>(col_vec[<span class="dv" style="color: #AD0000;">1</span>], col_vec[<span class="dv" style="color: #AD0000;">3</span>])) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-20">  <span class="fu" style="color: #4758AB;">scale_y_continuous</span>(<span class="at" style="color: #657422;">n.breaks =</span> <span class="dv" style="color: #AD0000;">10</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-21">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Most important words for classifying if a tweet is fake news"</span>,</span>
+<span id="cb24-22">       <span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">""</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-23">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-24">  <span class="fu" style="color: #4758AB;">geom_hline</span>(<span class="at" style="color: #657422;">yintercept =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"black"</span>, <span class="at" style="color: #657422;">linetype =</span> <span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">linewidth =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">show.legend =</span> F) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb24-25">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">plot.background =</span> <span class="fu" style="color: #4758AB;">element_rect</span>(<span class="at" style="color: #657422;">color =</span> col_vec[<span class="dv" style="color: #AD0000;">2</span>], <span class="at" style="color: #657422;">fill =</span> col_vec[<span class="dv" style="color: #AD0000;">2</span>]),</span>
+<span id="cb24-26">        <span class="at" style="color: #657422;">panel.background =</span> <span class="fu" style="color: #4758AB;">element_rect</span>(<span class="at" style="color: #657422;">color =</span> col_vec[<span class="dv" style="color: #AD0000;">2</span>], <span class="at" style="color: #657422;">fill =</span> col_vec[<span class="dv" style="color: #AD0000;">2</span>]),</span>
+<span id="cb24-27">        <span class="at" style="color: #657422;">axis.line =</span> <span class="fu" style="color: #4758AB;">element_line</span>(<span class="at" style="color: #657422;">color =</span> col_vec[<span class="dv" style="color: #AD0000;">4</span>]),</span>
+<span id="cb24-28">        <span class="at" style="color: #657422;">axis.title =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">color =</span> col_vec[<span class="dv" style="color: #AD0000;">4</span>]),</span>
+<span id="cb24-29">        <span class="at" style="color: #657422;">axis.text =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">color =</span> col_vec[<span class="dv" style="color: #AD0000;">4</span>]),</span>
+<span id="cb24-30">        <span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">angle =</span> <span class="dv" style="color: #AD0000;">90</span>, <span class="at" style="color: #657422;">vjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">12</span>, <span class="at" style="color: #657422;">face =</span> <span class="st" style="color: #20794D;">"bold"</span>),</span>
+<span id="cb24-31">        <span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"none"</span>,</span>
+<span id="cb24-32">        <span class="at" style="color: #657422;">plot.title =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">16</span>, <span class="at" style="color: #657422;">color =</span> col_vec[<span class="dv" style="color: #AD0000;">4</span>], <span class="at" style="color: #657422;">hjust =</span> .<span class="dv" style="color: #AD0000;">5</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"serif"</span>, <span class="at" style="color: #657422;">face =</span> <span class="st" style="color: #20794D;">"bold"</span>))</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/football_fake_news/data:image/png;base64,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" class="img-fluid" style="width:200.0%"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>I think that for a first attempt at implementing NLP, the current notebook came out nice. I have learned a lot not only about NLP, but also on Naive-Bayes classifiers which is nice.</p>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-welbers2017" class="csl-entry">
+Welbers, Kasper, Wouter Van Atteveldt, and Kenneth Benoit. 2017. <span>“Text Analysis in r.”</span> <em>Communication Methods and Measures</em> 11 (4): 245–65. <a href="https://doi.org/10.1080/19312458.2017.1387238">https://doi.org/10.1080/19312458.2017.1387238</a>.
+</div>
+</div></section></div> ]]></description>
+  <category>code</category>
+  <category>analysis</category>
+  <category>Machine Learning</category>
+  <category>NLP</category>
+  <guid>https://tomerzipori.github.io/blog/posts/football_fake_news/index.html</guid>
+  <pubDate>Thu, 11 May 2023 21:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>What makes FIFA 23 players good?</title>
+  <dc:creator>Tomer Zipori</dc:creator>
+  <link>https://tomerzipori.github.io/blog/posts/fifa23/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="background-and-analysis-plan" class="level1">
+<h1>Background and analysis plan</h1>
+<p>The current <a href="https://www.kaggle.com/datasets/babatundezenith/fifa-archive">Data</a> is an upload to <em>Kaggle</em> by Babatunde Zenith, and it includes information about players in the popular <em>FIFA 23</em> video game. Information includes: name, age, nationality, position, various football ratings and contract deals.</p>
+<p>The current notebook is an attempt at:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Accurately and efficiently predicting player’s overall rating.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Identifying important variables (features) for this prediction.</p>
+<p>Both goals will be achieved using two methods: Elastic-net regression and XGBoost. Data pre-processing will be done with <code>tidyverse</code>, Model fitting and evaluation will be done with the <code>caret</code> and <code>gbm</code> packages.</p>
+</section>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidyverse) <span class="co" style="color: #5E5E5E;"># For data-wrangling, pre-processing and plotting with ggplot2</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(caret)     <span class="co" style="color: #5E5E5E;"># For model training, tuning and evaluating</span></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(gbm)       <span class="co" style="color: #5E5E5E;"># For fitting XGBoost models</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(glue)      <span class="co" style="color: #5E5E5E;"># Helper package for nice-looking output</span></span></code></pre></div>
+</div>
+</section>
+<section id="loading-data" class="level1">
+<h1>Loading data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">players <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">"Fifa_23_Players_Data.csv"</span>)</span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;">glimpse</span>(players)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 17,529
+Columns: 89
+$ `Known As`                    &lt;chr&gt; "L. Messi", "K. Benzema", "R. Lewandowsk…
+$ `Full Name`                   &lt;chr&gt; "Lionel Messi", "Karim Benzema", "Robert…
+$ Overall                       &lt;dbl&gt; 91, 91, 91, 91, 91, 90, 90, 90, 90, 90, …
+$ Potential                     &lt;dbl&gt; 91, 91, 91, 91, 95, 90, 91, 90, 90, 90, …
+$ `Value(in Euro)`              &lt;dbl&gt; 54000000, 64000000, 84000000, 107500000,…
+$ `Positions Played`            &lt;chr&gt; "RW", "CF,ST", "ST", "CM,CAM", "ST,LW", …
+$ `Best Position`               &lt;chr&gt; "CAM", "CF", "ST", "CM", "ST", "RW", "GK…
+$ Nationality                   &lt;chr&gt; "Argentina", "France", "Poland", "Belgiu…
+$ `Image Link`                  &lt;chr&gt; "https://cdn.sofifa.net/players/158/023/…
+$ Age                           &lt;dbl&gt; 35, 34, 33, 31, 23, 30, 30, 36, 37, 30, …
+$ `Height(in cm)`               &lt;dbl&gt; 169, 185, 185, 181, 182, 175, 199, 193, …
+$ `Weight(in kg)`               &lt;dbl&gt; 67, 81, 81, 70, 73, 71, 96, 93, 83, 92, …
+$ TotalStats                    &lt;dbl&gt; 2190, 2147, 2205, 2303, 2177, 2226, 1334…
+$ BaseStats                     &lt;dbl&gt; 452, 455, 458, 483, 470, 471, 473, 501, …
+$ `Club Name`                   &lt;chr&gt; "Paris Saint-Germain", "Real Madrid CF",…
+$ `Wage(in Euro)`               &lt;dbl&gt; 195000, 450000, 420000, 350000, 230000, …
+$ `Release Clause`              &lt;dbl&gt; 99900000, 131199999, 172200000, 19890000…
+$ `Club Position`               &lt;chr&gt; "RW", "CF", "ST", "CM", "ST", "RW", "GK"…
+$ `Contract Until`              &lt;chr&gt; "2023", "2023", "2025", "2025", "2024", …
+$ `Club Jersey Number`          &lt;chr&gt; "30", "9", "9", "17", "7", "11", "1", "1…
+$ `Joined On`                   &lt;dbl&gt; 2021, 2009, 2022, 2015, 2018, 2017, 2018…
+$ `On Loan`                     &lt;chr&gt; "-", "-", "-", "-", "-", "-", "-", "-", …
+$ `Preferred Foot`              &lt;chr&gt; "Left", "Right", "Right", "Right", "Righ…
+$ `Weak Foot Rating`            &lt;dbl&gt; 4, 4, 4, 5, 4, 3, 3, 4, 4, 3, 5, 5, 5, 3…
+$ `Skill Moves`                 &lt;dbl&gt; 4, 4, 4, 4, 5, 4, 1, 1, 5, 2, 3, 5, 4, 2…
+$ `International Reputation`    &lt;dbl&gt; 5, 4, 5, 4, 4, 4, 4, 5, 5, 4, 4, 5, 4, 3…
+$ `National Team Name`          &lt;chr&gt; "Argentina", "France", "Poland", "Belgiu…
+$ `National Team Image Link`    &lt;chr&gt; "https://cdn.sofifa.net/flags/ar.png", "…
+$ `National Team Position`      &lt;chr&gt; "RW", "ST", "ST", "RF", "ST", "-", "GK",…
+$ `National Team Jersey Number` &lt;chr&gt; "10", "19", "9", "7", "10", "-", "1", "1…
+$ `Attacking Work Rate`         &lt;chr&gt; "Low", "Medium", "High", "High", "High",…
+$ `Defensive Work Rate`         &lt;chr&gt; "Low", "Medium", "Medium", "High", "Low"…
+$ `Pace Total`                  &lt;dbl&gt; 81, 80, 75, 74, 97, 90, 84, 87, 81, 81, …
+$ `Shooting Total`              &lt;dbl&gt; 89, 88, 91, 88, 89, 89, 89, 88, 92, 60, …
+$ `Passing Total`               &lt;dbl&gt; 90, 83, 79, 93, 80, 82, 75, 91, 78, 71, …
+$ `Dribbling Total`             &lt;dbl&gt; 94, 87, 86, 87, 92, 90, 90, 88, 85, 72, …
+$ `Defending Total`             &lt;dbl&gt; 34, 39, 44, 64, 36, 45, 46, 56, 34, 91, …
+$ `Physicality Total`           &lt;dbl&gt; 64, 78, 83, 77, 76, 75, 89, 91, 75, 86, …
+$ Crossing                      &lt;dbl&gt; 84, 75, 71, 94, 78, 80, 14, 15, 80, 53, …
+$ Finishing                     &lt;dbl&gt; 90, 92, 94, 85, 93, 93, 14, 13, 93, 52, …
+$ `Heading Accuracy`            &lt;dbl&gt; 70, 90, 91, 55, 72, 59, 13, 25, 90, 87, …
+$ `Short Passing`               &lt;dbl&gt; 91, 89, 84, 93, 85, 84, 33, 60, 80, 79, …
+$ Volleys                       &lt;dbl&gt; 88, 88, 89, 83, 83, 84, 12, 11, 86, 45, …
+$ Dribbling                     &lt;dbl&gt; 95, 87, 85, 88, 93, 90, 13, 30, 85, 70, …
+$ Curve                         &lt;dbl&gt; 93, 82, 79, 89, 80, 84, 19, 14, 81, 60, …
+$ `Freekick Accuracy`           &lt;dbl&gt; 93, 73, 85, 83, 69, 69, 20, 11, 79, 70, …
+$ LongPassing                   &lt;dbl&gt; 90, 76, 70, 93, 71, 77, 35, 68, 75, 86, …
+$ BallControl                   &lt;dbl&gt; 93, 91, 89, 90, 91, 88, 23, 46, 88, 76, …
+$ Acceleration                  &lt;dbl&gt; 87, 79, 76, 76, 97, 89, 42, 54, 79, 68, …
+$ `Sprint Speed`                &lt;dbl&gt; 76, 80, 75, 73, 97, 91, 52, 60, 83, 91, …
+$ Agility                       &lt;dbl&gt; 91, 78, 77, 76, 93, 90, 63, 51, 77, 61, …
+$ Reactions                     &lt;dbl&gt; 92, 92, 93, 91, 93, 93, 84, 87, 94, 89, …
+$ Balance                       &lt;dbl&gt; 95, 72, 82, 78, 81, 91, 45, 35, 67, 53, …
+$ `Shot Power`                  &lt;dbl&gt; 86, 87, 91, 92, 88, 83, 56, 68, 93, 81, …
+$ Jumping                       &lt;dbl&gt; 68, 79, 85, 63, 77, 69, 68, 77, 95, 88, …
+$ Stamina                       &lt;dbl&gt; 70, 82, 76, 88, 87, 87, 38, 43, 76, 74, …
+$ Strength                      &lt;dbl&gt; 68, 82, 87, 74, 76, 75, 70, 80, 77, 93, …
+$ `Long Shots`                  &lt;dbl&gt; 91, 80, 84, 91, 82, 85, 17, 16, 90, 64, …
+$ Aggression                    &lt;dbl&gt; 44, 63, 81, 75, 64, 63, 23, 29, 63, 85, …
+$ Interceptions                 &lt;dbl&gt; 40, 39, 49, 66, 38, 55, 15, 30, 29, 90, …
+$ Positioning                   &lt;dbl&gt; 93, 92, 94, 88, 92, 92, 13, 12, 95, 47, …
+$ Vision                        &lt;dbl&gt; 94, 89, 81, 94, 83, 85, 44, 70, 76, 65, …
+$ Penalties                     &lt;dbl&gt; 75, 84, 90, 83, 80, 86, 27, 47, 90, 62, …
+$ Composure                     &lt;dbl&gt; 96, 90, 88, 89, 88, 92, 66, 70, 95, 90, …
+$ Marking                       &lt;dbl&gt; 20, 43, 35, 68, 26, 38, 20, 17, 24, 92, …
+$ `Standing Tackle`             &lt;dbl&gt; 35, 24, 42, 65, 34, 43, 18, 10, 32, 92, …
+$ `Sliding Tackle`              &lt;dbl&gt; 24, 18, 19, 53, 32, 41, 16, 11, 24, 86, …
+$ `Goalkeeper Diving`           &lt;dbl&gt; 6, 13, 15, 15, 13, 14, 84, 87, 7, 13, 8,…
+$ `Goalkeeper Handling`         &lt;dbl&gt; 11, 11, 6, 13, 5, 14, 89, 88, 11, 10, 10…
+$ GoalkeeperKicking             &lt;dbl&gt; 15, 5, 12, 5, 7, 9, 75, 91, 15, 13, 11, …
+$ `Goalkeeper Positioning`      &lt;dbl&gt; 14, 5, 8, 10, 11, 11, 89, 91, 14, 11, 14…
+$ `Goalkeeper Reflexes`         &lt;dbl&gt; 8, 7, 10, 13, 6, 14, 90, 88, 11, 11, 11,…
+$ `ST Rating`                   &lt;dbl&gt; 90, 91, 91, 86, 92, 89, 34, 43, 90, 74, …
+$ `LW Rating`                   &lt;dbl&gt; 90, 87, 85, 88, 90, 88, 29, 40, 86, 68, …
+$ `LF Rating`                   &lt;dbl&gt; 91, 89, 88, 87, 90, 88, 31, 43, 88, 70, …
+$ `CF Rating`                   &lt;dbl&gt; 91, 89, 88, 87, 90, 88, 31, 43, 88, 70, …
+$ `RF Rating`                   &lt;dbl&gt; 91, 89, 88, 87, 90, 88, 31, 43, 88, 70, …
+$ `RW Rating`                   &lt;dbl&gt; 90, 87, 85, 88, 90, 88, 29, 40, 86, 68, …
+$ `CAM Rating`                  &lt;dbl&gt; 91, 91, 88, 91, 92, 90, 35, 50, 88, 73, …
+$ `LM Rating`                   &lt;dbl&gt; 91, 89, 86, 91, 92, 90, 34, 47, 87, 73, …
+$ `CM Rating`                   &lt;dbl&gt; 88, 84, 83, 91, 84, 85, 35, 53, 81, 79, …
+$ `RM Rating`                   &lt;dbl&gt; 91, 89, 86, 91, 92, 90, 34, 47, 87, 73, …
+$ `LWB Rating`                  &lt;dbl&gt; 67, 67, 67, 82, 70, 74, 32, 39, 65, 83, …
+$ `CDM Rating`                  &lt;dbl&gt; 66, 67, 69, 82, 66, 71, 34, 46, 62, 88, …
+$ `RWB Rating`                  &lt;dbl&gt; 67, 67, 67, 82, 70, 74, 32, 39, 65, 83, …
+$ `LB Rating`                   &lt;dbl&gt; 62, 63, 64, 78, 66, 70, 32, 38, 61, 85, …
+$ `CB Rating`                   &lt;dbl&gt; 53, 58, 63, 72, 57, 61, 32, 37, 56, 90, …
+$ `RB Rating`                   &lt;dbl&gt; 62, 63, 64, 78, 66, 70, 32, 38, 61, 85, …
+$ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 23, …</code></pre>
+</div>
+</div>
+<p>Quite a lot of features. Most of them are numeric which is good.</p>
+</section>
+<section id="pre-processing" class="level1">
+<h1>Pre-processing</h1>
+<section id="re-naming-columns" class="level2">
+<h2 class="anchored" data-anchor-id="re-naming-columns">Re-naming columns</h2>
+<p>Replacing spaces with underscores for ease.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;">names</span>(players) <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">str_replace_all</span>(<span class="fu" style="color: #4758AB;">names</span>(players), <span class="at" style="color: #657422;">pattern =</span> <span class="st" style="color: #20794D;">" "</span>, <span class="at" style="color: #657422;">replacement =</span> <span class="st" style="color: #20794D;">"_"</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="non-numeric-variables" class="level2">
+<h2 class="anchored" data-anchor-id="non-numeric-variables">non-numeric variables</h2>
+<p>First we’ll look at potential garbage variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;">names</span>(<span class="fu" style="color: #4758AB;">select</span>(players, <span class="fu" style="color: #4758AB;">where</span>(is.character)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Known_As"                    "Full_Name"                  
+ [3] "Positions_Played"            "Best_Position"              
+ [5] "Nationality"                 "Image_Link"                 
+ [7] "Club_Name"                   "Club_Position"              
+ [9] "Contract_Until"              "Club_Jersey_Number"         
+[11] "On_Loan"                     "Preferred_Foot"             
+[13] "National_Team_Name"          "National_Team_Image_Link"   
+[15] "National_Team_Position"      "National_Team_Jersey_Number"
+[17] "Attacking_Work_Rate"         "Defensive_Work_Rate"        </code></pre>
+</div>
+</div>
+<p>Almost all garbage data. Since I’ve noted that <em>Work Rate</em> variables are ordered (low-medium-high) We’ll re-code them:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">players <span class="ot" style="color: #003B4F;">&lt;-</span> players <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">Attacking_Work_Rate =</span> <span class="fu" style="color: #4758AB;">case_when</span>(Attacking_Work_Rate <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Low"</span> <span class="sc" style="color: #5E5E5E;">~</span> <span class="dv" style="color: #AD0000;">1</span>,</span>
+<span id="cb7-3">                                         Attacking_Work_Rate <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Medium"</span> <span class="sc" style="color: #5E5E5E;">~</span> <span class="dv" style="color: #AD0000;">2</span>,</span>
+<span id="cb7-4">                                         Attacking_Work_Rate <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"High"</span> <span class="sc" style="color: #5E5E5E;">~</span> <span class="dv" style="color: #AD0000;">3</span>),</span>
+<span id="cb7-5">         <span class="at" style="color: #657422;">Defensive_Work_Rate =</span> <span class="fu" style="color: #4758AB;">case_when</span>(Defensive_Work_Rate <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Low"</span> <span class="sc" style="color: #5E5E5E;">~</span> <span class="dv" style="color: #AD0000;">1</span>,</span>
+<span id="cb7-6">                                         Defensive_Work_Rate <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Medium"</span> <span class="sc" style="color: #5E5E5E;">~</span> <span class="dv" style="color: #AD0000;">2</span>,</span>
+<span id="cb7-7">                                         Defensive_Work_Rate <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"High"</span> <span class="sc" style="color: #5E5E5E;">~</span> <span class="dv" style="color: #AD0000;">3</span>)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-8">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span>Known_As, <span class="sc" style="color: #5E5E5E;">-</span>Full_Name, <span class="sc" style="color: #5E5E5E;">-</span>Positions_Played, <span class="sc" style="color: #5E5E5E;">-</span>Nationality, <span class="sc" style="color: #5E5E5E;">-</span>Image_Link, <span class="sc" style="color: #5E5E5E;">-</span>Club_Name, <span class="sc" style="color: #5E5E5E;">-</span>Contract_Until, <span class="sc" style="color: #5E5E5E;">-</span>Club_Jersey_Number, <span class="sc" style="color: #5E5E5E;">-</span>National_Team_Name, <span class="sc" style="color: #5E5E5E;">-</span>National_Team_Image_Link, <span class="sc" style="color: #5E5E5E;">-</span>National_Team_Jersey_Number, <span class="sc" style="color: #5E5E5E;">-</span>On_Loan) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># getting rid of garbage variables</span></span>
+<span id="cb7-9">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="fu" style="color: #4758AB;">across</span>(<span class="fu" style="color: #4758AB;">where</span>(is.character), <span class="sc" style="color: #5E5E5E;">~</span><span class="fu" style="color: #4758AB;">na_if</span>(., <span class="st" style="color: #20794D;">"-"</span>))) <span class="co" style="color: #5E5E5E;"># replacing all "-" with NA</span></span></code></pre></div>
+</div>
+</section>
+<section id="searching-for-variables-with-large-number-of-nas" class="level2">
+<h2 class="anchored" data-anchor-id="searching-for-variables-with-large-number-of-nas">Searching for variables with large number of NA’s</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">colSums</span>(<span class="fu" style="color: #4758AB;">is.na</span>(players))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Overall                Potential           Value(in_Euro) 
+                       0                        0                        0 
+           Best_Position                      Age            Height(in_cm) 
+                       0                        0                        0 
+           Weight(in_kg)               TotalStats                BaseStats 
+                       0                        0                        0 
+           Wage(in_Euro)           Release_Clause            Club_Position 
+                       0                        0                       86 
+               Joined_On           Preferred_Foot         Weak_Foot_Rating 
+                       0                        0                        0 
+             Skill_Moves International_Reputation   National_Team_Position 
+                       0                        0                    16746 
+     Attacking_Work_Rate      Defensive_Work_Rate               Pace_Total 
+                       0                        0                        0 
+          Shooting_Total            Passing_Total          Dribbling_Total 
+                       0                        0                        0 
+         Defending_Total        Physicality_Total                 Crossing 
+                       0                        0                        0 
+               Finishing         Heading_Accuracy            Short_Passing 
+                       0                        0                        0 
+                 Volleys                Dribbling                    Curve 
+                       0                        0                        0 
+       Freekick_Accuracy              LongPassing              BallControl 
+                       0                        0                        0 
+            Acceleration             Sprint_Speed                  Agility 
+                       0                        0                        0 
+               Reactions                  Balance               Shot_Power 
+                       0                        0                        0 
+                 Jumping                  Stamina                 Strength 
+                       0                        0                        0 
+              Long_Shots               Aggression            Interceptions 
+                       0                        0                        0 
+             Positioning                   Vision                Penalties 
+                       0                        0                        0 
+               Composure                  Marking          Standing_Tackle 
+                       0                        0                        0 
+          Sliding_Tackle        Goalkeeper_Diving      Goalkeeper_Handling 
+                       0                        0                        0 
+       GoalkeeperKicking   Goalkeeper_Positioning      Goalkeeper_Reflexes 
+                       0                        0                        0 
+               ST_Rating                LW_Rating                LF_Rating 
+                       0                        0                        0 
+               CF_Rating                RF_Rating                RW_Rating 
+                       0                        0                        0 
+              CAM_Rating                LM_Rating                CM_Rating 
+                       0                        0                        0 
+               RM_Rating               LWB_Rating               CDM_Rating 
+                       0                        0                        0 
+              RWB_Rating                LB_Rating                CB_Rating 
+                       0                        0                        0 
+               RB_Rating                GK_Rating 
+                       0                        0 </code></pre>
+</div>
+</div>
+<p>National team position seems sparse, we’ll have to get rid of club_position as well for the model fitting. We’ll also get rid of <em>best_position</em> because it creates so much dummy vars. I’ll analyzed it in another day…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">players <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">select</span>(players, <span class="sc" style="color: #5E5E5E;">-</span>National_Team_Position, <span class="sc" style="color: #5E5E5E;">-</span>Club_Position, <span class="sc" style="color: #5E5E5E;">-</span>Best_Position)</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="feature-selection" class="level1">
+<h1>Feature selection</h1>
+<p>We’ll first use elastic net regression to try and predict overall rating from the rest of the data, and also find which variables are most important.</p>
+<section id="data-splitting" class="level2">
+<h2 class="anchored" data-anchor-id="data-splitting">Data splitting</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">14</span>)</span>
+<span id="cb11-2">train_id <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">createDataPartition</span>(<span class="at" style="color: #657422;">y =</span> players<span class="sc" style="color: #5E5E5E;">$</span>Overall, <span class="at" style="color: #657422;">p =</span> <span class="fl" style="color: #AD0000;">0.7</span>, <span class="at" style="color: #657422;">list =</span> F)</span>
+<span id="cb11-3"></span>
+<span id="cb11-4">players_train <span class="ot" style="color: #003B4F;">&lt;-</span> players[train_id,]</span>
+<span id="cb11-5">players_test <span class="ot" style="color: #003B4F;">&lt;-</span> players[<span class="sc" style="color: #5E5E5E;">-</span>train_id,]</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="elastic-net" class="level1">
+<h1>Elastic net</h1>
+<section id="tuning-grid-for-hyper-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="tuning-grid-for-hyper-parameters">Tuning grid for hyper-parameters</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">tg <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">expand.grid</span>(<span class="at" style="color: #657422;">alpha =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">length.out =</span> <span class="dv" style="color: #AD0000;">25</span>)),</span>
+<span id="cb12-2">                  <span class="at" style="color: #657422;">lambda =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">2</span> <span class="sc" style="color: #5E5E5E;">^</span> <span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">10</span>, <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">10</span>, <span class="at" style="color: #657422;">length =</span> <span class="dv" style="color: #AD0000;">100</span>)))</span></code></pre></div>
+</div>
+<p>Setting a relatively large range of hyper-parameters because elastic-net regression is not super expansive computationally.</p>
+</section>
+<section id="training" class="level2">
+<h2 class="anchored" data-anchor-id="training">Training</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">elastic_reg <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">train</span>(Overall <span class="sc" style="color: #5E5E5E;">~</span> ., </span>
+<span id="cb13-2">                    <span class="at" style="color: #657422;">data =</span> players_train,</span>
+<span id="cb13-3">                    <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"glmnet"</span>,</span>
+<span id="cb13-4">                    <span class="at" style="color: #657422;">preProcess =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"center"</span>, <span class="st" style="color: #20794D;">"scale"</span>), <span class="co" style="color: #5E5E5E;"># for better interpatation of coefficients</span></span>
+<span id="cb13-5">                    <span class="at" style="color: #657422;">tuneGrid =</span> tg,</span>
+<span id="cb13-6">                    <span class="at" style="color: #657422;">trControl =</span>  <span class="fu" style="color: #4758AB;">trainControl</span>(<span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"cv"</span>, <span class="at" style="color: #657422;">number =</span> <span class="dv" style="color: #AD0000;">10</span>)) <span class="co" style="color: #5E5E5E;"># 10-fold Cross-Validation</span></span></code></pre></div>
+</div>
+<div class="cell">
+
+</div>
+</section>
+<section id="best-hyper-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="best-hyper-parameters">Best hyper-parameters</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">elastic_reg<span class="sc" style="color: #5E5E5E;">$</span>bestTune</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     alpha       lambda
+1501 0.625 0.0009765625</code></pre>
+</div>
+</div>
+</section>
+<section id="traincv-error" class="level2">
+<h2 class="anchored" data-anchor-id="traincv-error">Train/CV error</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;">plot</span>(elastic_reg, <span class="at" style="color: #657422;">xTrans =</span> log, <span class="at" style="color: #657422;">digits =</span> <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">elastic_reg<span class="sc" style="color: #5E5E5E;">$</span>results[elastic_reg<span class="sc" style="color: #5E5E5E;">$</span>results<span class="sc" style="color: #5E5E5E;">$</span>RMSE <span class="sc" style="color: #5E5E5E;">==</span> <span class="fu" style="color: #4758AB;">min</span>(elastic_reg<span class="sc" style="color: #5E5E5E;">$</span>results<span class="sc" style="color: #5E5E5E;">$</span>RMSE, <span class="at" style="color: #657422;">na.rm =</span> T),]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     alpha       lambda     RMSE  Rsquared     MAE     RMSESD  RsquaredSD
+1501 0.625 0.0009765625 1.601089 0.9440492 1.24766 0.04469899 0.003446449
+          MAESD
+1501 0.02690937</code></pre>
+</div>
+</div>
+<p>All mixes of <img src="https://latex.codecogs.com/png.latex?%5Calpha"> and <img src="https://latex.codecogs.com/png.latex?%5Clambda"> hyper-parameters converge in the end.</p>
+</section>
+<section id="model-coefficients" class="level2">
+<h2 class="anchored" data-anchor-id="model-coefficients">Model coefficients</h2>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">elasnet_coeffs <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">coef</span>(elastic_reg<span class="sc" style="color: #5E5E5E;">$</span>finalModel, <span class="at" style="color: #657422;">s =</span> elastic_reg<span class="sc" style="color: #5E5E5E;">$</span>bestTune<span class="sc" style="color: #5E5E5E;">$</span>lambda)</span>
+<span id="cb19-2"><span class="fu" style="color: #4758AB;">plot</span>(elasnet_coeffs, <span class="at" style="color: #657422;">ylab =</span> <span class="st" style="color: #20794D;">"Coefficient"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="fu" style="color: #4758AB;">round</span>(elasnet_coeffs, <span class="dv" style="color: #AD0000;">4</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>73 x 1 sparse Matrix of class "dgCMatrix"
+                              s1
+(Intercept)              65.9420
+Potential                 2.3510
+`Value(in_Euro)`          0.6037
+Age                       2.0174
+`Height(in_cm)`          -0.1111
+`Weight(in_kg)`           0.0979
+TotalStats               -2.7794
+BaseStats                 0.0004
+`Wage(in_Euro)`           0.2468
+Release_Clause           -0.2689
+Joined_On                 0.0710
+Preferred_FootRight      -0.0694
+Weak_Foot_Rating         -0.0397
+Skill_Moves               0.3644
+International_Reputation -0.2143
+Attacking_Work_Rate      -0.0729
+Defensive_Work_Rate      -0.1001
+Pace_Total                0.6887
+Shooting_Total            0.4371
+Passing_Total             0.6242
+Dribbling_Total           1.4907
+Defending_Total          -0.0937
+Physicality_Total         0.9278
+Crossing                  0.3602
+Finishing                -0.4256
+Heading_Accuracy          0.8768
+Short_Passing             0.2001
+Volleys                   0.0255
+Dribbling                -1.3137
+Curve                     0.0000
+Freekick_Accuracy         0.1731
+LongPassing              -0.6509
+BallControl               0.1516
+Acceleration              0.0289
+Sprint_Speed             -0.1612
+Agility                  -0.1264
+Reactions                 1.1084
+Balance                  -0.0032
+Shot_Power               -0.0565
+Jumping                   0.0664
+Stamina                   0.0582
+Strength                 -0.1455
+Long_Shots               -0.3293
+Aggression               -0.1703
+Positioning              -1.1545
+Vision                   -0.7001
+Penalties                 0.1108
+Composure                 0.4431
+Marking                   0.6215
+Standing_Tackle           0.2082
+Sliding_Tackle            0.2331
+Goalkeeper_Diving         0.1745
+Goalkeeper_Handling      -0.0091
+GoalkeeperKicking         0.0767
+Goalkeeper_Positioning   -0.0696
+Goalkeeper_Reflexes      -0.0828
+ST_Rating                 2.5495
+LW_Rating                -0.0648
+LF_Rating                 0.0000
+CF_Rating                 0.0000
+RF_Rating                 0.0000
+RW_Rating                 .     
+CAM_Rating               -0.1751
+LM_Rating                 0.5492
+CM_Rating                 1.9575
+RM_Rating                 0.0129
+LWB_Rating                .     
+CDM_Rating                1.3227
+RWB_Rating                .     
+LB_Rating                -0.0021
+CB_Rating                -0.9501
+RB_Rating                 .     
+GK_Rating                 0.6368</code></pre>
+</div>
+</div>
+<p>The intercept is quite large. Let’s look at the variables in a more informative scale.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="fu" style="color: #4758AB;">plot</span>(elasnet_coeffs[<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>,], <span class="at" style="color: #657422;">ylab =</span> <span class="st" style="color: #20794D;">"Coefficient"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+
+</div>
+</section>
+<section id="test-error" class="level2">
+<h2 class="anchored" data-anchor-id="test-error">Test error</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">elasticreg_pred <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">predict</span>(elastic_reg, <span class="at" style="color: #657422;">newdata =</span> players_test) <span class="co" style="color: #5E5E5E;"># calculating model's prediction for test set</span></span></code></pre></div>
+</div>
+<div class="cell">
+
+</div>
+<p><strong>Test error and effect size</strong><br>
+<img src="https://latex.codecogs.com/png.latex?RMSE=1.60955711701293"><br>
+<img src="https://latex.codecogs.com/png.latex?R%5E2=0.944839845538989"></p>
+<p>Very nice!</p>
+</section>
+</section>
+<section id="xgboost" class="level1">
+<h1>XGBoost</h1>
+<section id="training-control" class="level2">
+<h2 class="anchored" data-anchor-id="training-control">Training control</h2>
+<p>We’ll use adaptive cross-validation in order to make the hyper-parameter search more efficient.<br>
+For further explanation on implementation in <code>R</code> <a href="https://topepo.github.io/caret/adaptive-resampling.html">see</a>. For further reading on theory <a href="https://arxiv.org/abs/1405.6974">see</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">tr <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">trainControl</span>(<span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"adaptive_cv"</span>,</span>
+<span id="cb24-2">                   <span class="at" style="color: #657422;">number =</span> <span class="dv" style="color: #AD0000;">10</span>, <span class="at" style="color: #657422;">repeats =</span> <span class="dv" style="color: #AD0000;">10</span>,</span>
+<span id="cb24-3">                   <span class="at" style="color: #657422;">adaptive =</span> <span class="fu" style="color: #4758AB;">list</span>(<span class="at" style="color: #657422;">min =</span> <span class="dv" style="color: #AD0000;">5</span>, <span class="at" style="color: #657422;">alpha =</span> <span class="fl" style="color: #AD0000;">0.05</span>, </span>
+<span id="cb24-4">                                   <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"BT"</span>, <span class="at" style="color: #657422;">complete =</span> <span class="cn" style="color: #8f5902;">TRUE</span>),</span>
+<span id="cb24-5">                   <span class="at" style="color: #657422;">search =</span> <span class="st" style="color: #20794D;">"random"</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="training-1" class="level2">
+<h2 class="anchored" data-anchor-id="training-1">Training</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">14</span>)</span>
+<span id="cb25-2">xgboost <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">train</span>(Overall <span class="sc" style="color: #5E5E5E;">~</span> ., </span>
+<span id="cb25-3">                   <span class="at" style="color: #657422;">data =</span> players_train,</span>
+<span id="cb25-4">                   <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"gbm"</span>,</span>
+<span id="cb25-5">                   <span class="at" style="color: #657422;">trControl =</span> tr, <span class="co" style="color: #5E5E5E;"># No explicit tuning grid is needed</span></span>
+<span id="cb25-6">                   <span class="at" style="color: #657422;">verbose =</span> T)</span></code></pre></div>
+</div>
+<div class="cell">
+
+</div>
+</section>
+<section id="traincv-error-1" class="level2">
+<h2 class="anchored" data-anchor-id="traincv-error-1">Train/CV error</h2>
+<p>Getting the results of the best tuning parameters found.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">xgboost<span class="sc" style="color: #5E5E5E;">$</span>results[xgboost<span class="sc" style="color: #5E5E5E;">$</span>results<span class="sc" style="color: #5E5E5E;">$</span>RMSE <span class="sc" style="color: #5E5E5E;">==</span> <span class="fu" style="color: #4758AB;">min</span>(xgboost<span class="sc" style="color: #5E5E5E;">$</span>results<span class="sc" style="color: #5E5E5E;">$</span>RMSE, <span class="at" style="color: #657422;">na.rm =</span> T),<span class="dv" style="color: #AD0000;">5</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       RMSE  Rsquared       MAE      RMSESD   RsquaredSD       MAESD
+2 0.7146858 0.9893686 0.5457707 0.005980442 0.0002966158 0.002603466</code></pre>
+</div>
+</div>
+<p>Seems quite optimized, but is it overfitted?</p>
+</section>
+<section id="test-error-1" class="level2">
+<h2 class="anchored" data-anchor-id="test-error-1">Test error</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">boost_pred <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">predict</span>(xgboost, players_test)</span></code></pre></div>
+</div>
+<div class="cell">
+
+</div>
+<p><strong>Test error and effect size</strong><br>
+<img src="https://latex.codecogs.com/png.latex?RMSE=0.700272523649518"><br>
+<img src="https://latex.codecogs.com/png.latex?R%5E2=0.989645490170188"></p>
+<p>Very Very nice!</p>
+</section>
+<section id="variable-importance" class="level2">
+<h2 class="anchored" data-anchor-id="variable-importance">Variable importance</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">varimp <span class="ot" style="color: #003B4F;">&lt;-</span> caret<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">varImp</span>(xgboost, <span class="at" style="color: #657422;">scale =</span> T)</span>
+<span id="cb29-2"></span>
+<span id="cb29-3">varimp</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>gbm variable importance
+
+  only 20 most important variables shown (out of 72)
+
+                        Overall
+`Value(in_Euro)`       100.0000
+Reactions               50.2939
+BaseStats               16.4047
+Age                      7.5742
+`Wage(in_Euro)`          3.8700
+Potential                3.6002
+CB_Rating                2.3274
+Defending_Total          1.0533
+Goalkeeper_Positioning   0.6619
+Crossing                 0.3162
+TotalStats               0.2916
+Shooting_Total           0.2559
+Strength                 0.2359
+Positioning              0.2113
+Standing_Tackle          0.1991
+LF_Rating                0.1927
+Release_Clause           0.1814
+Dribbling_Total          0.1650
+LB_Rating                0.1578
+Heading_Accuracy         0.1497</code></pre>
+</div>
+</div>
+<section id="plotting-variable-importance" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-variable-importance">Plotting variable importance</h3>
+<div class="cell">
+<details>
+<summary>Show the plot’s code</summary>
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><span class="co" style="color: #5E5E5E;"># data preparation</span></span>
+<span id="cb31-2">varimp<span class="sc" style="color: #5E5E5E;">$</span>importance <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb31-3">  <span class="fu" style="color: #4758AB;">rownames_to_column</span>(<span class="at" style="color: #657422;">var =</span> <span class="st" style="color: #20794D;">"Feature"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb31-4">  dplyr<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">rename</span>(<span class="at" style="color: #657422;">Importance =</span> Overall) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb31-5">  <span class="fu" style="color: #4758AB;">filter</span>(Importance <span class="sc" style="color: #5E5E5E;">!=</span> <span class="dv" style="color: #AD0000;">0</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># Only features that have an above 0 importance</span></span>
+<span id="cb31-6">  </span>
+<span id="cb31-7">  <span class="co" style="color: #5E5E5E;"># Plotting</span></span>
+<span id="cb31-8">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> <span class="fu" style="color: #4758AB;">reorder</span>(Feature, <span class="sc" style="color: #5E5E5E;">-</span>Importance), <span class="at" style="color: #657422;">y =</span> Importance)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb31-9">  <span class="fu" style="color: #4758AB;">geom_bar</span>(<span class="at" style="color: #657422;">stat =</span> <span class="st" style="color: #20794D;">"identity"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb31-10">  <span class="fu" style="color: #4758AB;">coord_flip</span>(<span class="at" style="color: #657422;">ylim =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">100</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb31-11">  <span class="fu" style="color: #4758AB;">scale_y_continuous</span>(<span class="at" style="color: #657422;">limits =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">100</span>), <span class="at" style="color: #657422;">expand =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb31-12">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"Feature"</span>, <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Importance"</span>, <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Variable importance in boosted model"</span>, <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"Tomer Zipori | FIFA 23 Player Research by Babatunde Zenith | Kaggle"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb31-13">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb31-14">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.text.y =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">7</span>),</span>
+<span id="cb31-15">        <span class="at" style="color: #657422;">plot.title =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">16</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>),</span>
+<span id="cb31-16">        <span class="at" style="color: #657422;">plot.margin =</span> <span class="fu" style="color: #4758AB;">unit</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>), <span class="st" style="color: #20794D;">"cm"</span>),</span>
+<span id="cb31-17">        <span class="at" style="color: #657422;">plot.caption =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">6</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>, <span class="at" style="color: #657422;">vjust =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">5</span>))</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Player value is the strongest predictor by far, with a few interesting ones right behind it (CB_rating?).</p>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Both methods supplied outstanding results with over 94% and 99% explained variance in rating. Not so surprisingly Player’s value is strongly linked with their overall FIFA rating. A few notable findings are the importance of <em>Reactions</em>, <em>CB_rating</em> and <em>Defending_total</em>. Overall, Defensive ability seems to be quite an important predictor of Player’s rating.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>code</category>
+  <category>analysis</category>
+  <category>Machine Learning</category>
+  <guid>https://tomerzipori.github.io/blog/posts/fifa23/index.html</guid>
+  <pubDate>Fri, 05 May 2023 21:00:00 GMT</pubDate>
+  <media:content url="https://tomerzipori.github.io/blog/posts/fifa23/reece.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>Who is the leading US state in UFO reports? probably not what you thought</title>
+  <dc:creator>Tomer Zipori</dc:creator>
+  <link>https://tomerzipori.github.io/blog/posts/ufo/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="background" class="level1">
+<h1>Background</h1>
+<p>As I told in another post, I’ve recently enrolled to a course about Data-Viz (and maybe some NLP later-on, stay tuned). One of the assignments in the course was to make some <code>TidyTuesday</code> contribution and present it in class. Although this is not what I’ve presented in class, this was made shortly after and I think it came out quite nice :)</p>
+</section>
+<section id="the-data" class="level1">
+<h1>The Data</h1>
+<section id="from-the-github-repo" class="level5">
+<h5 class="anchored" data-anchor-id="from-the-github-repo">From the Github <a href="https://github.com/tomerzipori/tidytuesday/tree/master/data/2019/2019-06-25">repo</a>:</h5>
+<p><em>This data includes &gt;80,000 recorded UFO “sightings” around the world, including the UFO shape,</em> <em>lat/long and state/country of where the sighting occurred, duration of the “event” and the</em> <em>data_time when it occurred.</em></p>
+<p><em>Data comes originally from <a href="http://www.nuforc.org/">NUFORC</a>, was cleaned and uploaded to Github by <a href="https://github.com/planetsig/ufo-reports">Sigmond Axel</a>, and some exploratory plots were created by <a href="https://www.kaggle.com/jonathanbouchet/e-t-phone-home-but-mostly-after-8-00pm">Jonathan Bouchet</a> a few years back.</em></p>
+<p>Let’s start!</p>
+</section>
+</section>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_ba572f8776c9cd8b6a7d467d9331c013">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)    <span class="co" style="color: #5E5E5E;"># for data wrangling and pre-processing</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(readxl)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(tidytuesdayR) <span class="co" style="color: #5E5E5E;"># for easy data loading</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(maps)         <span class="co" style="color: #5E5E5E;"># map data</span></span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;">library</span>(lubridate)    <span class="co" style="color: #5E5E5E;"># makes dealing with date format much easier</span></span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(jpeg)</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;">library</span>(ggimage)</span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;">library</span>(showtext)     <span class="co" style="color: #5E5E5E;"># fonts</span></span></code></pre></div>
+</div>
+</section>
+<section id="loading-data" class="level1">
+<h1>Loading data</h1>
+<section id="initial-pre-processing" class="level2">
+<h2 class="anchored" data-anchor-id="initial-pre-processing">Initial pre-processing</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-2_cc70c28ff1140e3283ebc8e3d17fe7f8">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">ufo_sightings <span class="ot" style="color: #003B4F;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-25/ufo_sightings.csv"</span>)</span>
+<span id="cb2-2"></span>
+<span id="cb2-3">usa <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">map_data</span>(<span class="st" style="color: #20794D;">"state"</span>) <span class="co" style="color: #5E5E5E;"># US map</span></span>
+<span id="cb2-4"></span>
+<span id="cb2-5">state_codes <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">"state_code.csv"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># converting from state name to 2-letter code and back</span></span>
+<span id="cb2-6">  <span class="fu" style="color: #4758AB;">select</span>(state, code) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-7">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">state =</span> <span class="fu" style="color: #4758AB;">tolower</span>(state), <span class="at" style="color: #657422;">code =</span> <span class="fu" style="color: #4758AB;">tolower</span>(code))</span>
+<span id="cb2-8"></span>
+<span id="cb2-9">uspop <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_excel</span>(<span class="st" style="color: #20794D;">"uspop.xlsx"</span>, <span class="at" style="color: #657422;">col_names =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"region"</span>, <span class="st" style="color: #20794D;">"pop_2010"</span>, <span class="st" style="color: #20794D;">"pop_2011"</span>, <span class="st" style="color: #20794D;">"pop_2012"</span>, <span class="st" style="color: #20794D;">"pop_2013"</span>, <span class="st" style="color: #20794D;">"pop_2014"</span>)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># info about state population</span></span>
+<span id="cb2-10">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">region =</span> <span class="fu" style="color: #4758AB;">tolower</span>(<span class="fu" style="color: #4758AB;">str_remove</span>(region, <span class="st" style="color: #20794D;">"."</span>))) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-11">  <span class="fu" style="color: #4758AB;">rowwise</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-12">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">mean_pop =</span> <span class="fu" style="color: #4758AB;">mean</span>(<span class="fu" style="color: #4758AB;">c</span>(pop_2010, pop_2011, pop_2012, pop_2013, pop_2014))) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-13">  <span class="fu" style="color: #4758AB;">ungroup</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-14">  <span class="fu" style="color: #4758AB;">select</span>(region, mean_pop)</span></code></pre></div>
+</div>
+<p>US population info taken from the <a href="https://www.census.gov/data/datasets/time-series/demo/popest/2010s-state-total.html#par_textimage_1873399417">United States Census Bureau</a>.</p>
+</section>
+<section id="glimpsing-at-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="glimpsing-at-the-data">Glimpsing at the data</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_70201a9b8bd7d7a5e2f8928c740893ac">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;">glimpse</span>(ufo_sightings)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 80,332
+Columns: 11
+$ date_time                  &lt;chr&gt; "10/10/1949 20:30", "10/10/1949 21:00", "10…
+$ city_area                  &lt;chr&gt; "san marcos", "lackland afb", "chester (uk/…
+$ state                      &lt;chr&gt; "tx", "tx", NA, "tx", "hi", "tn", NA, "ct",…
+$ country                    &lt;chr&gt; "us", NA, "gb", "us", "us", "us", "gb", "us…
+$ ufo_shape                  &lt;chr&gt; "cylinder", "light", "circle", "circle", "l…
+$ encounter_length           &lt;dbl&gt; 2700, 7200, 20, 20, 900, 300, 180, 1200, 18…
+$ described_encounter_length &lt;chr&gt; "45 minutes", "1-2 hrs", "20 seconds", "1/2…
+$ description                &lt;chr&gt; "This event took place in early fall around…
+$ date_documented            &lt;chr&gt; "4/27/2004", "12/16/2005", "1/21/2008", "1/…
+$ latitude                   &lt;dbl&gt; 29.88306, 29.38421, 53.20000, 28.97833, 21.…
+$ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.6458…</code></pre>
+</div>
+</div>
+</section>
+<section id="defining-functions" class="level2">
+<h2 class="anchored" data-anchor-id="defining-functions">Defining functions</h2>
+<p>Some helper function will help us later, mainly to work with dates.<br>
+<code>convert_to_date</code> takes a vector of character formatted dates and converts it to lubridate’s <em>date</em> format. <code>floor_decade</code> takes a vector of dates and converts it to a vector of decades.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_308c4d5c8323b29775280f1f2d6384f8">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">convert_to_date <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(x) { </span>
+<span id="cb5-2">  sub_string <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">str_sub</span>(x, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">10</span>)</span>
+<span id="cb5-3">  d <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">mdy</span>(sub_string)</span>
+<span id="cb5-4">  <span class="fu" style="color: #4758AB;">return</span>(<span class="fu" style="color: #4758AB;">as.numeric</span>(d))</span>
+<span id="cb5-5">}</span>
+<span id="cb5-6">floor_decade <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(x){</span>
+<span id="cb5-7">  <span class="fu" style="color: #4758AB;">return</span>(lubridate<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">year</span>(x) <span class="sc" style="color: #5E5E5E;">-</span> lubridate<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">year</span>(x) <span class="sc" style="color: #5E5E5E;">%%</span> <span class="dv" style="color: #AD0000;">10</span>)</span>
+<span id="cb5-8">  }</span></code></pre></div>
+</div>
+<section id="converting-the-dates" class="level3">
+<h3 class="anchored" data-anchor-id="converting-the-dates">Converting the dates</h3>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_4074a8b4322bec1b86af4d844a384ff6">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">ufo_sightings <span class="ot" style="color: #003B4F;">&lt;-</span> ufo_sightings <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">date =</span> <span class="fu" style="color: #4758AB;">as_date</span>(purrr<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">map_dbl</span>(date_time, <span class="sc" style="color: #5E5E5E;">~</span><span class="fu" style="color: #4758AB;">convert_to_date</span>(.)))) <span class="co" style="color: #5E5E5E;"># Convert to 'Date' format. Run only once, its slow af</span></span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="globals" class="level2">
+<h2 class="anchored" data-anchor-id="globals">Globals</h2>
+<p>Here I’m loading some images and fonts that will be of use later to beautify the plot.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_9e2634767a44c8febed501665e71854c">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">nightsky_img <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"nightsky2.jpg"</span></span>
+<span id="cb7-2"></span>
+<span id="cb7-3"><span class="co" style="color: #5E5E5E;">#font_files() %&gt;% tibble() %&gt;% filter(str_detect(family, "Showcard Gothic"))</span></span>
+<span id="cb7-4"><span class="fu" style="color: #4758AB;">font_add</span>(<span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"Showcard Gothic"</span>, <span class="at" style="color: #657422;">regular =</span> <span class="st" style="color: #20794D;">"SHOWG.TTF"</span>)</span>
+<span id="cb7-5"><span class="fu" style="color: #4758AB;">showtext_auto</span>()</span></code></pre></div>
+</div>
+</section>
+<section id="data-pre-processing" class="level2">
+<h2 class="anchored" data-anchor-id="data-pre-processing">Data pre-processing</h2>
+<p>Preparing the data for plotting. I did several things in here:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Leaving only reports from the US.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Leaving only reports for <em>continental</em> US.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Selecting the relevant variables.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. Calculating decades.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_329854297199efb901529bfb692549e6">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">ufo <span class="ot" style="color: #003B4F;">&lt;-</span> ufo_sightings <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-2">  <span class="fu" style="color: #4758AB;">filter</span>(country <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"us"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># Leaving only sightings in US</span></span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;">filter</span>(<span class="sc" style="color: #5E5E5E;">!</span>(state <span class="sc" style="color: #5E5E5E;">%in%</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"ak"</span>, <span class="st" style="color: #20794D;">"pr"</span>, <span class="st" style="color: #20794D;">"hi"</span>))) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># Only mainland US</span></span>
+<span id="cb8-4">  <span class="fu" style="color: #4758AB;">select</span>(date, <span class="at" style="color: #657422;">code =</span> state, description, encounter_length, latitude, longitude) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-5">  <span class="fu" style="color: #4758AB;">left_join</span>(state_codes, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"code"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-6">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">decade =</span> <span class="fu" style="color: #4758AB;">as.factor</span>(purrr<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">map_dbl</span>(date, <span class="sc" style="color: #5E5E5E;">~</span><span class="fu" style="color: #4758AB;">floor_decade</span>(.)))) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># Create decade variable</span></span>
+<span id="cb8-7">  <span class="fu" style="color: #4758AB;">drop_na</span>(decade)</span></code></pre></div>
+</div>
+<p>After some experimenting I’ve decided to make a heat map to visualize the number of UFO reports per state. But first, some more data processing. I first counted the number of cases per state (<em>by_state</em>), and then combined it with the USA map data frame (<em>by_state2</em>).</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_011db355328eee41aaf4aef5956314c7">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">by_state <span class="ot" style="color: #003B4F;">&lt;-</span> ufo <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb9-2">    <span class="fu" style="color: #4758AB;">group_by</span>(state, decade, <span class="at" style="color: #657422;">.drop =</span> F) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb9-3">    <span class="fu" style="color: #4758AB;">summarise</span>(<span class="at" style="color: #657422;">cases =</span> <span class="fu" style="color: #4758AB;">n</span>(),</span>
+<span id="cb9-4">              <span class="at" style="color: #657422;">.groups =</span> <span class="st" style="color: #20794D;">"drop"</span>)</span>
+<span id="cb9-5">  </span>
+<span id="cb9-6">by_state2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">left_join</span>(usa, by_state, <span class="at" style="color: #657422;">by =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"region"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"state"</span>), <span class="at" style="color: #657422;">multiple =</span> <span class="st" style="color: #20794D;">"all"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb9-7">  <span class="fu" style="color: #4758AB;">filter</span>(decade <span class="sc" style="color: #5E5E5E;">%in%</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">2000</span>, <span class="dv" style="color: #AD0000;">2010</span>)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb9-8">    <span class="fu" style="color: #4758AB;">left_join</span>(uspop, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"region"</span>)</span></code></pre></div>
+</div>
+<p>Now I need to summarize the number of cases per state.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_dda6ec3c0953680aa16f54c717fdf01a">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">cases_per_state <span class="ot" style="color: #003B4F;">&lt;-</span> by_state2 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-2">  <span class="fu" style="color: #4758AB;">group_by</span>(region) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-3">  <span class="fu" style="color: #4758AB;">summarise</span>(<span class="at" style="color: #657422;">cases =</span> <span class="fu" style="color: #4758AB;">sum</span>(cases), <span class="at" style="color: #657422;">.groups =</span> <span class="st" style="color: #20794D;">"drop"</span>)</span></code></pre></div>
+</div>
+<p>And finally merge it back together with the geographic data.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_79097f97ee80e34f5050cd17138b9ae0">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">by_state2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">left_join</span>(by_state2, <span class="fu" style="color: #4758AB;">select</span>(cases_per_state, region, <span class="at" style="color: #657422;">cases_total =</span> cases), <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"region"</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="heatmap-1" class="level2">
+<h2 class="anchored" data-anchor-id="heatmap-1">Heatmap 1</h2>
+<p>And now for the heat map… <em>drum roll</em></p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_6da1ad9cf1dc3c77d8cb7195b91e9147">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">heatmap <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">ggplot</span>(by_state2, <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> long, <span class="at" style="color: #657422;">y =</span> lat, <span class="at" style="color: #657422;">fill =</span> cases_total, <span class="at" style="color: #657422;">group =</span> group)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-2">  <span class="fu" style="color: #4758AB;">geom_polygon</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"black"</span>, <span class="at" style="color: #657422;">show.legend =</span> T) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-3">  <span class="fu" style="color: #4758AB;">scale_fill_gradient</span>(<span class="at" style="color: #657422;">low =</span> <span class="st" style="color: #20794D;">"#ffae00"</span>, <span class="at" style="color: #657422;">high =</span> <span class="st" style="color: #20794D;">"#d90000"</span>, <span class="at" style="color: #657422;">limits =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">2864832</span>), <span class="at" style="color: #657422;">breaks =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">2850000</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-4">  <span class="fu" style="color: #4758AB;">coord_fixed</span>(<span class="fl" style="color: #AD0000;">1.3</span>, <span class="at" style="color: #657422;">clip =</span> <span class="st" style="color: #20794D;">"off"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-5">  <span class="fu" style="color: #4758AB;">theme_minimal</span>()</span>
+<span id="cb12-6"></span>
+<span id="cb12-7">heatmap</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/ufo/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Looking at these results, I thought that of course California, Texas and Florida have the most reports, they also have the most people!<br>
+A <em>per capita</em> measure will probably be more informative.</p>
+<p>Calculating reports per capita.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_aaeecacfae096f159077bb9377107b60">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">cases_per_capita <span class="ot" style="color: #003B4F;">&lt;-</span> by_state2 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-2">  <span class="fu" style="color: #4758AB;">group_by</span>(region) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-3">  <span class="fu" style="color: #4758AB;">summarise</span>(<span class="at" style="color: #657422;">cases =</span> <span class="fu" style="color: #4758AB;">sum</span>(cases), <span class="at" style="color: #657422;">.groups =</span> <span class="st" style="color: #20794D;">"drop"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-4">  <span class="fu" style="color: #4758AB;">left_join</span>(uspop, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"region"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-5">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">cases_per_capita =</span> cases<span class="sc" style="color: #5E5E5E;">/</span>mean_pop)</span></code></pre></div>
+</div>
+<p>Merging again with the geographical data.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-13_852b871ba5321b20ece7e3e1c0e892e4">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">by_state2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">left_join</span>(by_state2, <span class="fu" style="color: #4758AB;">select</span>(cases_per_capita, region, cases_per_capita, <span class="at" style="color: #657422;">cases_total =</span> cases), <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"region"</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="heatmap-2" class="level2">
+<h2 class="anchored" data-anchor-id="heatmap-2">Heatmap 2</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-14_a7c08eab3529c792f677d8f68192e6cc">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">heatmap2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">ggplot</span>(by_state2, <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> long, <span class="at" style="color: #657422;">y =</span> lat, <span class="at" style="color: #657422;">fill =</span> cases_per_capita, <span class="at" style="color: #657422;">group =</span> group)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;">geom_polygon</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"black"</span>, <span class="at" style="color: #657422;">show.legend =</span> T) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-3">  <span class="fu" style="color: #4758AB;">scale_fill_gradient</span>(<span class="at" style="color: #657422;">low =</span> <span class="st" style="color: #20794D;">"#ffae00"</span>, <span class="at" style="color: #657422;">high =</span> <span class="st" style="color: #20794D;">"#d90000"</span>, <span class="at" style="color: #657422;">limits =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">breaks =</span> <span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.2</span>, <span class="at" style="color: #657422;">length.out =</span> <span class="dv" style="color: #AD0000;">6</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-4">  <span class="fu" style="color: #4758AB;">coord_fixed</span>(<span class="fl" style="color: #AD0000;">1.3</span>, <span class="at" style="color: #657422;">clip =</span> <span class="st" style="color: #20794D;">"off"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-5">  <span class="fu" style="color: #4758AB;">theme_minimal</span>()</span>
+<span id="cb15-6"></span>
+<span id="cb15-7">heatmap2</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/ufo/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Nice!</p>
+</section>
+<section id="heatmap3" class="level2">
+<h2 class="anchored" data-anchor-id="heatmap3">Heatmap3</h2>
+<p>Let’s add some aesthetics because why not (I’ve only spent 6 hours on Google researching color theory and ggplot2’s internal logic). Unfold the code chunk if you are interested in seeing the monstrosity.</p>
+<div class="cell" data-fig.dpi="96" data-hash="index_cache/html/unnamed-chunk-15_5c65f1475e83ecf47a1273a3e4113787">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">heatmap3 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">ggplot</span>(by_state2, <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> long, <span class="at" style="color: #657422;">y =</span> lat, <span class="at" style="color: #657422;">fill =</span> cases_per_capita, <span class="at" style="color: #657422;">group =</span> group)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-2">  <span class="fu" style="color: #4758AB;">geom_polygon</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#00670c"</span>, <span class="at" style="color: #657422;">show.legend =</span> T) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-3">  <span class="fu" style="color: #4758AB;">scale_fill_gradient</span>(<span class="at" style="color: #657422;">low =</span> <span class="st" style="color: #20794D;">"black"</span>, <span class="at" style="color: #657422;">high =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">limits =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.2</span>), <span class="at" style="color: #657422;">breaks =</span> <span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.2</span>, <span class="at" style="color: #657422;">length.out =</span> <span class="dv" style="color: #AD0000;">6</span>), <span class="at" style="color: #657422;">guide =</span> <span class="fu" style="color: #4758AB;">guide_colorbar</span>(<span class="st" style="color: #20794D;">"Number of reported cases per capita"</span>, </span>
+<span id="cb16-4">                                                                               <span class="at" style="color: #657422;">title.position =</span> <span class="st" style="color: #20794D;">"top"</span>,</span>
+<span id="cb16-5">                                                                               <span class="at" style="color: #657422;">title.theme =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"serif"</span>),</span>
+<span id="cb16-6">                                                                               <span class="at" style="color: #657422;">title.hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>,</span>
+<span id="cb16-7">                                                                               <span class="at" style="color: #657422;">barwidth =</span> <span class="dv" style="color: #AD0000;">30</span>,</span>
+<span id="cb16-8">                                                                               <span class="at" style="color: #657422;">ticks.colour =</span> <span class="cn" style="color: #8f5902;">NA</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-9">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"15 years of UFO sightings in the US between 2000 and 2014"</span>,</span>
+<span id="cb16-10">       <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"Tomer Zipori | #TidyTuesday | Source: National UFO Reporting Center"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-11">  <span class="fu" style="color: #4758AB;">coord_fixed</span>(<span class="fl" style="color: #AD0000;">1.3</span>, <span class="at" style="color: #657422;">clip =</span> <span class="st" style="color: #20794D;">"off"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-12">  <span class="fu" style="color: #4758AB;">theme_minimal</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-13">  <span class="fu" style="color: #4758AB;">annotate</span>(<span class="st" style="color: #20794D;">"label"</span>, <span class="at" style="color: #657422;">x =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">130</span>, <span class="at" style="color: #657422;">y =</span> <span class="fl" style="color: #AD0000;">45.4</span>, <span class="at" style="color: #657422;">label =</span> <span class="st" style="color: #20794D;">"Washington is spooky!</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;"> # of cases: 1,228,975</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;"> Cases per capita: 0.18"</span>,</span>
+<span id="cb16-14">           <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"black"</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"serif"</span>, <span class="at" style="color: #657422;">fontface =</span> <span class="st" style="color: #20794D;">"bold"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-15">  <span class="fu" style="color: #4758AB;">geom_curve</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">127.5</span>, <span class="at" style="color: #657422;">y =</span> <span class="fl" style="color: #AD0000;">46.4</span>, <span class="at" style="color: #657422;">xend =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">124.48</span>, <span class="at" style="color: #657422;">yend =</span> <span class="fl" style="color: #AD0000;">47.4</span>), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">linewidth =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">curvature =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">0.35</span>,</span>
+<span id="cb16-16">             <span class="at" style="color: #657422;">arrow =</span> <span class="fu" style="color: #4758AB;">arrow</span>(<span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">"closed"</span>, <span class="at" style="color: #657422;">length =</span> <span class="fu" style="color: #4758AB;">unit</span>(<span class="fl" style="color: #AD0000;">0.02</span>, <span class="st" style="color: #20794D;">"npc"</span>))) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-17">  <span class="fu" style="color: #4758AB;">annotate</span>(<span class="st" style="color: #20794D;">"label"</span>, <span class="at" style="color: #657422;">x =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">124</span>, <span class="at" style="color: #657422;">y =</span> <span class="fl" style="color: #AD0000;">30.4</span>, <span class="at" style="color: #657422;">label =</span> <span class="st" style="color: #20794D;">"Utah has the lowest rate in the US</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;"> # of cases: 22,715</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;"> Cases per capita: 0.0079"</span>,</span>
+<span id="cb16-18">           <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"black"</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"serif"</span>, <span class="at" style="color: #657422;">fontface =</span> <span class="st" style="color: #20794D;">"bold"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-19">  <span class="fu" style="color: #4758AB;">geom_curve</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">119.4</span>, <span class="at" style="color: #657422;">y =</span> <span class="fl" style="color: #AD0000;">31.4</span>, <span class="at" style="color: #657422;">xend =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">111.5</span>, <span class="at" style="color: #657422;">yend =</span> <span class="dv" style="color: #AD0000;">39</span>), <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">linewidth =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">curvature =</span> <span class="fl" style="color: #AD0000;">0.3</span>,</span>
+<span id="cb16-20">             <span class="at" style="color: #657422;">arrow =</span> <span class="fu" style="color: #4758AB;">arrow</span>(<span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">"closed"</span>, <span class="at" style="color: #657422;">length =</span> <span class="fu" style="color: #4758AB;">unit</span>(<span class="fl" style="color: #AD0000;">0.02</span>, <span class="st" style="color: #20794D;">"npc"</span>))) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-21">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">plot.title =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">24</span>, <span class="at" style="color: #657422;">vjust =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"Showcard Gothic"</span>),</span>
+<span id="cb16-22">        <span class="at" style="color: #657422;">plot.caption =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">1.05</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"serif"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">9</span>),</span>
+<span id="cb16-23">        <span class="at" style="color: #657422;">axis.title.x =</span> <span class="fu" style="color: #4758AB;">element_blank</span>(),</span>
+<span id="cb16-24">        <span class="at" style="color: #657422;">axis.title.y =</span> <span class="fu" style="color: #4758AB;">element_blank</span>(),</span>
+<span id="cb16-25">        <span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_blank</span>(),</span>
+<span id="cb16-26">        <span class="at" style="color: #657422;">axis.text.y =</span> <span class="fu" style="color: #4758AB;">element_blank</span>(),</span>
+<span id="cb16-27">        <span class="at" style="color: #657422;">panel.grid =</span> <span class="fu" style="color: #4758AB;">element_blank</span>(),</span>
+<span id="cb16-28">        <span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"bottom"</span>, <span class="at" style="color: #657422;">legend.box =</span> <span class="st" style="color: #20794D;">"horizontal"</span>, <span class="at" style="color: #657422;">legend.text =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#5dff00"</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"mono"</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">14</span>))</span>
+<span id="cb16-29"></span>
+<span id="cb16-30">heatmap3 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">ggbackground</span>(heatmap3, nightsky_img)</span></code></pre></div>
+</details>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/ufo/heatmap3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Washington is spooky! I really don’t know why Washington is leading in this measure. Like most people I’ve expected to find Nevada or Utah (which is last!) in the first place. Having said that, UFO stands for “<strong>Unidentified</strong> foreign object”, maybe the people of Nevada know what they are seeing in the sky lol.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>code</category>
+  <category>visualization</category>
+  <category>ggplot2</category>
+  <category>tidytuesday</category>
+  <guid>https://tomerzipori.github.io/blog/posts/ufo/index.html</guid>
+  <pubDate>Sat, 15 Apr 2023 21:00:00 GMT</pubDate>
+  <media:content url="https://tomerzipori.github.io/blog/posts/ufo/ufo1.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
+<item>
+  <title>Cage-free vs. caged hens in the US</title>
+  <dc:creator>Tomer Zipori</dc:creator>
+  <link>https://tomerzipori.github.io/blog/posts/eggs/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="background" class="level1">
+<h1>Background</h1>
+<p>Some time ago, when the fall semester began I’ve enrolled on a course called <em>Data science lab</em> as part of the ‘Data Science for the Social Sciences’ program. One of the assignments was to make some <code>TidyTuesday</code> contribution and present it in class. So this is my submission and what I consider as my first respectable attempts at visualizing data.</p>
+</section>
+<section id="the-data" class="level1">
+<h1>The Data</h1>
+<section id="from-the-github-repo" class="level5">
+<h5 class="anchored" data-anchor-id="from-the-github-repo">From the Github <a href="https://github.com/tomerzipori/tidytuesday/tree/master/data/2023/2023-04-11">repo</a>:</h5>
+<p><em>The data this week comes from <a href="https://thehumaneleague.org/article/E008R01-us-egg-production-data">The Humane League’s US Egg Production* *dataset</a> by <a href="https://samaramendez.github.io/">Samara Mendez</a>. Dataset and code is available for this project on OSF at <a href="https://osf.io/z2gxn/">US Egg Production Data Set</a>.</em></p>
+<p><em>This dataset tracks the supply of cage-free eggs in the United States from December 2007 to February 2021. For TidyTuesday we’ve used data through February 2021, but the full dataset, with data through the present, is available in the <a href="https://osf.io/z2gxn/">OSF project</a>.</em></p>
+<p>Let’s start!</p>
+</section>
+</section>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<section id="libraries" class="level2">
+<h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidytuesdayR) <span class="co" style="color: #5E5E5E;"># for easy data loading</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)    <span class="co" style="color: #5E5E5E;"># for data pre-processing and wrangling</span></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(lubridate)    <span class="co" style="color: #5E5E5E;"># makes dealing with date format much easier</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(showtext)     <span class="co" style="color: #5E5E5E;"># fonts</span></span></code></pre></div>
+</div>
+</section>
+<section id="loading-fonts" class="level2">
+<h2 class="anchored" data-anchor-id="loading-fonts">Loading fonts</h2>
+<p><code>showtext</code> is an awesome package that allows to load installed fonts into <code>R</code> and use it in <code>ggplot2</code> plots (for example). For a really helpful video that I used see this <a href="https://www.youtube.com/watch?v=kyOCNPuQzog&amp;t=1010s">video</a> from the Riffomonas Project.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;">font_add</span>(<span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"Stencil"</span>, <span class="at" style="color: #657422;">regular =</span> <span class="st" style="color: #20794D;">"STENCIL.TTF"</span>)</span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;">showtext_auto</span>()</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="loading-data" class="level1">
+<h1>Loading data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">eggproduction  <span class="ot" style="color: #003B4F;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-04-11/egg-production.csv'</span>)</span>
+<span id="cb3-2"></span>
+<span id="cb3-3">cagefreepercentages <span class="ot" style="color: #003B4F;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-04-11/cage-free-percentages.csv'</span>)</span></code></pre></div>
+</div>
+<section id="taking-a-peak" class="level2">
+<h2 class="anchored" data-anchor-id="taking-a-peak">Taking a peak</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;">head</span>(eggproduction)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+  observed_month prod_type     prod_process   n_hens     n_eggs source          
+  &lt;date&gt;         &lt;chr&gt;         &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;           
+1 2016-07-31     hatching eggs all          57975000 1147000000 ChicEggs-09-23-…
+2 2016-08-31     hatching eggs all          57595000 1142700000 ChicEggs-10-21-…
+3 2016-09-30     hatching eggs all          57161000 1093300000 ChicEggs-11-22-…
+4 2016-10-31     hatching eggs all          56857000 1126700000 ChicEggs-12-23-…
+5 2016-11-30     hatching eggs all          57116000 1096600000 ChicEggs-01-24-…
+6 2016-12-31     hatching eggs all          57750000 1132900000 ChicEggs-02-28-…</code></pre>
+</div>
+</div>
+<p><code>eggproduction</code> holds monthly data about number of hens and produced eggs in the US. <code>prod_type</code> specifies the type of egg produced, it has 2 levels:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">unique</span>(eggproduction<span class="sc" style="color: #5E5E5E;">$</span>prod_type)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "hatching eggs" "table eggs"   </code></pre>
+</div>
+</div>
+<p>For the current mini-project, I’ll stay with “table eggs” only.</p>
+<p>The variable <code>prod_process</code> specifies the type of housing of the egg-producing hens. It has 3 levels:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">unique</span>(eggproduction<span class="sc" style="color: #5E5E5E;">$</span>prod_process)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "all"                     "cage-free (non-organic)"
+[3] "cage-free (organic)"    </code></pre>
+</div>
+</div>
+<p>I’ll leave data of <code>all</code> hens for now.</p>
+<section id="pre-processing-1" class="level3">
+<h3 class="anchored" data-anchor-id="pre-processing-1">Pre-processing 1</h3>
+<p>Filtering out irrelevant data and renaming some variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">egg_clean <span class="ot" style="color: #003B4F;">&lt;-</span> eggproduction <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-2">  <span class="fu" style="color: #4758AB;">filter</span>(prod_type <span class="sc" style="color: #5E5E5E;">!=</span> <span class="st" style="color: #20794D;">"hatching eggs"</span> <span class="sc" style="color: #5E5E5E;">&amp;</span> prod_process <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"all"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># Leave only eggs meant for eating and general data</span></span>
+<span id="cb10-3">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span>source, <span class="sc" style="color: #5E5E5E;">-</span>prod_type, <span class="sc" style="color: #5E5E5E;">-</span>prod_process, <span class="at" style="color: #657422;">n_hens_all =</span> n_hens, <span class="at" style="color: #657422;">n_eggs_all =</span> n_eggs) <span class="co" style="color: #5E5E5E;"># Irrelevant columns</span></span></code></pre></div>
+</div>
+</section>
+<section id="taking-a-peak-2" class="level3">
+<h3 class="anchored" data-anchor-id="taking-a-peak-2">Taking a peak 2</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">head</span>(cagefreepercentages)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  observed_month percent_hens percent_eggs source                             
+  &lt;date&gt;                &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;                              
+1 2007-12-31              3.2           NA Egg-Markets-Overview-2019-10-19.pdf
+2 2008-12-31              3.5           NA Egg-Markets-Overview-2019-10-19.pdf
+3 2009-12-31              3.6           NA Egg-Markets-Overview-2019-10-19.pdf
+4 2010-12-31              4.4           NA Egg-Markets-Overview-2019-10-19.pdf
+5 2011-12-31              5.4           NA Egg-Markets-Overview-2019-10-19.pdf
+6 2012-12-31              6             NA Egg-Markets-Overview-2019-10-19.pdf</code></pre>
+</div>
+</div>
+<p>This data-frame also holds monthly data. The variable <code>percent_hens</code> specifies <em>observed or computed percentage of cage-free hens relative to all table-egg-laying hens</em> (from the Github repo). We’ll select these variables and use them to merge with the first data-frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">egg_clean2 <span class="ot" style="color: #003B4F;">&lt;-</span> cagefreepercentages <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-2">  <span class="fu" style="color: #4758AB;">drop_na</span>(percent_eggs) <span class="sc" style="color: #5E5E5E;">%&gt;%</span>                                                <span class="co" style="color: #5E5E5E;"># droping rows with missing percent_eggs data</span></span>
+<span id="cb13-3">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span>source, <span class="sc" style="color: #5E5E5E;">-</span>percent_eggs, <span class="at" style="color: #657422;">cagefree_percent_hens =</span> percent_hens) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="co" style="color: #5E5E5E;"># Irrelevant\to many NA's columns + renaming</span></span>
+<span id="cb13-4">  <span class="fu" style="color: #4758AB;">inner_join</span>(egg_clean, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"observed_month"</span>, <span class="at" style="color: #657422;">multiple =</span> <span class="st" style="color: #20794D;">"all"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span>       <span class="co" style="color: #5E5E5E;"># joining with the first data-frame</span></span>
+<span id="cb13-5">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">Cagefree =</span> (cagefree_percent_hens <span class="sc" style="color: #5E5E5E;">*</span> n_hens_all) <span class="sc" style="color: #5E5E5E;">/</span> <span class="dv" style="color: #AD0000;">100</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span>        <span class="co" style="color: #5E5E5E;"># calculating number of cage-free hens</span></span>
+<span id="cb13-6">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">Traditional =</span> n_hens_all <span class="sc" style="color: #5E5E5E;">-</span> Cagefree) <span class="sc" style="color: #5E5E5E;">%&gt;%</span>                          <span class="co" style="color: #5E5E5E;"># calculating number of traditional housing hens</span></span>
+<span id="cb13-7">  <span class="fu" style="color: #4758AB;">select</span>(observed_month, Cagefree, Traditional) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-8">  <span class="fu" style="color: #4758AB;">pivot_longer</span>(<span class="at" style="color: #657422;">cols =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Cagefree"</span>, <span class="st" style="color: #20794D;">"Traditional"</span>), <span class="at" style="color: #657422;">names_to =</span> <span class="st" style="color: #20794D;">"housing"</span>, <span class="at" style="color: #657422;">values_to =</span> <span class="st" style="color: #20794D;">"n_hens"</span>)</span></code></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="plotting" class="level1">
+<h1>Plotting</h1>
+<section id="gameplan" class="level2">
+<h2 class="anchored" data-anchor-id="gameplan">Gameplan</h2>
+<p>Few hours deep, I’ve decided it would be interesting to see the change in number of cage-free hens compared to caged hens during the time period we have data about. Because I wanted to plot only certain points of data along the time axis, I needed to create a subset of the big data-frame that holds the data for the points I wanted to plot.</p>
+<section id="identitfying-the-dates-of-interest" class="level3">
+<h3 class="anchored" data-anchor-id="identitfying-the-dates-of-interest">Identitfying the dates of interest</h3>
+<p>First thing, I found 6 dates that are equally spaced between the start and end points. The repetitive code below is quite ugly, and <code>lubridate</code> probably has a nice and elegant solution, I didn’t want to spend to much time on it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">dates_for_plot <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">seq.Date</span>(egg_clean2<span class="sc" style="color: #5E5E5E;">$</span>observed_month[<span class="dv" style="color: #AD0000;">1</span>], egg_clean2<span class="sc" style="color: #5E5E5E;">$</span>observed_month[<span class="fu" style="color: #4758AB;">nrow</span>(egg_clean2)], <span class="at" style="color: #657422;">length.out =</span> <span class="dv" style="color: #AD0000;">6</span>)</span>
+<span id="cb14-2">dates_for_plot[<span class="dv" style="color: #AD0000;">2</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.Date</span>(<span class="st" style="color: #20794D;">"2017-07-31"</span>)</span>
+<span id="cb14-3">dates_for_plot[<span class="dv" style="color: #AD0000;">3</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.Date</span>(<span class="st" style="color: #20794D;">"2018-05-31"</span>)</span>
+<span id="cb14-4">dates_for_plot[<span class="dv" style="color: #AD0000;">4</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.Date</span>(<span class="st" style="color: #20794D;">"2019-04-30"</span>)</span>
+<span id="cb14-5">dates_for_plot[<span class="dv" style="color: #AD0000;">5</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.Date</span>(<span class="st" style="color: #20794D;">"2020-03-31"</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="creating-the-subset" class="level3">
+<h3 class="anchored" data-anchor-id="creating-the-subset">Creating the subset</h3>
+<p>I will use this subset in order to plot the 6 points on the general data. I will only need to specify <code>data = subset_for_points</code> in the relevant <code>geom</code> object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">subset_for_points <span class="ot" style="color: #003B4F;">&lt;-</span> egg_clean2 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;">filter</span>((housing <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Cagefree"</span> <span class="sc" style="color: #5E5E5E;">&amp;</span> observed_month <span class="sc" style="color: #5E5E5E;">%in%</span> dates_for_plot) <span class="sc" style="color: #5E5E5E;">|</span></span>
+<span id="cb15-3">           (housing <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Traditional"</span> <span class="sc" style="color: #5E5E5E;">&amp;</span> (observed_month <span class="sc" style="color: #5E5E5E;">==</span> dates_for_plot[<span class="dv" style="color: #AD0000;">1</span>] <span class="sc" style="color: #5E5E5E;">|</span> observed_month <span class="sc" style="color: #5E5E5E;">==</span> dates_for_plot[<span class="dv" style="color: #AD0000;">6</span>]))) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-4">  <span class="fu" style="color: #4758AB;">inner_join</span>(<span class="fu" style="color: #4758AB;">select</span>(egg_clean, observed_month, <span class="at" style="color: #657422;">n_hens =</span> n_hens_all), <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"observed_month"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-5">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">n_hens =</span> <span class="fu" style="color: #4758AB;">case_when</span>(housing <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Cagefree"</span> <span class="sc" style="color: #5E5E5E;">~</span> n_hens.x,</span>
+<span id="cb15-6">                            housing <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Traditional"</span> <span class="sc" style="color: #5E5E5E;">~</span> n_hens.y)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-7">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span>n_hens.x, <span class="sc" style="color: #5E5E5E;">-</span>n_hens.y)</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="actually-plotting" class="level2">
+<h2 class="anchored" data-anchor-id="actually-plotting">Actually plotting</h2>
+<p>I went with a simple stacked density plot. Watch how the number of cage-free goes from</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">plot <span class="ot" style="color: #003B4F;">&lt;-</span> egg_clean2 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb16-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> observed_month, <span class="at" style="color: #657422;">y =</span> n_hens<span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">1000000</span>, <span class="at" style="color: #657422;">fill =</span> <span class="fu" style="color: #4758AB;">factor</span>(housing, <span class="at" style="color: #657422;">levels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Traditional"</span>, <span class="st" style="color: #20794D;">"Cagefree"</span>)),</span>
+<span id="cb16-3">             <span class="at" style="color: #657422;">color =</span> <span class="fu" style="color: #4758AB;">factor</span>(housing, <span class="at" style="color: #657422;">levels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Traditional"</span>, <span class="st" style="color: #20794D;">"Cagefree"</span>)),</span>
+<span id="cb16-4">             <span class="at" style="color: #657422;">label =</span> n_hens<span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">1000000</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-5">  <span class="fu" style="color: #4758AB;">geom_density</span>(<span class="at" style="color: #657422;">position =</span> <span class="st" style="color: #20794D;">'stack'</span>, <span class="at" style="color: #657422;">stat =</span> <span class="st" style="color: #20794D;">'identity'</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-6">  <span class="fu" style="color: #4758AB;">geom_point</span>(<span class="at" style="color: #657422;">data =</span> subset_for_points) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-7">  <span class="fu" style="color: #4758AB;">geom_text</span>(<span class="at" style="color: #657422;">data =</span> subset_for_points, <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">label =</span> <span class="fu" style="color: #4758AB;">round</span>(n_hens<span class="sc" style="color: #5E5E5E;">/</span><span class="dv" style="color: #AD0000;">1000000</span>)), <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>, <span class="at" style="color: #657422;">vjust =</span> <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">6</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"serif"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-8">  <span class="fu" style="color: #4758AB;">scale_fill_manual</span>(<span class="at" style="color: #657422;">values =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"#ffefd5"</span>, <span class="st" style="color: #20794D;">"#e1bf92"</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-9">  <span class="fu" style="color: #4758AB;">scale_color_manual</span>(<span class="at" style="color: #657422;">values =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"#e1bf92"</span>, <span class="st" style="color: #20794D;">"#83502e"</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-10">  <span class="fu" style="color: #4758AB;">annotate</span>(<span class="at" style="color: #657422;">geom =</span> <span class="st" style="color: #20794D;">"text"</span>, <span class="at" style="color: #657422;">x =</span> <span class="fu" style="color: #4758AB;">as_date</span>(<span class="st" style="color: #20794D;">"2019/1/1"</span>), <span class="at" style="color: #657422;">y =</span> <span class="dv" style="color: #AD0000;">30</span>, <span class="at" style="color: #657422;">label =</span> <span class="st" style="color: #20794D;">"Cage-Free"</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#808080"</span>,</span>
+<span id="cb16-11">           <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"Stencil"</span>, <span class="at" style="color: #657422;">angle =</span> <span class="fl" style="color: #AD0000;">2.5</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">15</span>, <span class="at" style="color: #657422;">alpha =</span> <span class="fl" style="color: #AD0000;">0.5</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-12">  <span class="fu" style="color: #4758AB;">annotate</span>(<span class="at" style="color: #657422;">geom =</span> <span class="st" style="color: #20794D;">"text"</span>, <span class="at" style="color: #657422;">x =</span> <span class="fu" style="color: #4758AB;">as_date</span>(<span class="st" style="color: #20794D;">"2019/1/1"</span>), <span class="at" style="color: #657422;">y =</span> <span class="dv" style="color: #AD0000;">190</span>, <span class="at" style="color: #657422;">label =</span> <span class="st" style="color: #20794D;">"Caged"</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#808080"</span>,</span>
+<span id="cb16-13">           <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"Stencil"</span>, <span class="at" style="color: #657422;">angle =</span> <span class="fl" style="color: #AD0000;">2.5</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">15</span>, <span class="at" style="color: #657422;">alpha =</span> <span class="fl" style="color: #AD0000;">0.5</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-14">  <span class="fu" style="color: #4758AB;">scale_x_date</span>(<span class="at" style="color: #657422;">breaks =</span> dates_for_plot) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-15">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">""</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-16">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Number of egg-producing hens (millions)"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-17">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"Housing"</span>, <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Number of Cage-free hens in the US is constatly rising"</span>,</span>
+<span id="cb16-18">       <span class="at" style="color: #657422;">subtitle =</span> <span class="st" style="color: #20794D;">"Relative number of Cage-free hens in the US in the years 2016-2021"</span>,</span>
+<span id="cb16-19">       <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"Tomer Zipori | #TidyTuesday | Source: The Humane League's US Egg Production dataset"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-20">  <span class="fu" style="color: #4758AB;">guides</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"none"</span>, <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"none"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-21">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-22">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.title =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">16</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#83502e"</span>),</span>
+<span id="cb16-23">        <span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">13</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#83502e"</span>),</span>
+<span id="cb16-24">        <span class="at" style="color: #657422;">axis.text.y =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">13</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#83502e"</span>),</span>
+<span id="cb16-25">        <span class="at" style="color: #657422;">plot.title =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">18</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#83502e"</span>),</span>
+<span id="cb16-26">        <span class="at" style="color: #657422;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>, <span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">13</span>, <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"serif"</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#83502e"</span>),</span>
+<span id="cb16-27">        <span class="at" style="color: #657422;">plot.caption =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"serif"</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"#83502e"</span>),</span>
+<span id="cb16-28">        <span class="at" style="color: #657422;">plot.margin =</span> <span class="fu" style="color: #4758AB;">margin</span>(<span class="fl" style="color: #AD0000;">0.5</span>,<span class="fl" style="color: #AD0000;">0.5</span>,<span class="fl" style="color: #AD0000;">0.5</span>,<span class="fl" style="color: #AD0000;">0.7</span>, <span class="st" style="color: #20794D;">"cm"</span>),</span>
+<span id="cb16-29">        <span class="at" style="color: #657422;">plot.background =</span> <span class="fu" style="color: #4758AB;">element_rect</span>(<span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"#fffaf0"</span>),</span>
+<span id="cb16-30">        <span class="at" style="color: #657422;">panel.background =</span> <span class="fu" style="color: #4758AB;">element_rect</span>(<span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"#fffaf0"</span>))</span>
+<span id="cb16-31">plot</span></code></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/eggs/index_files/figure-html/unnamed-chunk-12-1.png" width="800" height="501"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>There is a steady and relative fast growth in cage-free hens in the US, compared with caged-housed hens. Nice. As I said in the beginning. this is my first <code>TidyTuesday</code> contribution, and the first data visualization attempts that I felt worthy of posting lol. I learned a few tricks along the way for example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>1.</strong> lubridate’s <em>date</em> format is super nice to work with. It can be seq’t along and do all kind of efficient things for dealing with timely data.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>2.</strong> Referencing more then one data-frame in a single <code>ggplot()</code>, Seems obvious, but I didn’t think about this solution to plotting just some of the data until this mini-project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>3.</strong> Many-many things about aesthetics of <code>ggplot2</code>, like the <code>annotate()</code> and <code>labs()</code> functions and arguments.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>code</category>
+  <category>visualization</category>
+  <category>ggplot2</category>
+  <category>tidytuesday</category>
+  <guid>https://tomerzipori.github.io/blog/posts/eggs/index.html</guid>
+  <pubDate>Tue, 11 Apr 2023 21:00:00 GMT</pubDate>
+  <media:content url="https://tomerzipori.github.io/blog/posts/eggs/eggs.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
+</channel>
+</rss>

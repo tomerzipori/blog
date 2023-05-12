@@ -7,9 +7,11 @@ image: "eggs.png"
 execute: 
   warning: false
   message: false
+  cache: true
 format:
   html:
-    theme: darkly
+    theme: cosmo
+    backgroundcolor: "#e3e3e3"
     toc: true
     toc-depth: 2
     toc-location: right
@@ -186,7 +188,7 @@ plot
 
 # Conclusion
 
-There is a steady and relative fast growth in cage-free hens in the US, compared with caged-housed hens. Nice. As I said in the beginning. this is my first `TidyTuesday` contribution, and the first data visualization attempts that I felt worthy of posting lol. I learned a few tricks along the way for example:  
-      **1.** lubridate's *date* format is super nice to work with. It can be seq't along and do all kind of efficient things for dealing with timely data.  
-      **2.** Referencing more then one data-frame in a single `ggplot()`, Seems obvious, but I didn't think about this solution to plotting just some of the data until this mini-project.  
+There is a steady and relative fast growth in cage-free hens in the US, compared with caged-housed hens. Nice. As I said in the beginning. this is my first `TidyTuesday` contribution, and the first data visualization attempts that I felt worthy of posting lol. I learned a few tricks along the way for example:\
+      **1.** lubridate's *date* format is super nice to work with. It can be seq't along and do all kind of efficient things for dealing with timely data.\
+      **2.** Referencing more then one data-frame in a single `ggplot()`, Seems obvious, but I didn't think about this solution to plotting just some of the data until this mini-project.\
       **3.** Many-many things about aesthetics of `ggplot2`, like the `annotate()` and `labs()` functions and arguments.

@@ -243,5 +243,75 @@
     "title": "Welcome To My Blog",
     "section": "",
     "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html",
+    "href": "posts/football_fake_news/index.html",
+    "title": "Real Vs. Fake news",
+    "section": "",
+    "text": "As part of my data-science courses this fall semester, I have started also to get into Natural Language Processing (NLP, but of the good kind). This is the first time I have ever tried it, so let’s see how it went.\nBrief overview of the post:\n      1. Basic preprocessing and creation of Data Feature Matrix (DFM), using packages stringr and quanteda.\n      2. Classification with Naive-Bayes method.\n      3. Classification with Logistic regression, and feature importance plot."
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#adding-labels",
+    "href": "posts/football_fake_news/index.html#adding-labels",
+    "title": "Real Vs. Fake news",
+    "section": "Adding labels",
+    "text": "Adding labels\n\nreal$label <- \"real\"\nfake$label <- \"fake\""
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#combining-data-frames",
+    "href": "posts/football_fake_news/index.html#combining-data-frames",
+    "title": "Real Vs. Fake news",
+    "section": "Combining data frames",
+    "text": "Combining data frames\n\ntweets <- rbind(real, fake) |>\n  drop_na() |> # dropping NA rows\n  mutate(tweet = str_trim(tweet) |> str_squish()) # removing white-spaces in the start and beginning of tweet, and between words"
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#creating-dfms-cleaning-text",
+    "href": "posts/football_fake_news/index.html#creating-dfms-cleaning-text",
+    "title": "Real Vs. Fake news",
+    "section": "Creating DFMs & cleaning text",
+    "text": "Creating DFMs & cleaning text\nCreating a count-based DFM (frequency of each word in each document). Before creating the DFM I employ 3 steps of normalization:\n      1. Removing special characters and expressions (punctuation, urls…).\n      2. Converting words to their stem-form (the word example converts to exampl). This step should decrease       the number of unique tokens, so that our DFM would be less sparse.\n      3. Converting every character to lower-case letters.\n\ndata_feature_mat <- corp |>\n  tokens(remove_punct = T, remove_numbers = T, remove_url = T, remove_separators = T, remove_symbols = T) |>\n  tokens_wordstem() |>\n  dfm(tolower = T)\n\nhead(data_feature_mat)\n\nDocument-feature matrix of: 6 documents, 18,869 features (99.89% sparse) and 1 docvar.\n       features\ndocs    sun down technic director al-ah respect us and play to\n  text1   1    1       1        1     1       1  1   1    1  1\n  text2   0    0       0        0     0       0  0   0    0  2\n  text3   0    0       1        1     0       0  0   0    0  0\n  text4   0    0       0        0     0       0  0   1    0  0\n  text5   0    0       0        0     0       0  0   0    0  1\n  text6   0    0       0        0     0       0  0   0    0  0\n[ reached max_nfeat ... 18,859 more features ]"
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#naive-bayes-classifier",
+    "href": "posts/football_fake_news/index.html#naive-bayes-classifier",
+    "title": "Real Vs. Fake news",
+    "section": "Naive-Bayes classifier",
+    "text": "Naive-Bayes classifier\nA Naive-Bayes classifier predicts the class (in this case of a document) in the following way:\n1. The likelihood of each token to appear in documents of each class is calculated from the training data. For example, if the word manager appeared in \\(11\\)% of the documents in the first class, and in \\(2\\)% of the documents in the second class, the likelihood of it in each class is:\n\\[\n\\displaylines{p(manager\\ |\\ class\\ 1)=0.11\\\\p(manager\\ |\\ class\\ 2)=0.02}\n\\]\n\nThe prior probability of each document to be classified to each class is also learned from the training data, and it is the base-rate frequencies of the two classes.\n\nFor each document in the test set, the likelihood of it given it is from each of the classes is calculated by multiplying the likelihoods of the tokens appearing in it. So if a document is for example the sentence I like turtles, then the likelihood of it to belong class 1 is:\n\\[\n\\displaylines{p(I\\ |\\ class\\ 1)\\cdotp(like\\ |\\ class\\ 1)\\cdotp(turtles\\ |\\ class\\ 1)}\n\\]\nMore formally, if a document belong to a certain class \\(k\\), then it’s likelihood of being comprised of a set of tokens \\(t\\) is:\n\\[\n\\prod_{i=1}^{n}p(t_i\\ |\\ class\\ k)\n\\]\nAccording to Bayes theorem, the probability of the document to belong to class \\(k\\) - the posterior probability - is proportional to the product of the likelihood of it’s tokens given this class and the prior probability of any document to belong to this class:\n\\[\np(class\\ k\\ |\\ t) \\propto p(t\\ |\\ class\\ k)\\cdotp(class\\ k)\n\\]\nBecause the Naive-Bayes classifier is comparing between classes, the standardizing term is not needed. The class that has the largest product of prior and likelihood is the class the document will be classified to."
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#fitting-the-model",
+    "href": "posts/football_fake_news/index.html#fitting-the-model",
+    "title": "Real Vs. Fake news",
+    "section": "Fitting the model",
+    "text": "Fitting the model\n\nnb_model <- textmodel_nb(train_dfm, y = docvars(train_dfm, \"label\"))"
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#test-performance",
+    "href": "posts/football_fake_news/index.html#test-performance",
+    "title": "Real Vs. Fake news",
+    "section": "Test performance",
+    "text": "Test performance\n\npred_nb <- predict(nb_model, newdata = test_dfm)\n\n(conmat_nb <- table(pred_nb, docvars(test_dfm, \"label\")))\n\n       \npred_nb fake real\n   fake 3893  380\n   real  143 3956\n\n\nSeems nice, let’s look at some metrics.\nConfusion matrix\n\ncaret::confusionMatrix(conmat_nb, mode = \"everything\", positive = \"real\")\n\nConfusion Matrix and Statistics\n\n       \npred_nb fake real\n   fake 3893  380\n   real  143 3956\n                                          \n               Accuracy : 0.9375          \n                 95% CI : (0.9321, 0.9426)\n    No Information Rate : 0.5179          \n    P-Value [Acc > NIR] : < 2.2e-16       \n                                          \n                  Kappa : 0.8752          \n                                          \n Mcnemar's Test P-Value : < 2.2e-16       \n                                          \n            Sensitivity : 0.9124          \n            Specificity : 0.9646          \n         Pos Pred Value : 0.9651          \n         Neg Pred Value : 0.9111          \n              Precision : 0.9651          \n                 Recall : 0.9124          \n                     F1 : 0.9380          \n             Prevalence : 0.5179          \n         Detection Rate : 0.4725          \n   Detection Prevalence : 0.4896          \n      Balanced Accuracy : 0.9385          \n                                          \n       'Positive' Class : real            \n                                          \n\n\nNice results!"
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#logistic-regression",
+    "href": "posts/football_fake_news/index.html#logistic-regression",
+    "title": "Real Vs. Fake news",
+    "section": "Logistic regression",
+    "text": "Logistic regression\nThe nice thing about the textmodel_lr method from the quanteda.textmodels package is that it does the Cross-Validation for us!\n\nlr_model <- textmodel_lr(x = train_dfm, y = docvars(train_dfm, \"label\"))"
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#test-performance-1",
+    "href": "posts/football_fake_news/index.html#test-performance-1",
+    "title": "Real Vs. Fake news",
+    "section": "Test performance",
+    "text": "Test performance\n\npred_lr <- predict(lr_model, newdata = test_dfm)\n\n(conmat_lr <- table(pred_lr, docvars(test_dfm, \"label\")))\n\n       \npred_lr fake real\n   fake 3795  188\n   real  241 4148\n\n\nAlso seems nice.\nConfusion matrix\n\ncaret::confusionMatrix(conmat_lr, mode = \"everything\", positive = \"real\")\n\nConfusion Matrix and Statistics\n\n       \npred_lr fake real\n   fake 3795  188\n   real  241 4148\n                                          \n               Accuracy : 0.9488          \n                 95% CI : (0.9438, 0.9534)\n    No Information Rate : 0.5179          \n    P-Value [Acc > NIR] : < 2e-16         \n                                          \n                  Kappa : 0.8973          \n                                          \n Mcnemar's Test P-Value : 0.01205         \n                                          \n            Sensitivity : 0.9566          \n            Specificity : 0.9403          \n         Pos Pred Value : 0.9451          \n         Neg Pred Value : 0.9528          \n              Precision : 0.9451          \n                 Recall : 0.9566          \n                     F1 : 0.9508          \n             Prevalence : 0.5179          \n         Detection Rate : 0.4955          \n   Detection Prevalence : 0.5242          \n      Balanced Accuracy : 0.9485          \n                                          \n       'Positive' Class : real            \n                                          \n\n\nSlight improvement…"
+  },
+  {
+    "objectID": "posts/football_fake_news/index.html#plot-important-words-for-classification",
+    "href": "posts/football_fake_news/index.html#plot-important-words-for-classification",
+    "title": "Real Vs. Fake news",
+    "section": "Plot important words for classification",
+    "text": "Plot important words for classification\n\n\nCode\nlr_summary <- summary(lr_model) # summarizing the model\n\ncoefs <- data.frame(lr_summary$estimated.feature.scores) # extracting coefficients\n\n\ncol_vec <- c(\"#fc7753\", \"#e3e3e3\", \"#66d7d1\", \"black\")\n\ncoefs |>\n  \n  # preparing df for plot\n  rownames_to_column(var = \"Token\") |>\n  rename(Coefficient = real) |>\n  filter(Coefficient != 0 & Token != \"(Intercept)\") |>\n  mutate(bigger_then_0 = Coefficient > 0) |>\n  \n  # ggplotting\n  ggplot(aes(x = Token, y = Coefficient, color = bigger_then_0)) +\n  geom_point() +\n  scale_color_manual(values = c(col_vec[1], col_vec[3])) +\n  scale_y_continuous(n.breaks = 10) +\n  labs(title = \"Most important words for classifying if a tweet is fake news\",\n       x = \"\") +\n  theme_classic() +\n  geom_hline(yintercept = 0, color = \"black\", linetype = 2, linewidth = 1, show.legend = F) +\n  theme(plot.background = element_rect(color = col_vec[2], fill = col_vec[2]),\n        panel.background = element_rect(color = col_vec[2], fill = col_vec[2]),\n        axis.line = element_line(color = col_vec[4]),\n        axis.title = element_text(color = col_vec[4]),\n        axis.text = element_text(color = col_vec[4]),\n        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 12, face = \"bold\"),\n        legend.position = \"none\",\n        plot.title = element_text(size = 16, color = col_vec[4], hjust = .5, family = \"serif\", face = \"bold\"))"
   }
 ]
