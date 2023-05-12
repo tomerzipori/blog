@@ -8,6 +8,7 @@ image: "reece.jpg"
 execute: 
   warning: false
   message: false
+  cache: true
 format:
   html:
     theme: cosmo

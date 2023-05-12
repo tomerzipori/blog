@@ -1,5 +1,5 @@
 ---
-title: "Real Vs. Fake news"
+title: "Real Vs. Fake news in football"
 author: "Tomer Zipori"
 description: "Experiment in NLP and some text classification"
 date: 05-12-2023
@@ -16,7 +16,6 @@ format:
     toc: true
     toc-depth: 2
     toc-location: right
-    embed-resources: true
 editor: visual
 bibliography: references.bib
 ---
@@ -135,6 +134,7 @@ test_dfm <- data_feature_mat[setdiff(docnames(data_feature_mat), docnames(train_
 ## Naive-Bayes classifier
 
 A Naive-Bayes classifier predicts the class (in this case of a document) in the following way:\
+
 1. The likelihood of each token to appear in documents of each class is calculated from the training data. For example, if the word *manager* appeared in $11$% of the documents in the first class, and in $2$% of the documents in the second class, the likelihood of it in each class is:\
 $$
 \displaylines{p(manager\ |\ class\ 1)=0.11\\p(manager\ |\ class\ 2)=0.02}
