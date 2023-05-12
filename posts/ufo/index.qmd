@@ -8,6 +8,7 @@ image: "ufo1.png"
 execute: 
   warning: false
   message: false
+  cache: true
 format:
   html:
     theme: darkly
@@ -19,7 +20,7 @@ editor: visual
 
 # Background
 
-As I told in another [post](), I've recently enrolled to a course about Data-Viz (and maybe some NLP later-on, stay tuned). One of the assignments in the course was to make some `TidyTuesday` contribution and present it in class. Although this is not what I've presented in class, this was made shortly after and I think it came out quite nice :)
+As I told in another post, I've recently enrolled to a course about Data-Viz (and maybe some NLP later-on, stay tuned). One of the assignments in the course was to make some `TidyTuesday` contribution and present it in class. Although this is not what I've presented in class, this was made shortly after and I think it came out quite nice :)
 
 # The Data
 

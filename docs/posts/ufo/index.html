@@ -129,6 +129,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Tomer’s data-science blog">
+<meta name="twitter:description" content="Posting about more and less interesting things I learn">
+<meta name="twitter:image" content="ufo1.png">
+<meta name="twitter:creator" content="@tomerzipori">
+<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed">
@@ -154,10 +159,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li class="nav-item">
     <a class="nav-link" href="../../blog.html">
  <span class="menu-text">Posts</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../cv.html">
- <span class="menu-text">CV</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
@@ -199,6 +200,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
                 <div class="quarto-category">code</div>
                 <div class="quarto-category">visualization</div>
                 <div class="quarto-category">ggplot2</div>
+                <div class="quarto-category">tidytuesday</div>
               </div>
                   </div>
   </div>
@@ -258,7 +260,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="background" class="level1">
 <h1>Background</h1>
-<p>Some time ago, when the fall semester began I’ve enrolled on a course called <em>Data science lab</em> as part of the ‘Data Science for the Social Sciences’ program. One of the assignments was to make some <code>TidyTuesday</code> contribution and present it in class. Although this is not what I’ve presented in class (see the post about that one here), this was made shortly after and I think it came out quite nice :)</p>
+<p>As I told in another <a href="">post</a>, I’ve recently enrolled to a course about Data-Viz (and maybe some NLP later-on, stay tuned). One of the assignments in the course was to make some <code>TidyTuesday</code> contribution and present it in class. Although this is not what <a href="../posts/eggs/index.qmd">I’ve presented</a> in class, this was made shortly after and I think it came out quite nice :)</p>
 </section>
 <section id="the-data" class="level1">
 <h1>The Data</h1>
@@ -271,7 +273,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_ba572f8776c9cd8b6a7d467d9331c013">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)    <span class="co"># for data wrangling and pre-processing</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR) <span class="co"># for easy data loading</span></span>
@@ -286,7 +288,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1>Loading data</h1>
 <section id="initial-pre-processing" class="level2">
 <h2 class="anchored" data-anchor-id="initial-pre-processing">Initial pre-processing</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-2_cc70c28ff1140e3283ebc8e3d17fe7f8">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ufo_sightings <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-25/ufo_sightings.csv"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>usa <span class="ot">&lt;-</span> <span class="fu">map_data</span>(<span class="st">"state"</span>) <span class="co"># US map</span></span>
@@ -306,7 +308,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="glimpsing-at-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="glimpsing-at-the-data">Glimpsing at the data</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_70201a9b8bd7d7a5e2f8928c740893ac">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(ufo_sightings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 80,332
@@ -329,7 +331,7 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 <h2 class="anchored" data-anchor-id="defining-functions">Defining functions</h2>
 <p>Some helper function will help us later, mainly to work with dates.<br>
 <code>convert_to_date</code> takes a vector of character formatted dates and converts it to lubridate’s <em>date</em> format. <code>floor_decade</code> takes a vector of dates and converts it to a vector of decades.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_308c4d5c8323b29775280f1f2d6384f8">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>convert_to_date <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  sub_string <span class="ot">&lt;-</span> <span class="fu">str_sub</span>(x, <span class="dv">1</span>, <span class="dv">10</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">mdy</span>(sub_string)</span>
@@ -350,7 +352,7 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 <section id="globals" class="level2">
 <h2 class="anchored" data-anchor-id="globals">Globals</h2>
 <p>Here I’m loading some images and fonts that will be of use later to beautify the plot.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_9e2634767a44c8febed501665e71854c">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nightsky_img <span class="ot">&lt;-</span> <span class="st">"nightsky2.jpg"</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#font_files() %&gt;% tibble() %&gt;% filter(str_detect(family, "Showcard Gothic"))</span></span>
@@ -365,7 +367,7 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Leaving only reports for <em>continental</em> US.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Selecting the relevant variables.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. Calculating decades.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_329854297199efb901529bfb692549e6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ufo <span class="ot">&lt;-</span> ufo_sightings <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"us"</span>) <span class="sc">%&gt;%</span> <span class="co"># Leaving only sightings in US</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(state <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ak"</span>, <span class="st">"pr"</span>, <span class="st">"hi"</span>))) <span class="sc">%&gt;%</span> <span class="co"># Only mainland US</span></span>
@@ -375,7 +377,7 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(decade)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>After some experimenting I’ve decided to make a heat map to visualize the number of UFO reports per state. But first, some more data processing. I first counted the number of cases per state (<em>by_state</em>), and then combined it with the USA map data frame (<em>by_state2</em>).</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_011db355328eee41aaf4aef5956314c7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>by_state <span class="ot">&lt;-</span> ufo <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(state, decade, <span class="at">.drop =</span> F) <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">cases =</span> <span class="fu">n</span>(),</span>
@@ -386,20 +388,20 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(uspop, <span class="at">by =</span> <span class="st">"region"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now I need to summarize the number of cases per state.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_dda6ec3c0953680aa16f54c717fdf01a">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cases_per_state <span class="ot">&lt;-</span> by_state2 <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cases =</span> <span class="fu">sum</span>(cases), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And finally merge it back together with the geographic data.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_79097f97ee80e34f5050cd17138b9ae0">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>by_state2 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(by_state2, <span class="fu">select</span>(cases_per_state, region, <span class="at">cases_total =</span> cases), <span class="at">by =</span> <span class="st">"region"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="heatmap-1" class="level2">
 <h2 class="anchored" data-anchor-id="heatmap-1">Heatmap 1</h2>
 <p>And now for the heat map… <em>drum roll</em></p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_6da1ad9cf1dc3c77d8cb7195b91e9147">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>heatmap <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(by_state2, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">fill =</span> cases_total, <span class="at">group =</span> group)) <span class="sc">+</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">show.legend =</span> T) <span class="sc">+</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#ffae00"</span>, <span class="at">high =</span> <span class="st">"#d90000"</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2864832</span>), <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2850000</span>)) <span class="sc">+</span></span>
@@ -414,7 +416,7 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 <p>Looking at these results, I thought that of course California, Texas and Florida have the most reports, they also have the most people!<br>
 A <em>per capita</em> measure will probably be more informative.</p>
 <p>Calculating reports per capita.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_aaeecacfae096f159077bb9377107b60">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cases_per_capita <span class="ot">&lt;-</span> by_state2 <span class="sc">%&gt;%</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">%&gt;%</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">cases =</span> <span class="fu">sum</span>(cases), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
@@ -422,13 +424,13 @@ A <em>per capita</em> measure will probably be more informative.</p>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cases_per_capita =</span> cases<span class="sc">/</span>mean_pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Merging again with the geographical data.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-13_852b871ba5321b20ece7e3e1c0e892e4">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>by_state2 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(by_state2, <span class="fu">select</span>(cases_per_capita, region, cases_per_capita, <span class="at">cases_total =</span> cases), <span class="at">by =</span> <span class="st">"region"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="heatmap-2" class="level2">
 <h2 class="anchored" data-anchor-id="heatmap-2">Heatmap 2</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-14_a7c08eab3529c792f677d8f68192e6cc">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>heatmap2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(by_state2, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">fill =</span> cases_per_capita, <span class="at">group =</span> group)) <span class="sc">+</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">show.legend =</span> T) <span class="sc">+</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#ffae00"</span>, <span class="at">high =</span> <span class="st">"#d90000"</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.2</span>), <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.2</span>, <span class="at">length.out =</span> <span class="dv">6</span>)) <span class="sc">+</span></span>
@@ -445,7 +447,7 @@ A <em>per capita</em> measure will probably be more informative.</p>
 <section id="heatmap3" class="level2">
 <h2 class="anchored" data-anchor-id="heatmap3">Heatmap3</h2>
 <p>Let’s add some aesthetics because why not (I’ve only spent 6 hours on Google researching color theory and ggplot2’s internal logic). Unfold the code chunk if you are interested in seeing the monstrosity.</p>
-<div class="cell" data-fig.dpi="96">
+<div class="cell" data-fig.dpi="96" data-hash="index_cache/html/unnamed-chunk-15_5c65f1475e83ecf47a1273a3e4113787">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>heatmap3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(by_state2, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">fill =</span> cases_per_capita, <span class="at">group =</span> group)) <span class="sc">+</span></span>
