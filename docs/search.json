@@ -313,5 +313,47 @@
     "title": "Real Vs. Fake news in football",
     "section": "Plot important words for classification",
     "text": "Plot important words for classification\n\n\nCode\nlr_summary <- summary(lr_model) # summarizing the model\n\ncoefs <- data.frame(lr_summary$estimated.feature.scores) # extracting coefficients\n\n\ncol_vec <- c(\"#fc7753\", \"#e3e3e3\", \"#66d7d1\", \"black\")\n\ncoefs |>\n  \n  # preparing df for plot\n  rownames_to_column(var = \"Token\") |>\n  rename(Coefficient = real) |>\n  filter(Coefficient != 0 & Token != \"(Intercept)\") |>\n  mutate(bigger_then_0 = Coefficient > 0) |>\n  \n  # ggplotting\n  ggplot(aes(x = Token, y = Coefficient, color = bigger_then_0)) +\n  geom_point() +\n  scale_color_manual(values = c(col_vec[1], col_vec[3])) +\n  scale_y_continuous(n.breaks = 10) +\n  labs(title = \"Most important words for classifying if a tweet is fake news\",\n       x = \"\") +\n  theme_classic() +\n  geom_hline(yintercept = 0, color = \"black\", linetype = 2, linewidth = 1, show.legend = F) +\n  theme(plot.background = element_rect(color = col_vec[2], fill = col_vec[2]),\n        panel.background = element_rect(color = col_vec[2], fill = col_vec[2]),\n        axis.line = element_line(color = col_vec[4]),\n        axis.title = element_text(color = col_vec[4]),\n        axis.text = element_text(color = col_vec[4]),\n        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 12, face = \"bold\"),\n        legend.position = \"none\",\n        plot.title = element_text(size = 16, color = col_vec[4], hjust = .5, family = \"serif\", face = \"bold\"))"
+  },
+  {
+    "objectID": "cv.html",
+    "href": "cv.html",
+    "title": "Tomer Zipori’s resume",
+    "section": "",
+    "text": "Tomer Zipori\n\n\n\n\n\n tomerzip@post.bgu.ac.il\n Github\n Twitter\n LinkedIn\n 054-2520843\n\n\n\n\n\nExperienced in statistical analysis, statistical learning models, and data visualization methods methods.\nExperience and knowledge in many Machine Learning methods: Classification, Regression and Natural Language Processing.\nHighly skilled in R, Intermediate level Python.\nVisit my data science blog.\n\n\n\n\nLast updated on 2023-05-14."
+  },
+  {
+    "objectID": "cv.html#title",
+    "href": "cv.html#title",
+    "title": "Tomer Zipori’s resume",
+    "section": "Tomer Zipori",
+    "text": "Tomer Zipori\n\nCurrently searching for a PhD student position\nPlease note that this is a real resume, and I’m really looking for a PhD student position at the moment. I made this resume because Yihui asked me if I’d like to test the pagedown package with my resume. If you are interested in my background and skills, please feel free to contact me."
+  },
+  {
+    "objectID": "cv.html#education",
+    "href": "cv.html#education",
+    "title": "Tomer Zipori’s resume",
+    "section": "Education",
+    "text": "Education\n\nHebrew University in Jerusalem\nB.A. in Psychology and Philosophy\nJerusalem, Israel\n2018 - 2021\nThesis: Inter-personal differences in the effect of parental modeling on sharing behavior during middle childhood.\nSupervisor: Prof. Ariel Knafo-Noam\nGraduated Magna Cum Laude\n\n\nBen-Gurion University of the Negev\nM.A. in Cognitive Psychology\nBe’er Sheva, Israel\n2022 - Now\nThesis: Effects of Social-Status on face identification.\nSupervisor: Dr. Niv Reggev"
+  },
+  {
+    "objectID": "cv.html#research-experience",
+    "href": "cv.html#research-experience",
+    "title": "Tomer Zipori’s resume",
+    "section": "Research Experience",
+    "text": "Research Experience\n\nGraduate Research Assistant\nThe Social Development Lab, Hebrew University in Jerusalem\nJerusalem, Israel\n2019 - 2020\n\nParticipation in the “Young Researchers” and writing an extended seminar term paper.\n\n\n\nSCMB Lab\nBe’er Sheva, Israel\n2022 - Now\n\nInvestigated how social-status of target faces affects their identification by others.\nManaging a team of research assistants.\nGuiding students in their research projects in the lab."
+  },
+  {
+    "objectID": "cv.html#professional-experience",
+    "href": "cv.html#professional-experience",
+    "title": "Tomer Zipori’s resume",
+    "section": "Professional Experience",
+    "text": "Professional Experience\n\nContent Writer\nClassit\nIsrael\n2021 - 2023\n\n\nWrote high-school level math questions and teaching units."
+  },
+  {
+    "objectID": "cv.html#teaching-experience",
+    "href": "cv.html#teaching-experience",
+    "title": "Tomer Zipori’s resume",
+    "section": "Teaching Experience",
+    "text": "Teaching Experience\n\nIntroduction to Statistics\nTeaching Assistant in the Intro to statistics course for BA students.\nBe’er Sheva, Israel\n2022 - 2023\n\n\nMethodology in experimental Psychology\nTeaching Assistant in the Methodology in experimental Psychology. course for BA students. As part of the course I have guided groups of students in forming research questions, planning and conducting experiments, statistically analyzing results, and forming conclusions.\nBe’er Sheva, Israel\n2022 - 2023\n\n\nMITAM Instructor\nOfek MITAM\nIsrael\n2023 - Now\nTeaching a class of the Ofek MITAM course. The MITAM is the entrance test for advanced degrees in psychology - equivalent to the GRE."
   }
 ]

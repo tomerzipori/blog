@@ -19,6 +19,8 @@ website:
         file: index.qmd
       - text: "Posts"
         file: blog.qmd
+      - text: "CV"
+        file: cv.html
     right:
       - icon: github
         href: https://github.com/tomerzipori
