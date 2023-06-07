@@ -27,7 +27,7 @@ The current notebook is an attempt at:\
       1. Accurately and efficiently predicting player's overall rating.\
       2. Identifying important variables (features) for this prediction.
 
-Both goals will be achieved using two methods: Elastic-net regression and XGBoost. Data pre-processing will be done with `tidyverse`, Model fitting and evaluation will be done with the `caret` and `gbm` packages.
+Both goals will be achieved using two methods: Elastic-net regression and Decision tree Boosting. Data pre-processing will be done with `tidyverse`, Model fitting and evaluation will be done with the `caret` and `gbm` packages.
 
 # Setup
 
@@ -35,7 +35,7 @@ Both goals will be achieved using two methods: Elastic-net regression and XGBoos
 #| output: false
 library(tidyverse) # For data-wrangling, pre-processing and plotting with ggplot2
 library(caret)     # For model training, tuning and evaluating
-library(gbm)       # For fitting XGBoost models
+library(gbm)       # For fitting Boost models
 library(glue)      # Helper package for nice-looking output
 ```
 
@@ -194,7 +194,7 @@ r2_test <- glue("$R^2={R2(elasticreg_pred, players_test$Overall)}$")
 
 Very nice!
 
-# XGBoost
+# Boosting
 
 ## Training control
 
@@ -214,7 +214,7 @@ tr <- trainControl(method = "adaptive_cv",
 ```{r}
 #| eval: false
 set.seed(14)
-xgboost <- train(Overall ~ ., 
+boost_model <- train(Overall ~ ., 
                    data = players_train,
                    method = "gbm",
                    trControl = tr, # No explicit tuning grid is needed
@@ -224,7 +224,7 @@ xgboost <- train(Overall ~ .,
 ```{r}
 #| echo: false
 #saveRDS(xgboost, "models/xgboost_model.rds")
-xgboost <- read_rds("models/xgboost_model.rds")
+boost_model <- read_rds("models/xgboost_model.rds")
 ```
 
 ## Train/CV error
@@ -232,7 +232,7 @@ xgboost <- read_rds("models/xgboost_model.rds")
 Getting the results of the best tuning parameters found.
 
 ```{r}
-xgboost$results[xgboost$results$RMSE == min(xgboost$results$RMSE, na.rm = T),5:10]
+boost_model$results[boost_model$results$RMSE == min(boost_model$results$RMSE, na.rm = T),5:10]
 ```
 
 Seems quite optimized, but is it overfitted?
@@ -240,7 +240,7 @@ Seems quite optimized, but is it overfitted?
 ## Test error
 
 ```{r}
-boost_pred <- predict(xgboost, players_test)
+boost_pred <- predict(boost_model, players_test)
 ```
 
 ```{r}
@@ -258,7 +258,7 @@ Very Very nice!
 ## Variable importance
 
 ```{r}
-varimp <- caret::varImp(xgboost, scale = T)
+varimp <- caret::varImp(boost_model, scale = T)
 
 varimp
 ```

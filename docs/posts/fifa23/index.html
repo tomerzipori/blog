@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
+<meta name="generator" content="quarto-1.3.361">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -20,9 +20,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -49,43 +50,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -123,16 +94,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 <meta name="twitter:title" content="Tomer’s data-science blog">
 <meta name="twitter:description" content="Posting about more and less interesting things I learn">
-<meta name="twitter:image" content="https://tomerzipori.github.io/blog/posts\fifa23\reece.jpg">
+<meta name="twitter:image" content="https://tomerzipori.github.io/blog/posts/fifa23/reece.jpg">
 <meta name="twitter:creator" content="@tomerzipori">
 <meta name="twitter:card" content="summary">
 </head>
@@ -148,45 +121,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <span class="navbar-title">Tomer</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html">
+    <a class="nav-link" href="../../index.html" rel="" target="">
  <span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../blog.html">
+    <a class="nav-link" href="../../blog.html" rel="" target="">
  <span class="menu-text">Posts</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../cv.html">
+    <a class="nav-link" href="../../cv.html" rel="" target="">
  <span class="menu-text">CV</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/tomerzipori"><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/tomerzipori" rel="" target=""><i class="bi bi-github" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/ZiporiTomer"><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/ZiporiTomer" rel="" target=""><i class="bi bi-twitter" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../www.linkedin.com/in/tomer-zipori"><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="../../www.linkedin.com/in/tomer-zipori" rel="" target=""><i class="bi bi-linkedin" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-              <div class="quarto-toggle-container">
-                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-              </div>
-              <div id="quarto-search" class="" title="Search"></div>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
           </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
@@ -260,7 +233,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#model-coefficients" id="toc-model-coefficients" class="nav-link" data-scroll-target="#model-coefficients">Model coefficients</a></li>
   <li><a href="#test-error" id="toc-test-error" class="nav-link" data-scroll-target="#test-error">Test error</a></li>
   </ul></li>
-  <li><a href="#xgboost" id="toc-xgboost" class="nav-link" data-scroll-target="#xgboost">XGBoost</a>
+  <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting">Boosting</a>
   <ul class="collapse">
   <li><a href="#training-control" id="toc-training-control" class="nav-link" data-scroll-target="#training-control">Training control</a></li>
   <li><a href="#training-1" id="toc-training-1" class="nav-link" data-scroll-target="#training-1">Training</a></li>
@@ -284,20 +257,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The current notebook is an attempt at:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Accurately and efficiently predicting player’s overall rating.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Identifying important variables (features) for this prediction.</p>
-<p>Both goals will be achieved using two methods: Elastic-net regression and XGBoost. Data pre-processing will be done with <code>tidyverse</code>, Model fitting and evaluation will be done with the <code>caret</code> and <code>gbm</code> packages.</p>
+<p>Both goals will be achieved using two methods: Elastic-net regression and Decision tree Boosting. Data pre-processing will be done with <code>tidyverse</code>, Model fitting and evaluation will be done with the <code>caret</code> and <code>gbm</code> packages.</p>
 </section>
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_2f4bc1ff9e949cc7f02f5459a68233b3">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># For data-wrangling, pre-processing and plotting with ggplot2</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)     <span class="co"># For model training, tuning and evaluating</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gbm)       <span class="co"># For fitting XGBoost models</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gbm)       <span class="co"># For fitting Boost models</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)      <span class="co"># Helper package for nice-looking output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="loading-data" class="level1">
 <h1>Loading data</h1>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-2_1005f1639872a54a1205e089611b747e">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>players <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Fifa_23_Players_Data.csv"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(players)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -401,14 +374,14 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 <section id="re-naming-columns" class="level2">
 <h2 class="anchored" data-anchor-id="re-naming-columns">Re-naming columns</h2>
 <p>Replacing spaces with underscores for ease.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_9da74e594685cb933e9674368c3f5c0b">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(players) <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(<span class="fu">names</span>(players), <span class="at">pattern =</span> <span class="st">" "</span>, <span class="at">replacement =</span> <span class="st">"_"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="non-numeric-variables" class="level2">
 <h2 class="anchored" data-anchor-id="non-numeric-variables">non-numeric variables</h2>
 <p>First we’ll look at potential garbage variables.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_40ee6c9c9bca23461333c04a1fb577e5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(<span class="fu">select</span>(players, <span class="fu">where</span>(is.character)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Known_As"                    "Full_Name"                  
@@ -423,7 +396,7 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 </div>
 </div>
 <p>Almost all garbage data. Since I’ve noted that <em>Work Rate</em> variables are ordered (low-medium-high) We’ll re-code them:</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_990faa1ce881b9d171ffd8df209dd04e">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>players <span class="ot">&lt;-</span> players <span class="sc">%&gt;%</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Attacking_Work_Rate =</span> <span class="fu">case_when</span>(Attacking_Work_Rate <span class="sc">==</span> <span class="st">"Low"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                         Attacking_Work_Rate <span class="sc">==</span> <span class="st">"Medium"</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
@@ -437,7 +410,7 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 </section>
 <section id="searching-for-variables-with-large-number-of-nas" class="level2">
 <h2 class="anchored" data-anchor-id="searching-for-variables-with-large-number-of-nas">Searching for variables with large number of NA’s</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_10ad352b052d997a53de069e25c0ba9f">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(players))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 Overall                Potential           Value(in_Euro) 
@@ -495,7 +468,7 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 </div>
 </div>
 <p>National team position seems sparse, we’ll have to get rid of club_position as well for the model fitting. We’ll also get rid of <em>best_position</em> because it creates so much dummy vars. I’ll analyzed it in another day…</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_dccba2c1e8b74fefd8b4b0e7e9dd7c50">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>players <span class="ot">&lt;-</span> <span class="fu">select</span>(players, <span class="sc">-</span>National_Team_Position, <span class="sc">-</span>Club_Position, <span class="sc">-</span>Best_Position)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -505,7 +478,7 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 <p>We’ll first use elastic net regression to try and predict overall rating from the rest of the data, and also find which variables are most important.</p>
 <section id="data-splitting" class="level2">
 <h2 class="anchored" data-anchor-id="data-splitting">Data splitting</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_942f1324938fa44738c0e27b75b96a46">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>train_id <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(<span class="at">y =</span> players<span class="sc">$</span>Overall, <span class="at">p =</span> <span class="fl">0.7</span>, <span class="at">list =</span> F)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -518,7 +491,7 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 <h1>Elastic net</h1>
 <section id="tuning-grid-for-hyper-parameters" class="level2">
 <h2 class="anchored" data-anchor-id="tuning-grid-for-hyper-parameters">Tuning grid for hyper-parameters</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_639d484dd788fe3914fc6c3ad83ee5d4">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tg <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">alpha =</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">25</span>)),</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">lambda =</span> <span class="fu">c</span>(<span class="dv">2</span> <span class="sc">^</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="sc">-</span><span class="dv">10</span>, <span class="at">length =</span> <span class="dv">100</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -526,7 +499,7 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 </section>
 <section id="training" class="level2">
 <h2 class="anchored" data-anchor-id="training">Training</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_df67ee062c086917ff190b89eec82d88">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>elastic_reg <span class="ot">&lt;-</span> <span class="fu">train</span>(Overall <span class="sc">~</span> ., </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> players_train,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">method =</span> <span class="st">"glmnet"</span>,</span>
@@ -534,13 +507,10 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">tuneGrid =</span> tg,</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">trControl =</span>  <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"cv"</span>, <span class="at">number =</span> <span class="dv">10</span>)) <span class="co"># 10-fold Cross-Validation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-
-</div>
 </section>
 <section id="best-hyper-parameters" class="level2">
 <h2 class="anchored" data-anchor-id="best-hyper-parameters">Best hyper-parameters</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_40c698182be8c9f7aa81feedef5a7d45">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>elastic_reg<span class="sc">$</span>bestTune</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     alpha       lambda
@@ -550,7 +520,7 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 </section>
 <section id="traincv-error" class="level2">
 <h2 class="anchored" data-anchor-id="traincv-error">Train/CV error</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-13_16b4b166ef183cf444ca175241a44933">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(elastic_reg, <span class="at">xTrans =</span> log, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
@@ -567,10 +537,7 @@ $ `GK Rating`                   &lt;dbl&gt; 22, 21, 22, 24, 21, 25, 90, 90, 23, 
 </section>
 <section id="model-coefficients" class="level2">
 <h2 class="anchored" data-anchor-id="model-coefficients">Model coefficients</h2>
-<div class="cell">
-
-</div>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-15_90888d67a89d824c615e35929e3ad109">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>elasnet_coeffs <span class="ot">&lt;-</span> <span class="fu">coef</span>(elastic_reg<span class="sc">$</span>finalModel, <span class="at">s =</span> elastic_reg<span class="sc">$</span>bestTune<span class="sc">$</span>lambda)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(elasnet_coeffs, <span class="at">ylab =</span> <span class="st">"Coefficient"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -656,23 +623,17 @@ GK_Rating                 0.6368</code></pre>
 </div>
 </div>
 <p>The intercept is quite large. Let’s look at the variables in a more informative scale.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-16_0edd7d150f2d4fa35506d963f6f7d922">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(elasnet_coeffs[<span class="sc">-</span><span class="dv">1</span>,], <span class="at">ylab =</span> <span class="st">"Coefficient"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<div class="cell">
-
-</div>
 </section>
 <section id="test-error" class="level2">
 <h2 class="anchored" data-anchor-id="test-error">Test error</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-18_59f5f14f266b9212c7df0e902d275bf7">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>elasticreg_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(elastic_reg, <span class="at">newdata =</span> players_test) <span class="co"># calculating model's prediction for test set</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-
 </div>
 <p><strong>Test error and effect size</strong><br>
 <span class="math inline">\(RMSE=1.60955711701293\)</span><br>
@@ -680,13 +641,13 @@ GK_Rating                 0.6368</code></pre>
 <p>Very nice!</p>
 </section>
 </section>
-<section id="xgboost" class="level1">
-<h1>XGBoost</h1>
+<section id="boosting" class="level1">
+<h1>Boosting</h1>
 <section id="training-control" class="level2">
 <h2 class="anchored" data-anchor-id="training-control">Training control</h2>
 <p>We’ll use adaptive cross-validation in order to make the hyper-parameter search more efficient.<br>
 For further explanation on implementation in <code>R</code> <a href="https://topepo.github.io/caret/adaptive-resampling.html">see</a>. For further reading on theory <a href="https://arxiv.org/abs/1405.6974">see</a>.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-20_60ea6eb8fbfba253a1d09efebab9d19a">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>tr <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"adaptive_cv"</span>,</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">number =</span> <span class="dv">10</span>, <span class="at">repeats =</span> <span class="dv">10</span>,</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">adaptive =</span> <span class="fu">list</span>(<span class="at">min =</span> <span class="dv">5</span>, <span class="at">alpha =</span> <span class="fl">0.05</span>, </span>
@@ -696,23 +657,20 @@ For further explanation on implementation in <code>R</code> <a href="https://top
 </section>
 <section id="training-1" class="level2">
 <h2 class="anchored" data-anchor-id="training-1">Training</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-21_ae0e10d3fa931f41cd10bf28d6bef057">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>xgboost <span class="ot">&lt;-</span> <span class="fu">train</span>(Overall <span class="sc">~</span> ., </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>boost_model <span class="ot">&lt;-</span> <span class="fu">train</span>(Overall <span class="sc">~</span> ., </span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> players_train,</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">method =</span> <span class="st">"gbm"</span>,</span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">trControl =</span> tr, <span class="co"># No explicit tuning grid is needed</span></span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">verbose =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-
-</div>
 </section>
 <section id="traincv-error-1" class="level2">
 <h2 class="anchored" data-anchor-id="traincv-error-1">Train/CV error</h2>
 <p>Getting the results of the best tuning parameters found.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>xgboost<span class="sc">$</span>results[xgboost<span class="sc">$</span>results<span class="sc">$</span>RMSE <span class="sc">==</span> <span class="fu">min</span>(xgboost<span class="sc">$</span>results<span class="sc">$</span>RMSE, <span class="at">na.rm =</span> T),<span class="dv">5</span><span class="sc">:</span><span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-23_000cc66608c73bcd696fba7eb3781e79">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>boost_model<span class="sc">$</span>results[boost_model<span class="sc">$</span>results<span class="sc">$</span>RMSE <span class="sc">==</span> <span class="fu">min</span>(boost_model<span class="sc">$</span>results<span class="sc">$</span>RMSE, <span class="at">na.rm =</span> T),<span class="dv">5</span><span class="sc">:</span><span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       RMSE  Rsquared       MAE      RMSESD   RsquaredSD       MAESD
 2 0.7146858 0.9893686 0.5457707 0.005980442 0.0002966158 0.002603466</code></pre>
@@ -722,11 +680,8 @@ For further explanation on implementation in <code>R</code> <a href="https://top
 </section>
 <section id="test-error-1" class="level2">
 <h2 class="anchored" data-anchor-id="test-error-1">Test error</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>boost_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(xgboost, players_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-24_a27bec5025ebf29120127af1cbbb574b">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>boost_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(boost_model, players_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><strong>Test error and effect size</strong><br>
 <span class="math inline">\(RMSE=0.700272523649518\)</span><br>
@@ -735,8 +690,8 @@ For further explanation on implementation in <code>R</code> <a href="https://top
 </section>
 <section id="variable-importance" class="level2">
 <h2 class="anchored" data-anchor-id="variable-importance">Variable importance</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>varimp <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">varImp</span>(xgboost, <span class="at">scale =</span> T)</span>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-26_6d969430b687967ab709185b4fa2b68d">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>varimp <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">varImp</span>(boost_model, <span class="at">scale =</span> T)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>varimp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -769,7 +724,7 @@ Heading_Accuracy         0.1497</code></pre>
 </div>
 <section id="plotting-variable-importance" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-variable-importance">Plotting variable importance</h3>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-27_c822636184675288156bb1f08f11ad79">
 <details>
 <summary>Show the plot’s code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data preparation</span></span>
@@ -948,9 +903,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -1015,6 +984,92 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
