@@ -135,10 +135,10 @@ test_dfm <- data_feature_mat[setdiff(docnames(data_feature_mat), docnames(train_
 
 A Naive-Bayes classifier predicts the class (in this case of a document) in the following way:\
 
-1. The likelihood of each token to appear in documents of each class is calculated from the training data. For example, if the word *manager* appeared in $11$% of the documents in the first class, and in $2$% of the documents in the second class, the likelihood of it in each class is:\
-$$
-\displaylines{p(manager\ |\ class\ 1)=0.11\\p(manager\ |\ class\ 2)=0.02}
-$$
+1.  The likelihood of each token to appear in documents of each class is calculated from the training data. For example, if the word *manager* appeared in $11$% of the documents in the first class, and in $2$% of the documents in the second class, the likelihood of it in each class is:\
+    $$
+    \displaylines{p(manager\ |\ class\ 1)=0.11\\p(manager\ |\ class\ 2)=0.02}
+    $$
 
 2.  The prior probability of each document to be classified to each class is also learned from the training data, and it is the base-rate frequencies of the two classes.\
 

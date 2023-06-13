@@ -1,0 +1,15 @@
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+extrafont
+lubridate
+ggwordcloud
+quanteda
+quanteda.textplots
+quanteda.textstats

@@ -10,7 +10,998 @@
 <atom:link href="https://tomerzipori.github.io/blog/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Posting about more and less interesting things I learn</description>
 <generator>quarto-1.3.361</generator>
-<lastBuildDate>Thu, 11 May 2023 21:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 12 Jun 2023 21:00:00 GMT</lastBuildDate>
+<item>
+  <title>Netflix trends</title>
+  <dc:creator>Tomer Zipori</dc:creator>
+  <link>https://tomerzipori.github.io/blog/posts/netflix/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>This post will be dedicated yet again to some experimentation with text analysis. I will be using mostly basic and classic NLP tools like word counting and DFM’s (Document-Feature matrix).</p>
+<p>I hope that in the next NLP post I will be using some more advanced methods like transformers (go BERT!).</p>
+<p>I will be using the popular <em>Netflix</em> <a href="https://www.kaggle.com/code/niharika41298/netflix-visualizations-recommendation-eda">dataset</a> from Kaggle. It contains data of movies and TV shows added to Netflix’s streaming service since 2008.</p>
+<p>It’s going to be a relatively short post, the first part will include some nice visualization (word clouds), and in the second part I will try and build a mini show-recommendation function.</p>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_529bc7f50f1b802203b3bb60d4088b34">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(extrafont)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(lubridate)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggwordcloud)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(quanteda)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(quanteda.textplots)</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(quanteda.textstats)</span></code></pre></div>
+</div>
+</section>
+<section id="data-loading" class="level1">
+<h1>Data loading</h1>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_a5363e4f65ea604dd213d151a4b08e3b">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"netflix_titles.csv"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">show_col_types =</span> F)</span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(data)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 12
+  show_id type    title    director cast  country date_added release_year rating
+  &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;             &lt;dbl&gt; &lt;chr&gt; 
+1 s1      Movie   Dick Jo… Kirsten… &lt;NA&gt;  United… September…         2020 PG-13 
+2 s2      TV Show Blood &amp;… &lt;NA&gt;     Ama … South … September…         2021 TV-MA 
+3 s3      TV Show Ganglan… Julien … Sami… &lt;NA&gt;    September…         2021 TV-MA 
+4 s4      TV Show Jailbir… &lt;NA&gt;     &lt;NA&gt;  &lt;NA&gt;    September…         2021 TV-MA 
+5 s5      TV Show Kota Fa… &lt;NA&gt;     Mayu… India   September…         2021 TV-MA 
+6 s6      TV Show Midnigh… Mike Fl… Kate… &lt;NA&gt;    September…         2021 TV-MA 
+# ℹ 3 more variables: duration &lt;chr&gt;, listed_in &lt;chr&gt;, description &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>Let’s look at one of the more interesting fields in here:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_16530a3e7260785018018613e5e30095">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(data<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>description, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "As her father nears the end of his life, filmmaker Kirsten Johnson stages his death in inventive and comical ways to help them both face the inevitable."
+[2] "After crossing paths at a party, a Cape Town teen sets out to prove whether a private-school swimming star is her sister who was abducted at birth."     
+[3] "To protect his family from a powerful drug lord, skilled thief Mehdi and his expert team of robbers are pulled into a violent and deadly turf war."      </code></pre>
+</div>
+</div>
+<p>We get to have the description of every TV show or movie added. This has potential…</p>
+</section>
+<section id="preprocessing" class="level1">
+<h1>Preprocessing</h1>
+<p>This part is sort of boring, but I’m creating a <em>Date</em> column in <code>lubridate</code> format. Didn’t know that <code>R</code> has built in object for this.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_424959b24104884091df0de45b81ec77">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">months_names <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> month.name,</span>
+<span id="cb6-2">                           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">month =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>))</span>
+<span id="cb6-3"></span>
+<span id="cb6-4">data_clean <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">month_added =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">word</span>(date_added, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb6-6">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">day_added =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_remove_all</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">word</span>(date_added, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">","</span>),</span>
+<span id="cb6-7">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">year_added =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">word</span>(date_added, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">left_join</span>(months_names, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">join_by</span>(month_added <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> name)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">date_added =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste</span>(day_added, month, year_added, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sep =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"."</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>month_added, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>day_added, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>month) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">date_added =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dmy</span>(date_added)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">date_added_ym =</span> zoo<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.yearmon</span>(date_added))</span></code></pre></div>
+</div>
+<section id="text-analysis-of-show-description" class="level2">
+<h2 class="anchored" data-anchor-id="text-analysis-of-show-description">Text analysis of show description</h2>
+<p>Here I’m creating the DFM. It is basically a huge matrix with each document (show description) being a row, and each unique word being a column. Values represent the frequency of each word in each document.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_9b7c23a9fb326e4d851fa384bb618760">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">data_clean_dfm <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_clean <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">description =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_remove_all</span>(description, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pattern =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"[[:punct:]]"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb7-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">corpus</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text_field =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"description"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb7-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tokens</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">remove_separators =</span> T) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb7-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tokens_remove</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stopwords</span>()) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb7-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dfm</span>()</span>
+<span id="cb7-7"></span>
+<span id="cb7-8">data_clean_dfm</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Document-feature matrix of: 8,807 documents, 20,824 features (99.93% sparse) and 13 docvars.
+       features
+docs    father nears end life filmmaker kirsten johnson stages death inventive
+  text1      1     1   1    1         1       1       1      1     1         1
+  text2      0     0   0    0         0       0       0      0     0         0
+  text3      0     0   0    0         0       0       0      0     0         0
+  text4      0     0   0    0         0       0       0      0     0         0
+  text5      0     0   0    1         0       0       0      0     0         0
+  text6      0     0   0    0         0       0       0      0     0         0
+[ reached max_ndoc ... 8,801 more documents, reached max_nfeat ... 20,814 more features ]</code></pre>
+</div>
+</div>
+<p>For example: The word ‘father’ appear once in the first document, and doesn’t appear in documents 2 to 6.</p>
+</section>
+</section>
+<section id="content-trends-in-netflixs-new-additions" class="level1">
+<h1>Content trends in Netflix’s new additions</h1>
+<p>Although it is pretty basic, the DFM allows us to check many things. For example: Did Netflix’s new content changed over the years? I thought it would be interesting to see the most frequent words in the descriptions of items added in each year.</p>
+<p>As you can see, I have added a relative frequency column to the data. This is to control for the different number of items added in each year.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_5e0197b903c4fd5496c0d251327df0bc">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">plot_data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_clean_dfm <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">textstat_frequency</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">groups =</span> year_added) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(rank <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> group <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2016"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2017"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2017"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2019"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2020"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2021"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(group) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">r_frequency =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>frequency<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(frequency)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ungroup</span>()</span>
+<span id="cb9-7"></span>
+<span id="cb9-8">cloud1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> plot_data <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> feature, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> r_frequency, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> r_frequency)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_size_area</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">max_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_text_wordcloud</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>, ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_gradient</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">low =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#000000"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">high =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#ff0000"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Content trends in Netflix's new additions every year"</span>,</span>
+<span id="cb9-15">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Most common words in the description of every newly added Movie or TV series"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-16">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">panel.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb9-18">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb9-19">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">strip.text.x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Avengeance Heroic Avenger"</span>),</span>
+<span id="cb9-20">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">32</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bebas Neue"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>),</span>
+<span id="cb9-21">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">22</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Bebas Neue"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))</span></code></pre></div>
+</div>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_5ad1f689cdb13c4bdd642584b4c324d2">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">cloud1</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/netflix/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="1248"></p>
+</div>
+</div>
+</section>
+<section id="recommendation-generator" class="level1">
+<h1>Recommendation generator</h1>
+<p>The Algorithm. Everyone online for the past 10 years is the algorithm every app or website uses to predict our taste in videos/products/TV shows/twitts or Facebook posts.</p>
+<p>In this part I try to create my own mini ‘algorithm’, But first, a short explanation on vector representation and similarity between texts.</p>
+<section id="tf-idf-term-frequency---inverse-document-frequency" class="level2">
+<h2 class="anchored" data-anchor-id="tf-idf-term-frequency---inverse-document-frequency">TF-IDF (Term Frequency - Inverse Document Frequency)</h2>
+<section id="tf---term-frequency" class="level3">
+<h3 class="anchored" data-anchor-id="tf---term-frequency">TF - Term Frequency</h3>
+<p>Up until now I have used the most basic DFM - the count DFM. It is basically counts the number of times each word appear in the document, and is sometimes also called ‘Bag of Words’.<br>
+One problem that arises in our inner statistician is that longer documents contain more words! therefore, different term frequencies can be hard to compare. The simple solution is to calculate <em>Proportional frequency</em> in the following way:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Aterm%20%5C%20frequency=%20%5Cfrac%7BN%20%5C%20times%20%5C%20a%20%5C%20word%20%5C%20appear%20%5C%20in%20%5C%20the%20%5C%20document%7D%7BTotal%20%5C%20number%20%5C%20of%20%5C%20words%20%5C%20in%20%5C%20the%20%5C%20document%7D%0A"></p>
+<p>This gives us the <strong>Term frequency</strong> part of the tf-idf method.</p>
+</section>
+<section id="inverse-document-frequency" class="level3">
+<h3 class="anchored" data-anchor-id="inverse-document-frequency">Inverse Document Frequency</h3>
+<p>So we have the term frequency of every token (word). We can start and make show recommendations, right? One problem that still exist is that some words could be prevalent in <strong>every</strong> document. For example, if the word ‘Life’ appears in a large number of descriptions, it is not so useful in identifying someones taste in TV shows and movies. If, on the other hand, the word ‘Father’ appear only in a small number of descriptions, it will be a lot more helpful to us. Therefore, we want to represent term <em>Uniqueness</em>. How can we do that?</p>
+<p>For each token (word) the Inverse-Document-Frequency is calculated:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Aidf=log(%20%5Cfrac%7BTotal%20%5C%20number%20%5C%20of%20%5C%20documents%7D%7BN%20%5C%20documents%20%5C%20containing%20%5C%20the%20%5C%20term%7D)%0A"></p>
+<p>This number is getting close to zero the more documents containing the word, and is getting larger the less documents contain it (and the more documents we have).</p>
+<p>To get the final tf-idf value for every term, we simply multiply the Term-Frequency with the Inverse-Document-Frequency:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Atfidf(word)=tf(word)%20%5Ccdot%20idf(word)%0A"></p>
+<p>In creating the tf-idf DFM, I have also converted every word to lower case and to it’s stem.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_bc834c97b37126348385b6f15dbf8695">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">netflix_tf_idf <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_clean_dfm <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb11-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dfm_tolower</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb11-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dfm_wordstem</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb11-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dfm_tfidf</span>()</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="cosine-similarity" class="level2">
+<h2 class="anchored" data-anchor-id="cosine-similarity">Cosine Similarity</h2>
+<p>Now that we have the DFM, we have a vector representation of every description of every show. Every word in our dataset is a dimension and it’s tf-idf in each document is the vector component. For example, the vector representation of the description of “Attack on Titan” is:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_708fa853e80c26a69a4c9345937ac3ce">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dfm_subset</span>(netflix_tf_idf, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subset =</span> title <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Attack on Titan"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Document-feature matrix of: 1 document, 15,097 features (99.90% sparse) and 13 docvars.
+         features
+docs      father near end life filmmak kirsten johnson stage death invent
+  text779      0    0   0    0       0       0       0     0     0      0
+[ reached max_nfeat ... 15,087 more features ]</code></pre>
+</div>
+</div>
+<p>Naturally these vector are mostly zeros…</p>
+<p>But now that we have vectors we can do all the cool things that we can do with vectors! For example, we can recommend TV shows and movies based on how they are <em>similar</em> to a previously watched show.</p>
+<p>If we return to Physics class, we can think of vectors as arrows with length and direction.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/netflix/vectors.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Two vectors</figcaption>
+</figure>
+</div>
+<p>It is natural to think of the similarity between two vectors as the measure to which they point in the same direction. In other words, the angle between two vectors. In two dimensions, it is possible to calculate the <em>cosine</em> between two vectors the following way:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Acos%20%5Ctheta=%20%5Cfrac%7B%20%5Cvec%7Ba%7D%20%5Ccdot%20%5Cvec%7Bb%7D%7D%7B%7C%5Cvec%7Ba%7D%7C%20%5Ccdot%20%7C%5Cvec%7Bb%7D%7C%7D%0A"></p>
+<p>Without turning this into a real Physics class, in the numerator is the dot-product of the vectors, and in the denominator is the product of lengths of the vectors. For example, the cosine between the vectors <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Ba%7D=(1,1)"> and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D=(-4,3)"> is:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Acos%20%5Ctheta=%20%5Cfrac%7B1%20%5Ccdot%20(-4)+1%20%5Ccdot%20(3)%7D%7B%20%5Csqrt%7B1%5E2+1%5E2%7D%20%5Ccdot%20%5Csqrt%7B(-4)%5E2+3%5E2%7D%7D=%5Cfrac%7B-1%7D%7B5%20%5Csqrt%7B2%7D%7D%0A"></p>
+<p>But what is the angle between ~15,000 dimensions vectors?! fortunately, this calculation remains the same in any dimension.</p>
+<p>What is the relation between the angle and it’s cosine? without digging too deep, the larger the angle, the smaller the cosine. So the larger the cosine, the greater the similarity.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nice insight: the cosine similarity is nothing but the un-standardized pearson correlation coefficient! Let <img src="https://latex.codecogs.com/png.latex?x"> and <img src="https://latex.codecogs.com/png.latex?y"> be vectors of Z scores. The correlation coefficient is:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Ar_%7Bxy%7D=%20%5Cfrac%7B%5Csum_%7Bi=1%7D%5E%7BN%7D%7Bx_i%20%5Ccdot%20y_i%7D%7D%7BN%7D%0A"> While the cosine of the angle between them is:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Acos%20%5Ctheta=%20%5Cfrac%7B%5Cvec%7Bx%7D%20%5Ccdot%20%5Cvec%7By%7D%7D%7B%7C%5Cvec%7Bx%7D%7C%20%5Ccdot%20%7C%5Cvec%7By%7D%7C%7D%0A"> The length of a vector of Z scores is <img src="https://latex.codecogs.com/png.latex?%5Csqrt%7BN%7D">, therefore the denominator is always: <img src="https://latex.codecogs.com/png.latex?%5Csqrt%7BN%7D%20%5Ccdot%20%5Csqrt%7BN%7D=N">.<br>
+The nominator is the dot product of the vectors, which is exactly the sum of the by-component products. Finally we get:<br>
+<img src="https://latex.codecogs.com/png.latex?%0Ar_%7Bxy%7D=cos%20%5C%20%5Ctheta_%7Bxy%7D%0A"></p>
+</div>
+</div>
+<section id="functions" class="level3">
+<h3 class="anchored" data-anchor-id="functions">Functions</h3>
+<p>The main idea of the recommendation generator is simple. If you liked a TV show or a movie, you will probably like shows with similar description. Not any similarity, cosine similarity!</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_69fc9a48059352d68f0a3573d23831cf">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">get_recommendation <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(show, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">liked =</span> T) {</span>
+<span id="cb14-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(dplyr)</span>
+<span id="cb14-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(quanteda)</span>
+<span id="cb14-4">  </span>
+<span id="cb14-5">  features <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> netflix_tf_idf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span>docvars</span>
+<span id="cb14-6">  show_id <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> features<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>docname_[<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tolower</span>(features<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>title) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tolower</span>(show)]</span>
+<span id="cb14-7">  show_id <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.integer</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_remove_all</span>(show_id, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pattern =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>))</span>
+<span id="cb14-8">  </span>
+<span id="cb14-9">  simil_mat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">textstat_simil</span>(netflix_tf_idf[show_id,], netflix_tf_idf, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">method =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cosine"</span>)</span>
+<span id="cb14-10">  </span>
+<span id="cb14-11">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (liked) {</span>
+<span id="cb14-12">  simil_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shows =</span> simil_mat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span>Dimnames[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]],</span>
+<span id="cb14-13">                      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">simil =</span> simil_mat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span>x) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arrange</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>simil) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">inner_join</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(netflix_tf_idf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span>docvars, docname_, title),</span>
+<span id="cb14-16">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">join_by</span>(shows <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> docname_)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-17">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>shows, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">match =</span> simil) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-18">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">match =</span> (match<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(match))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(match)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(match))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-19">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>)</span>
+<span id="cb14-20">  }</span>
+<span id="cb14-21">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span>liked){</span>
+<span id="cb14-22">    simil_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shows =</span> simil_mat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span>Dimnames[[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]],</span>
+<span id="cb14-23">                      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">simil =</span> simil_mat<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span>x) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-24">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arrange</span>(simil) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-25">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">inner_join</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(netflix_tf_idf<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span>docvars, docname_, title),</span>
+<span id="cb14-26">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">join_by</span>(shows <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> docname_)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-27">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>shows, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">match =</span> simil) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-28">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">match =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>(match<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(match))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(match)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(match))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-29">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>)</span>
+<span id="cb14-30">  }</span>
+<span id="cb14-31">  </span>
+<span id="cb14-32">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(simil_df[<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,])</span>
+<span id="cb14-33">}</span>
+<span id="cb14-34"></span>
+<span id="cb14-35">get_recommendation_plot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(show) {</span>
+<span id="cb14-36">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggplot2)</span>
+<span id="cb14-37">  </span>
+<span id="cb14-38">  plot_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_recommendation</span>(show)</span>
+<span id="cb14-39">  </span>
+<span id="cb14-40">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(plot_df, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reorder</span>(title, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>match, identity), match, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> match)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-41">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_col</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-42">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Show"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Match"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-43">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_gradient</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">low =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#000000"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">high =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#990011FF"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-44">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-45">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb14-46">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb14-47">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">angle =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">vjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb14-48">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span>
+<span id="cb14-49">}</span></code></pre></div>
+</div>
+</section>
+<section id="getting-show-recommendations" class="level3">
+<h3 class="anchored" data-anchor-id="getting-show-recommendations">Getting show recommendations</h3>
+<p>Let’s use an example. Maybe I watched “Attack on Titan”, what are the top 10 recommended shows for me?</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_2867b73c553eb5bef8fc9dca2c8e4107">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">watched <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Attack on Titan"</span></span>
+<span id="cb15-2"></span>
+<span id="cb15-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_recommendation</span>(watched)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       match                               title
+2  0.1570728 Little Singham aur Kaal ka Mahajaal
+3  0.1444591                             The BFG
+4  0.1367644                    Sym-Bionic Titan
+5  0.1339566                           The Giant
+6  0.1335654                               Agent
+7  0.1227649                Pup Star: World Tour
+8  0.1207346              Power Battle Watch Car
+9  0.1159523                         Rising High
+10 0.1149643           League of Legends Origins
+11 0.1136349                A Sort of Homecoming</code></pre>
+</div>
+</div>
+<p>What if I did not like a show? no problem, you will be recommended shows and movies that are not similar.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-13_503fd1e92bdd52acb4eb03618831b2b3">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_recommendation</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"I Am Sam"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">liked =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   match                               title
+2      1                           Ganglands
+3      1               Jailbirds New Orleans
+4      1                        Kota Factory
+5      1    My Little Pony: A New Generation
+6      1                             Sankofa
+7      1       The Great British Baking Show
+8      1                        The Starling
+9      1 Vendetta: Truth, Lies and The Mafia
+10     1                    Bangkok Breaking
+11     1    Confessions of an Invisible Girl</code></pre>
+</div>
+</div>
+<section id="in-a-plot" class="level4">
+<h4 class="anchored" data-anchor-id="in-a-plot">In a plot</h4>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-14_07b9fdb76aae8df7a1eb6f0ba26d3163">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get_recommendation_plot</span>(watched)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/netflix/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>This post is an extra step of my in the NLP domain. As always I try to explain the theory behind the interesting parts of the process. For example, I remember when I discovered the connection between the correlation coefficient and the angle between vectors, it was really eye opening!<br>
+The recommendation functions could be vastly improved with some more modern NLP methods (Transformers!). I hope that in the near future I will have the time to post about that to.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>code</category>
+  <category>text analysis</category>
+  <category>visualization</category>
+  <category>NLP</category>
+  <guid>https://tomerzipori.github.io/blog/posts/netflix/index.html</guid>
+  <pubDate>Mon, 12 Jun 2023 21:00:00 GMT</pubDate>
+  <media:content url="https://tomerzipori.github.io/blog/posts/netflix/medieval.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Real Vs. Fake news in football</title>
   <dc:creator>Tomer Zipori</dc:creator>
@@ -262,9 +1253,6 @@ font-style: inherit;">'fake'</span>]</span></code></pre></div>
 <pre><code> fake 
 19991 </code></pre>
 </div>
-</div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_7d8d98c235bcb280ce27a5bb25783e15">
-
 </div>
 <p>The base rate is <img src="https://latex.codecogs.com/png.latex?0.522">.</p>
 </section>
