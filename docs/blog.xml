@@ -20,9 +20,8 @@
 
 
 
-<p>This post will be dedicated yet again to some experimentation with text analysis. I will be using mostly basic and classic NLP tools like word counting and DFM’s (Document-Feature matrix).</p>
-<p>I hope that in the next NLP post I will be using some more advanced methods like transformers (go BERT!).</p>
-<p>I will be using the popular <em>Netflix</em> <a href="https://www.kaggle.com/code/niharika41298/netflix-visualizations-recommendation-eda">dataset</a> from Kaggle. It contains data of movies and TV shows added to Netflix’s streaming service since 2008.</p>
+<p>This post will be dedicated yet again to some experimentation with text analysis. I will be using mostly basic and classic NLP tools like word counting and DFM’s (Document-Feature matrix). I hope that in the next NLP post I will be using some more advanced methods like transformers (go BERT!).</p>
+<p>I will be using the popular <em>Netflix</em> <a href="https://www.kaggle.com/datasets/shivamb/netflix-shows">dataset</a> from Kaggle. It contains data of movies and TV shows added to Netflix’s streaming service since 2008.</p>
 <p>It’s going to be a relatively short post, the first part will include some nice visualization (word clouds), and in the second part I will try and build a mini show-recommendation function.</p>
 <section id="setup" class="level1">
 <h1>Setup</h1>
@@ -495,20 +494,20 @@ font-style: inherit;">0.5</span>))</span></code></pre></div>
 </section>
 <section id="recommendation-generator" class="level1">
 <h1>Recommendation generator</h1>
-<p>The Algorithm. Everyone online for the past 10 years is the algorithm every app or website uses to predict our taste in videos/products/TV shows/twitts or Facebook posts.</p>
+<p>The Algorithm. Everyone online for the past 10 years are talking about the algorithm. ‘The algorithm’ is the method every app or website uses to predict our taste in videos/products/TV shows/twitts or Facebook posts.</p>
 <p>In this part I try to create my own mini ‘algorithm’, But first, a short explanation on vector representation and similarity between texts.</p>
 <section id="tf-idf-term-frequency---inverse-document-frequency" class="level2">
 <h2 class="anchored" data-anchor-id="tf-idf-term-frequency---inverse-document-frequency">TF-IDF (Term Frequency - Inverse Document Frequency)</h2>
 <section id="tf---term-frequency" class="level3">
 <h3 class="anchored" data-anchor-id="tf---term-frequency">TF - Term Frequency</h3>
-<p>Up until now I have used the most basic DFM - the count DFM. It is basically counts the number of times each word appear in the document, and is sometimes also called ‘Bag of Words’.<br>
+<p>Up until now I have used the most basic DFM - the count DFM. It basically counts the number of times each word appear in the document, and is sometimes also called ‘Bag of Words’.<br>
 One problem that arises in our inner statistician is that longer documents contain more words! therefore, different term frequencies can be hard to compare. The simple solution is to calculate <em>Proportional frequency</em> in the following way:<br>
 <img src="https://latex.codecogs.com/png.latex?%0Aterm%20%5C%20frequency=%20%5Cfrac%7BN%20%5C%20times%20%5C%20a%20%5C%20word%20%5C%20appear%20%5C%20in%20%5C%20the%20%5C%20document%7D%7BTotal%20%5C%20number%20%5C%20of%20%5C%20words%20%5C%20in%20%5C%20the%20%5C%20document%7D%0A"></p>
 <p>This gives us the <strong>Term frequency</strong> part of the tf-idf method.</p>
 </section>
 <section id="inverse-document-frequency" class="level3">
 <h3 class="anchored" data-anchor-id="inverse-document-frequency">Inverse Document Frequency</h3>
-<p>So we have the term frequency of every token (word). We can start and make show recommendations, right? One problem that still exist is that some words could be prevalent in <strong>every</strong> document. For example, if the word ‘Life’ appears in a large number of descriptions, it is not so useful in identifying someones taste in TV shows and movies. If, on the other hand, the word ‘Father’ appear only in a small number of descriptions, it will be a lot more helpful to us. Therefore, we want to represent term <em>Uniqueness</em>. How can we do that?</p>
+<p>So we have the term frequency of every token (word). We can start and make show recommendations, right? Another problem that still exist is that some words could be prevalent in <strong>every</strong> document. For example, if the word ‘Life’ appears in a large number of descriptions, it is not so useful in identifying someones taste in TV shows and movies. If, on the other hand, the word ‘Father’ appear only in a small number of descriptions, it will be a lot more helpful to us. Therefore, we want to represent term <em>Uniqueness</em>. How can we do that?</p>
 <p>For each token (word) the Inverse-Document-Frequency is calculated:<br>
 <img src="https://latex.codecogs.com/png.latex?%0Aidf=log(%20%5Cfrac%7BTotal%20%5C%20number%20%5C%20of%20%5C%20documents%7D%7BN%20%5C%20documents%20%5C%20containing%20%5C%20the%20%5C%20term%7D)%0A"></p>
 <p>This number is getting close to zero the more documents containing the word, and is getting larger the less documents contain it (and the more documents we have).</p>
@@ -559,7 +558,7 @@ docs      father near end life filmmak kirsten johnson stage death invent
 </div>
 </div>
 <p>Naturally these vector are mostly zeros…</p>
-<p>But now that we have vectors we can do all the cool things that we can do with vectors! For example, we can recommend TV shows and movies based on how they are <em>similar</em> to a previously watched show.</p>
+<p>But now that we have vectors we can do all the cool things that we can do with vectors! For example, we can recommend TV shows and movies based on how their vector representations are <em>similar</em> to a previously watched show. But how to calculate the similarity of two vectors?</p>
 <p>If we return to Physics class, we can think of vectors as arrows with length and direction.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -567,7 +566,7 @@ docs      father near end life filmmak kirsten johnson stage death invent
 <figcaption class="figure-caption">Two vectors</figcaption>
 </figure>
 </div>
-<p>It is natural to think of the similarity between two vectors as the measure to which they point in the same direction. In other words, the angle between two vectors. In two dimensions, it is possible to calculate the <em>cosine</em> between two vectors the following way:<br>
+<p>It is natural to think of the similarity between two vectors as the degree to which they point in the same direction. In other words, the angle between two vectors. It is possible to calculate the <em>cosine</em> between two vectors the following way:<br>
 <img src="https://latex.codecogs.com/png.latex?%0Acos%20%5Ctheta=%20%5Cfrac%7B%20%5Cvec%7Ba%7D%20%5Ccdot%20%5Cvec%7Bb%7D%7D%7B%7C%5Cvec%7Ba%7D%7C%20%5Ccdot%20%7C%5Cvec%7Bb%7D%7C%7D%0A"></p>
 <p>Without turning this into a real Physics class, in the numerator is the dot-product of the vectors, and in the denominator is the product of lengths of the vectors. For example, the cosine between the vectors <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Ba%7D=(1,1)"> and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bb%7D=(-4,3)"> is:<br>
 <img src="https://latex.codecogs.com/png.latex?%0Acos%20%5Ctheta=%20%5Cfrac%7B1%20%5Ccdot%20(-4)+1%20%5Ccdot%20(3)%7D%7B%20%5Csqrt%7B1%5E2+1%5E2%7D%20%5Ccdot%20%5Csqrt%7B(-4)%5E2+3%5E2%7D%7D=%5Cfrac%7B-1%7D%7B5%20%5Csqrt%7B2%7D%7D%0A"></p>

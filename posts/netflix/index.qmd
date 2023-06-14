@@ -20,11 +20,9 @@ format:
 editor: visual
 ---
 
-This post will be dedicated yet again to some experimentation with text analysis. I will be using mostly basic and classic NLP tools like word counting and DFM's (Document-Feature matrix).
+This post will be dedicated yet again to some experimentation with text analysis. I will be using mostly basic and classic NLP tools like word counting and DFM's (Document-Feature matrix). I hope that in the next NLP post I will be using some more advanced methods like transformers (go BERT!).
 
-I hope that in the next NLP post I will be using some more advanced methods like transformers (go BERT!).
-
-I will be using the popular *Netflix* [dataset](https://www.kaggle.com/code/niharika41298/netflix-visualizations-recommendation-eda) from Kaggle. It contains data of movies and TV shows added to Netflix's streaming service since 2008.
+I will be using the popular *Netflix* [dataset](https://www.kaggle.com/datasets/shivamb/netflix-shows) from Kaggle. It contains data of movies and TV shows added to Netflix's streaming service since 2008.
 
 It's going to be a relatively short post, the first part will include some nice visualization (word clouds), and in the second part I will try and build a mini show-recommendation function.
 
@@ -139,7 +137,7 @@ cloud1
 
 # Recommendation generator
 
-The Algorithm. Everyone online for the past 10 years is the algorithm every app or website uses to predict our taste in videos/products/TV shows/twitts or Facebook posts.
+The Algorithm. Everyone online for the past 10 years are talking about the algorithm. 'The algorithm' is the method every app or website uses to predict our taste in videos/products/TV shows/twitts or Facebook posts.
 
 In this part I try to create my own mini 'algorithm', But first, a short explanation on vector representation and similarity between texts.
 
@@ -147,7 +145,7 @@ In this part I try to create my own mini 'algorithm', But first, a short explana
 
 ### TF - Term Frequency
 
-Up until now I have used the most basic DFM - the count DFM. It is basically counts the number of times each word appear in the document, and is sometimes also called 'Bag of Words'.\
+Up until now I have used the most basic DFM - the count DFM. It basically counts the number of times each word appear in the document, and is sometimes also called 'Bag of Words'.\
 One problem that arises in our inner statistician is that longer documents contain more words! therefore, different term frequencies can be hard to compare. The simple solution is to calculate *Proportional frequency* in the following way:\
 $$
 term \ frequency= \frac{N \ times \ a \ word \ appear \ in \ the \ document}{Total \ number \ of \ words \ in \ the \ document}
@@ -157,7 +155,7 @@ This gives us the **Term frequency** part of the tf-idf method.
 
 ### Inverse Document Frequency
 
-So we have the term frequency of every token (word). We can start and make show recommendations, right? One problem that still exist is that some words could be prevalent in **every** document. For example, if the word 'Life' appears in a large number of descriptions, it is not so useful in identifying someones taste in TV shows and movies. If, on the other hand, the word 'Father' appear only in a small number of descriptions, it will be a lot more helpful to us. Therefore, we want to represent term *Uniqueness*. How can we do that?
+So we have the term frequency of every token (word). We can start and make show recommendations, right? Another problem that still exist is that some words could be prevalent in **every** document. For example, if the word 'Life' appears in a large number of descriptions, it is not so useful in identifying someones taste in TV shows and movies. If, on the other hand, the word 'Father' appear only in a small number of descriptions, it will be a lot more helpful to us. Therefore, we want to represent term *Uniqueness*. How can we do that?
 
 For each token (word) the Inverse-Document-Frequency is calculated:\
 $$
@@ -190,13 +188,13 @@ dfm_subset(netflix_tf_idf, subset = title == "Attack on Titan")
 
 Naturally these vector are mostly zeros...
 
-But now that we have vectors we can do all the cool things that we can do with vectors! For example, we can recommend TV shows and movies based on how they are *similar* to a previously watched show.
+But now that we have vectors we can do all the cool things that we can do with vectors! For example, we can recommend TV shows and movies based on how their vector representations are *similar* to a previously watched show. But how to calculate the similarity of two vectors?
 
 If we return to Physics class, we can think of vectors as arrows with length and direction.
 
 ![Two vectors](vectors.png)
 
-It is natural to think of the similarity between two vectors as the measure to which they point in the same direction. In other words, the angle between two vectors. In two dimensions, it is possible to calculate the *cosine* between two vectors the following way:\
+It is natural to think of the similarity between two vectors as the degree to which they point in the same direction. In other words, the angle between two vectors. It is possible to calculate the *cosine* between two vectors the following way:\
 $$
 cos \theta= \frac{ \vec{a} \cdot \vec{b}}{|\vec{a}| \cdot |\vec{b}|}
 $$
