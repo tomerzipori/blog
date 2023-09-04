@@ -361,7 +361,7 @@
     "href": "posts/p_values_paradox/index.html",
     "title": "Rejecting the null hypothesis or not?",
     "section": "",
-    "text": "In the current post I will try and explain what appears to be a paradox: given the identical data, different schools of statistics disagree about the appropriate conclusion.\nTraditionally, there are two ways to interpret Probability:\n1. Probability is the relative frequency of events at infinity - the Frequentist school.\n2. Probability represents the degree of beliefs - The Bayesian school.\nClassic hypothesis testing in the social sciences usually follows the Frequentist school, the probability of errors is calculated as the relative frequency of extreme data under the relevant hypotheses."
+    "text": "In the current post I try to explain what appears to be a paradox: given identical data, different schools of statistics disagree about the appropriate conclusion.\nTraditionally, there are two ways to interpret Probability:\n1. Probability is the relative frequency of events at infinity - the Frequentist school.\n2. Probability represents the degree of beliefs - The Bayesian school.\nClassic hypothesis testing in the social sciences usually follows the Frequentist school, the probability of errors is calculated as the relative frequency of extreme data under the relevant hypotheses."
   },
   {
     "objectID": "posts/p_values_paradox/index.html#distribution-of-p-values-with-80-power",

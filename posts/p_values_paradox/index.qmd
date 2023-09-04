@@ -27,7 +27,7 @@ library(dplyr)
 library(scales)
 ```
 
-In the current post I will try and explain what appears to be a paradox: given the identical data, different schools of statistics disagree about the appropriate conclusion.
+In the current post I try to explain what appears to be a paradox: given identical data, different schools of statistics disagree about the appropriate conclusion.
 
 Traditionally, there are two ways to interpret Probability:\
 1. Probability is the relative frequency of events at infinity - the Frequentist school.\
