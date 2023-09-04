@@ -6,6 +6,7 @@ date: 2023-06-13
 title-block-banner: "#990011FF"
 title-block-banner-color: "#FCF6F5FF"
 categories: [code, theory]
+image: "morty.jpg"
 execute: 
   warning: false
   message: false
@@ -211,13 +212,11 @@ $$
 
 Another possibility of conceptualize the Bayes mindset is seeing the posterior probability of the hypothesis as an *update* to the prior probability of it.
 
-Bayes theorem also enable the comparison of two hypotheses using the ratio between the posteriors:/
-$$
+Bayes theorem also enable the comparison of two hypotheses using the ratio between the posteriors:/ $$
 \frac{p(hypothesis \, 1/data)}{p(hypothesis \, 2/data)}= \frac {\frac {p(hypothesis \, 1) \cdot p(data/hypothesis \, 1)}{p(data)}}{\frac {p(hypothesis \, 2) \cdot p(data/hypothesis \, 2)}{p(data)}}
 $$
 
-Cancelling the annoying denominator yields the following:
-$$
+Cancelling the annoying denominator yields the following: $$
 \frac {p(hypothesis \, 1) \cdot p(data/hypothesis \, 1)}{p(hypothesis \, 2) \cdot p(data/hypothesis \, 2)}
 $$
 
