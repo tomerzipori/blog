@@ -10,7 +10,1316 @@
 <atom:link href="https://tomerzipori.github.io/blog/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Posting about more and less interesting things I learn</description>
 <generator>quarto-1.3.361</generator>
-<lastBuildDate>Mon, 12 Jun 2023 21:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 03 Sep 2023 21:00:00 GMT</lastBuildDate>
+<item>
+  <title>Rejecting the null hypothesis or not?</title>
+  <dc:creator>Tomer Zipori</dc:creator>
+  <link>https://tomerzipori.github.io/blog/posts/p_values_paradox/index.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>In the current post I will try and explain what appears to be a paradox: given the identical data, different schools of statistics disagree about the appropriate conclusion.</p>
+<p>Traditionally, there are two ways to interpret Probability:<br>
+1. Probability is the relative frequency of events at infinity - the Frequentist school.<br>
+2. Probability represents the degree of beliefs - The Bayesian school.</p>
+<p>Classic hypothesis testing in the social sciences usually follows the Frequentist school, the probability of errors is calculated as the relative frequency of extreme data under the relevant hypotheses.</p>
+<section id="distribution-of-p-values-when-the-null-hypothesis-is-true" class="level1">
+<h1>Distribution of p-values when the null hypothesis is true</h1>
+<p>An example for Frequentist logic in hypothesis testing is the probability of type I errors, also known as <img src="https://latex.codecogs.com/png.latex?%5Calpha">: rejecting the null hypothesis when it is true.</p>
+<p>The famous (and notorious?) 5% convention, refers to the relative frequency of significant tests when the null is true.</p>
+<p>Let’s take infinite (140,000) samples of <img src="https://latex.codecogs.com/png.latex?n=30"> from populations with equal means, and compare each of them with a t-test:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_0fa4db21c223acdc037ff64c1a4ef9e7">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span></span>
+<span id="cb1-2">mu0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb1-3">sd0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb1-4">mu1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb1-5"></span>
+<span id="cb1-6">p_values_null <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140000</span>)</span>
+<span id="cb1-7"></span>
+<span id="cb1-8"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140000</span>)) {</span>
+<span id="cb1-9">  group1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, mu0, sd0)</span>
+<span id="cb1-10">  group2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, mu1, sd0)</span>
+<span id="cb1-11">  </span>
+<span id="cb1-12">  test <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">t.test</span>(group1, group2, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alternative =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"less"</span>)</span>
+<span id="cb1-13">  </span>
+<span id="cb1-14">  p_values_null[i] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> test<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>p.value</span>
+<span id="cb1-15">}</span></code></pre></div>
+</div>
+<p>How many tests were significant?</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_cb4909299457328effb1cb0948af3f81">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_null[p_values_null <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">05</span>])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_null)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.05020714</code></pre>
+</div>
+</div>
+<p>What if we defined <img src="https://latex.codecogs.com/png.latex?%5Calpha=0.067">?</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_1d5b65e4de494cd2931e85af1c9a119b">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_null[p_values_null <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">067</span>])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_null)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.06699286</code></pre>
+</div>
+</div>
+<p>Putting it in different words, the probability of getting p-values under a certain threshold equals to that threshold. or, <strong>When population means are equal, p-values are distributed uniformly.</strong></p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_5d48094300e64b10c5800ab0bf5c87a0">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hist</span>(p_values_null, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">freq =</span> F)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="distribution-of-p-values-when-the-null-hypothesis-is-false" class="level1">
+<h1>Distribution of p-values when the null hypothesis is false</h1>
+<p>What happens when population means are <em>not</em> equal? The probability of detecting an existing effect (e.g.&nbsp;getting a significant result) is called <em>Power</em>. Naturally, statistical Power is larger for larger differences between populations means.</p>
+<p>Lets simulate yet again infinite (140,000) t-tests, this time between samples from populations with difference of means of 0.65.</p>
+<section id="distribution-of-p-values-with-80-power" class="level2">
+<h2 class="anchored" data-anchor-id="distribution-of-p-values-with-80-power">Distribution of p-values with 80% power</h2>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_b84ad3681c12cb26f25d7efb8710c468">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span></span>
+<span id="cb7-2">mu0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb7-3">sd0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb7-4">mu1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.65</span></span>
+<span id="cb7-5"></span>
+<span id="cb7-6">p_values_80 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140000</span>)</span>
+<span id="cb7-7"></span>
+<span id="cb7-8"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140000</span>)) {</span>
+<span id="cb7-9">  group1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, mu0, sd0)</span>
+<span id="cb7-10">  group2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, mu1, sd0)</span>
+<span id="cb7-11">  </span>
+<span id="cb7-12">  test <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">t.test</span>(group1, group2, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alternative =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"less"</span>)</span>
+<span id="cb7-13">  </span>
+<span id="cb7-14">  p_values_80[i] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> test<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>p.value</span>
+<span id="cb7-15">}</span></code></pre></div>
+</div>
+<p>What is the probability of getting a significant result?</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_d2652adefe2dd3a09b883fb7ced87431">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_80[p_values_80 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">05</span>])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_80)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.80015</code></pre>
+</div>
+</div>
+<p>How does the distribution of p-values look when there is 80% Power (probability of 0.8 of getting a significant result)?</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_19f05b78389aea7d7801e35033c3e135">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hist</span>(p_values_80, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">freq =</span> F)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Smaller p-values are more probable, and the uniform distribution from before “gets skewed”.</p>
+</section>
+</section>
+<section id="distribution-of-p-values-with-99-power" class="level1">
+<h1>Distribution of p-values with 99% power</h1>
+<p>Increasing the difference between population means causes the p-values distribution to get more and more skewed.</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_2a075f0edfecfdcf394d8c185a18acaa">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">n <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span></span>
+<span id="cb11-2">mu0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb11-3">sd0 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb11-4">mu1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0376218</span></span>
+<span id="cb11-5"></span>
+<span id="cb11-6">p_values_99 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140000</span>)</span>
+<span id="cb11-7"></span>
+<span id="cb11-8"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">140000</span>)) {</span>
+<span id="cb11-9">  group1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, mu0, sd0)</span>
+<span id="cb11-10">  group2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(n, mu1, sd0)</span>
+<span id="cb11-11">  </span>
+<span id="cb11-12">  test <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">t.test</span>(group1, group2, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alternative =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"less"</span>)</span>
+<span id="cb11-13">  </span>
+<span id="cb11-14">  p_values_99[i] <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> test<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>p.value</span>
+<span id="cb11-15">}</span>
+<span id="cb11-16"></span>
+<span id="cb11-17"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_99[p_values_99 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">05</span>])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_99)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9899</code></pre>
+</div>
+</div>
+<p>And the distribution of p-values:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-13_e0b9cac8b18b96898f9132835bda7ab9">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">hist</span>(p_values_99, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">freq =</span> F, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="reversing-the-conditionality" class="level1">
+<h1>Reversing the conditionality</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/bayes.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">All about the Bayes</figcaption>
+</figure>
+</div>
+<p>As we said before, p-values represent the probability of getting certain data when the null hypothesis is true. What if we looked at it from the other side? What is the probability that the null hypothesis is true, given a certain p-value?</p>
+<p>In the Frequentist school, this question seems weird: what is the relative frequency at infinity of the null hypothesis being true? That is, out of infinite worlds, in how many of them the null is true?</p>
+<p>Switching our perspective to be Bayesian, assigning probabilities to hypotheses becomes less weird. That is because Bayesians see probability as a measure of confidence in some statement/model/possible world.</p>
+<p>As it’s name suggests, the Bayesian interpretation of probability is rooted in the Bayes theorem for conditional probabilities:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ap(A/B)=%20%5Cfrac%20%7Bp(A)%20%5Ccdot%20p(B/A)%7D%7Bp(B)%7D%0A"></p>
+<p>Confidence in <img src="https://latex.codecogs.com/png.latex?A"> given the occurrence of <img src="https://latex.codecogs.com/png.latex?B"> is proportional to the product of the prior confidence in <img src="https://latex.codecogs.com/png.latex?A"> and the conditional probability of <img src="https://latex.codecogs.com/png.latex?A"> on <img src="https://latex.codecogs.com/png.latex?B"> - also called the <strong>Likelihood</strong> of <img src="https://latex.codecogs.com/png.latex?A">.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Bayes’ theorem is <strong>not</strong> a matter of interpretation. it can be derived from the basic probability axioms. It is linked with the interpretation of probability as a measure of confidence in statements because it defines the procedure of belief updating.</p>
+</div>
+</div>
+<p>Re-phrasing the theorem, it is possible to formulate the posterior probability of a hypothesis given some observed data:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ap(hypothesis/data)=%20%5Cfrac%20%7Bp(hypothesis)%20%5Ccdot%20p(data/hypothesis)%7D%7Bp(data)%7D%0A"></p>
+<p>Another possibility of conceptualize the Bayes mindset is seeing the posterior probability of the hypothesis as an <em>update</em> to the prior probability of it.</p>
+<p>Bayes theorem also enable the comparison of two hypotheses using the ratio between the posteriors:/ <img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%7Bp(hypothesis%20%5C,%201/data)%7D%7Bp(hypothesis%20%5C,%202/data)%7D=%20%5Cfrac%20%7B%5Cfrac%20%7Bp(hypothesis%20%5C,%201)%20%5Ccdot%20p(data/hypothesis%20%5C,%201)%7D%7Bp(data)%7D%7D%7B%5Cfrac%20%7Bp(hypothesis%20%5C,%202)%20%5Ccdot%20p(data/hypothesis%20%5C,%202)%7D%7Bp(data)%7D%7D%0A"></p>
+<p>Cancelling the annoying denominator yields the following: <img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%20%7Bp(hypothesis%20%5C,%201)%20%5Ccdot%20p(data/hypothesis%20%5C,%201)%7D%7Bp(hypothesis%20%5C,%202)%20%5Ccdot%20p(data/hypothesis%20%5C,%202)%7D%0A"></p>
+<p>The ratio of posterior probabilities equals to the product of the prior ratio and the likelihood ratio. When this value is bigger then 1, it can considered as evidence in favor of Hypothesis 1.</p>
+</section>
+<section id="posterior-probability-of-hypotheses-given-p-values" class="level1">
+<h1>Posterior probability of hypotheses given p-values</h1>
+<p>Using Bayes theorem, it is now possible to construct a posterior probability for each of the original hypotheses, given an observed p-value.</p>
+<section id="likelihood" class="level2">
+<h2 class="anchored" data-anchor-id="likelihood">Likelihood</h2>
+<p>What is the probability of p-values given each hypothesis? we actually answered this question earlier when we visualized the density distributions of p-values.</p>
+<p>For example, the probability of observing a p-value between 0.03 and 0.04 given the null hypothesis is:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-14_8c5154280da19f087e9481c2c0efa948">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"p"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> p_values_null) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb14-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> p)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#FF6666"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_area</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stage</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">after_stat =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">oob_censor</span>(x, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.04</span>)))), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"density"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"italic(p) == 0.0099"</span>,</span>
+<span id="cb14-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">parse =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.04</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"P-Value"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density distribution of p-values under the null hypothesis"</span>,</span>
+<span id="cb14-12">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gray area represents the probability of p between 0.03 and 0.04"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb14-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb14-14">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb14-15">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>),</span>
+<span id="cb14-16">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">13</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The probability of observing the same range of p-values when the effect size is <img src="https://latex.codecogs.com/png.latex?0.65"> is:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-15_c530f56ad09a2f96cd6afafafbec104c">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"p"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> p_values_80) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb15-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> p)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#FF6666"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_area</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stage</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">after_stat =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">oob_censor</span>(x, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.04</span>)))), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"density"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"italic(p) == 0.0437"</span>,</span>
+<span id="cb15-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">parse =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.04</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"P-Value"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density distribution of p-values when the effect size is 0.65"</span>,</span>
+<span id="cb15-12">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gray area represents the probability of p between 0.03 and 0.04"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb15-14">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb15-15">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>),</span>
+<span id="cb15-16">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">13</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>And for effect size of <img src="https://latex.codecogs.com/png.latex?1.03">?</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-16_8e0f9f5d4c2a6a1aa1ebc651eed9d81d">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"p"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> p_values_99) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb16-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> p)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#FF6666"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_area</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stage</span>(p, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">after_stat =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">oob_censor</span>(x, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.04</span>)))), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"density"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">376</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"italic(p) == 0.0056"</span>,</span>
+<span id="cb16-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">parse =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.04</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"P-Value"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density distribution of p-values when the effect size is 1.03"</span>,</span>
+<span id="cb16-12">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gray area represents the probability of p between 0.03 and 0.04"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb16-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb16-14">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb16-15">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>),</span>
+<span id="cb16-16">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">13</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The probability of getting a p-value in the range of <img src="https://latex.codecogs.com/png.latex?%5B0.03,0.04%5D"> is lower for greater effect sizes.</p>
+</section>
+</section>
+<section id="prior" class="level1">
+<h1>Prior</h1>
+<p>Explicitly incorporating prior knowledge into statistical modelling is a great strength of Bayesian analysis. But, in order to keep things simple, I will stay agnostic and assign each hypothesis an equal prior probability. This is known as a <em>Flat prior</em>.<br>
+</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-17_d582861de20d8490d4efc00d5f791050">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>)), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(x)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb17-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stat_function</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fun =</span> dunif, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">geom =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"area"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">args =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">min =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">max =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#FF6666"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb17-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb17-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Effect Size"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Each effect size has equal prior probability"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb17-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb17-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb17-7">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb17-8">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>),</span>
+<span id="cb17-9">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>In this case the prior ratio cancels out and posterior ratio is equal to the likelihood ratio.</p>
+</section>
+<section id="rejecting-the-null" class="level1">
+<h1>Rejecting the null?</h1>
+<p>Given p-value between 0.03 and 0.04, should we reject the null hypothesis or not?</p>
+<p>As good Frequentists, we should see all p-values under the pre-defined alpha of 0.05 as evidence against the null hypothesis.</p>
+<p><strong>But</strong>, as good Bayesian we should ask ourselves, Given <img src="https://latex.codecogs.com/png.latex?0.03%20%5Cle%20p%20%5Cle%200.04">, what is more probable? effect size of <img src="https://latex.codecogs.com/png.latex?0"> or <img src="https://latex.codecogs.com/png.latex?1.03">?</p>
+<p>Defining the the flat prior:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-18_69a091375d8d3c83be7fc28f2191b83c">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">prior_null <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span></span>
+<span id="cb18-2">prior_1<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">.03</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> prior_null</span></code></pre></div>
+</div>
+<p>Defining the likelihood of p-values in the given range, under each hypothesis:</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-19_0db9ca113d09d0b4a08f6f2fe07dc6c8">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">likelihood_null <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_null[p_values_null <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> p_values_null <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.04</span>])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_null)</span>
+<span id="cb19-2"></span>
+<span id="cb19-3">likelihood_1<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">.03</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_99[p_values_99 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.03</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> p_values_99 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.04</span>])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(p_values_99)</span></code></pre></div>
+</div>
+<p>What is the posterior ratio?</p>
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-20_91e5fd11310bc36817cf626f89d3fa5d">
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">(posterior_ratio <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> (prior_null <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> likelihood_null)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(prior_1<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">.03</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> likelihood_1<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">.03</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.771684</code></pre>
+</div>
+</div>
+<p>Given a p-value between 0.03 and 0.04, an effect size of <img src="https://latex.codecogs.com/png.latex?0"> is 1.77 more probable then effect size of <img src="https://latex.codecogs.com/png.latex?1.03">!</p>
+</section>
+<section id="so-what-is-the-answer" class="level1">
+<h1>So, what is the answer???</h1>
+<p>What is the solution to this paradox? who is right? is statistical hypothesis testing is broken?</p>
+<p>The source of the current disagreement is the interpretation of probability. Frequentists insist that hypotheses are True or False. There is no place for degrees of confidence in statements. Bayesians assign probability to hypotheses and statements themselves.</p>
+<p>Whether you find yourself in the first camp, or in the second camp, remember:</p>
+<blockquote class="blockquote">
+<p>All models are wrong (George Box)</p>
+</blockquote>
+<p>This is our superpower!</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/meme.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Meme-form</figcaption>
+</figure>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>code</category>
+  <category>theory</category>
+  <guid>https://tomerzipori.github.io/blog/posts/p_values_paradox/index.html</guid>
+  <pubDate>Sun, 03 Sep 2023 21:00:00 GMT</pubDate>
+  <media:content url="https://tomerzipori.github.io/blog/posts/p_values_paradox/morty.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>Netflix trends</title>
   <dc:creator>Tomer Zipori</dc:creator>
@@ -1000,1314 +2309,6 @@ The recommendation functions could be vastly improved with some more modern NLP 
   <guid>https://tomerzipori.github.io/blog/posts/netflix/index.html</guid>
   <pubDate>Mon, 12 Jun 2023 21:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/netflix/medieval.png" medium="image" type="image/png" height="144" width="144"/>
-</item>
-<item>
-  <title>Rejecting the null hypothesis or not?</title>
-  <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>In the current post I will try and explain what appears to be a paradox: given the identical data, different schools of statistics disagree about the appropriate conclusion.</p>
-<p>Traditionally, there are two ways to interpret Probability:<br>
-1. Probability is the relative frequency of events at infinity - the Frequentist school.<br>
-2. Probability represents the degree of beliefs - The Bayesian school.</p>
-<p>Classic hypothesis testing in the social sciences usually follows the Frequentist school, the probability of errors is calculated as the relative frequency of extreme data under the relevant hypotheses.</p>
-<section id="distribution-of-p-values-when-the-null-hypothesis-is-true" class="level1">
-<h1>Distribution of p-values when the null hypothesis is true</h1>
-<p>An example for Frequentist logic in hypothesis testing is the probability of type I errors, also known as <img src="https://latex.codecogs.com/png.latex?%5Calpha">: rejecting the null hypothesis when it is true.</p>
-<p>The famous (and notorious?) 5% convention, refers to the relative frequency of significant tests when the null is true.</p>
-<p>Let’s take infinite (140,000) samples of <img src="https://latex.codecogs.com/png.latex?n=30"> from populations with equal means, and compare each of them with a t-test:</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-3_19864a663991569c92a84891d054be1a">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">n <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span></span>
-<span id="cb1-2">mu0 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb1-3">sd0 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb1-4">mu1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb1-5"></span>
-<span id="cb1-6">p_values_null <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">140000</span>)</span>
-<span id="cb1-7"></span>
-<span id="cb1-8"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">140000</span>)) {</span>
-<span id="cb1-9">  group1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(n, mu0, sd0)</span>
-<span id="cb1-10">  group2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(n, mu1, sd0)</span>
-<span id="cb1-11">  </span>
-<span id="cb1-12">  test <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t.test</span>(group1, group2, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alternative =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"less"</span>)</span>
-<span id="cb1-13">  </span>
-<span id="cb1-14">  p_values_null[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> test<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>p.value</span>
-<span id="cb1-15">}</span></code></pre></div>
-</div>
-<p>How many tests were significant?</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-4_89902618489b48bc97f59d147a5dafce">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_null[p_values_null <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> .<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">05</span>])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_null)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.05020714</code></pre>
-</div>
-</div>
-<p>What if we defined <img src="https://latex.codecogs.com/png.latex?%5Calpha=0.067">?</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-5_d90e225b3a19b41f9fbc3e1a946d44ba">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_null[p_values_null <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> .<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">067</span>])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_null)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.06699286</code></pre>
-</div>
-</div>
-<p>Putting it in different words, the probability of getting p-values under a certain threshold equals to that threshold. or, <strong>When population means are equal, p-values are distributed uniformly.</strong></p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-6_818a5265bc5f6d53c457660b15e468e3">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">hist</span>(p_values_null, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">breaks =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">50</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">freq =</span> F)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="distribution-of-p-values-when-the-null-hypothesis-is-false" class="level1">
-<h1>Distribution of p-values when the null hypothesis is false</h1>
-<p>What happens when population means are <em>not</em> equal? The probability of detecting an existing effect (e.g.&nbsp;getting a significant result) is called <em>Power</em>. Naturally, statistical Power is larger for larger differences between populations means.</p>
-<p>Lets simulate yet again infinite (140,000) t-tests, this time between samples from populations with difference of means of 0.65.</p>
-<section id="distribution-of-p-values-with-80-power" class="level2">
-<h2 class="anchored" data-anchor-id="distribution-of-p-values-with-80-power">Distribution of p-values with 80% power</h2>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-8_c3fbc8e336cf9205196e9f1c509c0b46">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">n <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span></span>
-<span id="cb7-2">mu0 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb7-3">sd0 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb7-4">mu1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.65</span></span>
-<span id="cb7-5"></span>
-<span id="cb7-6">p_values_80 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">140000</span>)</span>
-<span id="cb7-7"></span>
-<span id="cb7-8"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">140000</span>)) {</span>
-<span id="cb7-9">  group1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(n, mu0, sd0)</span>
-<span id="cb7-10">  group2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(n, mu1, sd0)</span>
-<span id="cb7-11">  </span>
-<span id="cb7-12">  test <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t.test</span>(group1, group2, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alternative =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"less"</span>)</span>
-<span id="cb7-13">  </span>
-<span id="cb7-14">  p_values_80[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> test<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>p.value</span>
-<span id="cb7-15">}</span></code></pre></div>
-</div>
-<p>What is the probability of getting a significant result?</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-9_ecac4305c137b4360ba8ede74b4e0ee0">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_80[p_values_80 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> .<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">05</span>])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_80)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.80015</code></pre>
-</div>
-</div>
-<p>How does the distribution of p-values look when there is 80% Power (probability of 0.8 of getting a significant result)?</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-10_f8aa303a6aca5f8b53d0c48149b7939e">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">hist</span>(p_values_80, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">breaks =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">50</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">freq =</span> F)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>Smaller p-values are more probable, and the uniform distribution from before “gets skewed”.</p>
-</section>
-</section>
-<section id="distribution-of-p-values-with-99-power" class="level1">
-<h1>Distribution of p-values with 99% power</h1>
-<p>Increasing the difference between population means causes the p-values distribution to get more and more skewed.</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-12_3df9fcdd2e05ebd8154a3b5a87501a76">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">n <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span></span>
-<span id="cb11-2">mu0 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span></span>
-<span id="cb11-3">sd0 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span>
-<span id="cb11-4">mu1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0376218</span></span>
-<span id="cb11-5"></span>
-<span id="cb11-6">p_values_99 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">140000</span>)</span>
-<span id="cb11-7"></span>
-<span id="cb11-8"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">140000</span>)) {</span>
-<span id="cb11-9">  group1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(n, mu0, sd0)</span>
-<span id="cb11-10">  group2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(n, mu1, sd0)</span>
-<span id="cb11-11">  </span>
-<span id="cb11-12">  test <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t.test</span>(group1, group2, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alternative =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"less"</span>)</span>
-<span id="cb11-13">  </span>
-<span id="cb11-14">  p_values_99[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> test<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>p.value</span>
-<span id="cb11-15">}</span>
-<span id="cb11-16"></span>
-<span id="cb11-17"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_99[p_values_99 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;</span> .<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">05</span>])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_99)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.9899</code></pre>
-</div>
-</div>
-<p>And the distribution of p-values:</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-13_f3ae88285c0e6d60085a1083f0f6fbbf">
-<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">hist</span>(p_values_99, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">breaks =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">freq =</span> F, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="reversing-the-conditionality" class="level1">
-<h1>Reversing the conditionality</h1>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/bayes.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">All about the Bayes</figcaption>
-</figure>
-</div>
-<p>As we said before, p-values represent the probability of getting certain data when the null hypothesis is true. What if we looked at it from the other side? What is the probability that the null hypothesis is true, given a certain p-value?</p>
-<p>In the Frequentist school, this question seems weird: what is the relative frequency at infinity of the null hypothesis being true? That is, out of infinite worlds, in how many of them the null is true?</p>
-<p>Switching our perspective to be Bayesian, assigning probabilities to hypotheses becomes less weird. That is because Bayesians see probability as a measure of confidence in some statement/model/possible world.</p>
-<p>As it’s name suggests, the Bayesian interpretation of probability is rooted in the Bayes theorem for conditional probabilities:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0Ap(A/B)=%20%5Cfrac%20%7Bp(A)%20%5Ccdot%20p(B/A)%7D%7Bp(B)%7D%0A"></p>
-<p>Confidence in <img src="https://latex.codecogs.com/png.latex?A"> given the occurrence of <img src="https://latex.codecogs.com/png.latex?B"> is proportional to the product of the prior confidence in <img src="https://latex.codecogs.com/png.latex?A"> and the conditional probability of <img src="https://latex.codecogs.com/png.latex?A"> on <img src="https://latex.codecogs.com/png.latex?B"> - also called the <strong>Likelihood</strong> of <img src="https://latex.codecogs.com/png.latex?A">.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Bayes’ theorem is <strong>not</strong> a matter of interpretation. it can be derived from the basic probability axioms. It is linked with the interpretation of probability as a measure of confidence in statements because it defines the procedure of belief updating.</p>
-</div>
-</div>
-<p>Re-phrasing the theorem, it is possible to formulate the posterior probability of a hypothesis given some observed data:</p>
-<p><img src="https://latex.codecogs.com/png.latex?%0Ap(hypothesis/data)=%20%5Cfrac%20%7Bp(hypothesis)%20%5Ccdot%20p(data/hypothesis)%7D%7Bp(data)%7D%0A"></p>
-<p>Another possibility of conceptualize the Bayes mindset is seeing the posterior probability of the hypothesis as an <em>update</em> to the prior probability of it.</p>
-<p>Bayes theorem also enable the comparison of two hypotheses using the ratio between the posteriors:/ <img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%7Bp(hypothesis%20%5C,%201/data)%7D%7Bp(hypothesis%20%5C,%202/data)%7D=%20%5Cfrac%20%7B%5Cfrac%20%7Bp(hypothesis%20%5C,%201)%20%5Ccdot%20p(data/hypothesis%20%5C,%201)%7D%7Bp(data)%7D%7D%7B%5Cfrac%20%7Bp(hypothesis%20%5C,%202)%20%5Ccdot%20p(data/hypothesis%20%5C,%202)%7D%7Bp(data)%7D%7D%0A"></p>
-<p>Cancelling the annoying denominator yields the following: <img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%20%7Bp(hypothesis%20%5C,%201)%20%5Ccdot%20p(data/hypothesis%20%5C,%201)%7D%7Bp(hypothesis%20%5C,%202)%20%5Ccdot%20p(data/hypothesis%20%5C,%202)%7D%0A"></p>
-<p>The ratio of posterior probabilities equals to the product of the prior ratio and the likelihood ratio. When this value is bigger then 1, it can considered as evidence in favor of Hypothesis 1.</p>
-</section>
-<section id="posterior-probability-of-hypotheses-given-p-values" class="level1">
-<h1>Posterior probability of hypotheses given p-values</h1>
-<p>Using Bayes theorem, it is now possible to construct a posterior probability for each of the original hypotheses, given an observed p-value.</p>
-<section id="likelihood" class="level2">
-<h2 class="anchored" data-anchor-id="likelihood">Likelihood</h2>
-<p>What is the probability of p-values given each hypothesis? we actually answered this question earlier when we visualized the density distributions of p-values.</p>
-<p>For example, the probability of observing a p-value between 0.03 and 0.04 given the null hypothesis is:</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-14_77ff0f6fa3897ab5b3e2fd6608be2c0f">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"p"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> p_values_null) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb14-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> p)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">6</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#FF6666"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_area</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stage</span>(p, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">after_stat =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">oob_censor</span>(x, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.03</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.04</span>)))), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"density"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gray"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"text"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"italic(p) == 0.0099"</span>,</span>
-<span id="cb14-6">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">parse =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-7">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.03</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-8">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.04</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-9">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-10">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-11">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"P-Value"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Density distribution of p-values under the null hypothesis"</span>,</span>
-<span id="cb14-12">       <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Gray area represents the probability of p between 0.03 and 0.04"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb14-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb14-14">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb14-15">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>),</span>
-<span id="cb14-16">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">13</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>))</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>The probability of observing the same range of p-values when the effect size is <img src="https://latex.codecogs.com/png.latex?0.65"> is:</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-15_9e622dd0eb013a7ca7f38e7b67a0f8e9">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"p"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> p_values_80) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb15-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> p)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">6</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#FF6666"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_area</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stage</span>(p, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">after_stat =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">oob_censor</span>(x, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.03</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.04</span>)))), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"density"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gray"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"text"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">8</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"italic(p) == 0.0437"</span>,</span>
-<span id="cb15-6">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">parse =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-7">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.03</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-8">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.04</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-9">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-10">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-11">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"P-Value"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Density distribution of p-values when the effect size is 0.65"</span>,</span>
-<span id="cb15-12">       <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Gray area represents the probability of p between 0.03 and 0.04"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb15-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb15-14">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb15-15">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>),</span>
-<span id="cb15-16">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">13</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>))</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>And for effect size of <img src="https://latex.codecogs.com/png.latex?1.03">?</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-16_6e42c58e82744e118df6eb16ec9018fc">
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"p"</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">=</span> p_values_99) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb16-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> p)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">6</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#FF6666"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_area</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stage</span>(p, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">after_stat =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">oob_censor</span>(x, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.03</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.04</span>)))), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"density"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gray"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">annotate</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"text"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.14</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">376</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">label =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"italic(p) == 0.0056"</span>,</span>
-<span id="cb16-6">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">parse =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-7">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.03</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-8">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xintercept =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.04</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-9">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-10">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-11">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"P-Value"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Density distribution of p-values when the effect size is 1.03"</span>,</span>
-<span id="cb16-12">       <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Gray area represents the probability of p between 0.03 and 0.04"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb16-13">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb16-14">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb16-15">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>),</span>
-<span id="cb16-16">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">13</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>))</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>The probability of getting a p-value in the range of <img src="https://latex.codecogs.com/png.latex?%5B0.03,0.04%5D"> is lower for greater effect sizes.</p>
-</section>
-</section>
-<section id="prior" class="level1">
-<h1>Prior</h1>
-<p>Explicitly incorporating prior knowledge into statistical modelling is a great strength of Bayesian analysis. But, in order to keep things simple, I will stay agnostic and assign each hypothesis an equal prior probability. This is known as a <em>Flat prior</em>.<br>
-</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-17_ab19ddb1a7f325e414f8c8d65638c69c">
-<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.5</span>)), <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">aes</span>(x)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb17-2">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">stat_function</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fun =</span> dunif, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">geom =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"area"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">args =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">min =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">max =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.5</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#FF6666"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb17-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.5</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>)) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb17-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Effect Size"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Each effect size has equal prior probability"</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb17-5">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb17-6">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb17-7">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb17-8">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>),</span>
-<span id="cb17-9">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">axis.title.x =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">11</span>))</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>In this case the prior ratio cancels out and posterior ratio is equal to the likelihood ratio.</p>
-</section>
-<section id="rejecting-the-null" class="level1">
-<h1>Rejecting the null?</h1>
-<p>Given p-value between 0.03 and 0.04, should we reject the null hypothesis or not?</p>
-<p>As good Frequentists, we should see all p-values under the pre-defined alpha of 0.05 as evidence against the null hypothesis.</p>
-<p><strong>But</strong>, as good Bayesian we should ask ourselves, Given <img src="https://latex.codecogs.com/png.latex?0.03%20%5Cle%20p%20%5Cle%200.04">, what is more probable? effect size of <img src="https://latex.codecogs.com/png.latex?0"> or <img src="https://latex.codecogs.com/png.latex?1.03">?</p>
-<p>Defining the the flat prior:</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-18_0868f00def2fc82ffb06cb7e98c4bfab">
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">prior_null <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span></span>
-<span id="cb18-2">prior_1<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.03</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> prior_null</span></code></pre></div>
-</div>
-<p>Defining the likelihood of p-values in the given range, under each hypothesis:</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-19_6b2822e941ecf8444caaaaa5ceade62d">
-<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">likelihood_null <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_null[p_values_null <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.03</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span> p_values_null <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.04</span>])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_null)</span>
-<span id="cb19-2"></span>
-<span id="cb19-3">likelihood_1<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.03</span> <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_99[p_values_99 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.03</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&amp;</span> p_values_99 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.04</span>])<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(p_values_99)</span></code></pre></div>
-</div>
-<p>What is the posterior ratio?</p>
-<div class="cell" data-hash="p_values_paradox_cache/html/unnamed-chunk-20_0f5f2529044727f8402b1c8edecd2a61">
-<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">(posterior_ratio <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> (prior_null <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> likelihood_null)<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>(prior_1<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.03</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> likelihood_1<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.03</span>))</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.771684</code></pre>
-</div>
-</div>
-<p>Given a p-value between 0.03 and 0.04, an effect size of <img src="https://latex.codecogs.com/png.latex?0"> is 1.77 more probable then effect size of <img src="https://latex.codecogs.com/png.latex?1.03">!</p>
-</section>
-<section id="so-what-is-the-answer" class="level1">
-<h1>So, what is the answer???</h1>
-<p>What is the solution to this paradox? who is right? is statistical hypothesis testing is broken?</p>
-<p>The source of the current disagreement is the interpretation of probability. Frequentists insist that hypotheses are True or False. There is no place for degrees of confidence in statements. Bayesians assign probability to hypotheses and statements themselves.</p>
-<p>Whether you find yourself in the first camp, or in the second camp, remember:</p>
-<blockquote class="blockquote">
-<p>All models are wrong (George Box)</p>
-</blockquote>
-<p>This is our superpower!</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/meme.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Meme-form</figcaption>
-</figure>
-</div>
-
-
-</section>
-
- ]]></description>
-  <category>code</category>
-  <category>theory</category>
-  <guid>https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox.html</guid>
-  <pubDate>Mon, 12 Jun 2023 21:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Real Vs. Fake news in football</title>
