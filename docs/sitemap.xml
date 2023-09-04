@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://tomerzipori.github.io/blog/blog.html</loc>
-    <lastmod>2023-06-14T16:21:05.331Z</lastmod>
+    <lastmod>2023-09-04T17:20:32.331Z</lastmod>
   </url>
   <url>
     <loc>https://tomerzipori.github.io/blog/index.html</loc>
@@ -22,10 +22,14 @@
   </url>
   <url>
     <loc>https://tomerzipori.github.io/blog/posts/netflix/index.html</loc>
-    <lastmod>2023-06-14T16:21:07.909Z</lastmod>
+    <lastmod>2023-08-23T16:47:22.040Z</lastmod>
   </url>
   <url>
     <loc>https://tomerzipori.github.io/blog/posts/ufo/index.html</loc>
     <lastmod>2023-06-13T16:24:31.175Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tomerzipori.github.io/blog/posts/p_values_paradox/p_values_paradox.html</loc>
+    <lastmod>2023-09-04T17:20:34.180Z</lastmod>
   </url>
 </urlset>
