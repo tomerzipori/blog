@@ -236,14 +236,14 @@ coefs |>
        x = "") +
   theme_classic() +
   geom_hline(yintercept = 0, color = "black", linetype = 2, linewidth = 1, show.legend = F) +
-  theme(plot.background = element_rect(color = col_vec[2], fill = col_vec[2]),
-        panel.background = element_rect(color = col_vec[2], fill = col_vec[2]),
-        axis.line = element_line(color = col_vec[4]),
+  theme(axis.line = element_line(color = col_vec[4]),
         axis.title = element_text(color = col_vec[4]),
         axis.text = element_text(color = col_vec[4]),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 12, face = "bold"),
         legend.position = "none",
-        plot.title = element_text(size = 16, color = col_vec[4], hjust = .5, family = "serif", face = "bold"))
+        plot.title = element_text(size = 16, color = col_vec[4], hjust = .5, family = "serif", face = "bold"),
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 ```
 
 # Conclusion

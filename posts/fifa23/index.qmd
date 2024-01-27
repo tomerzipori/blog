@@ -143,6 +143,7 @@ elastic_reg$bestTune
 ## Train/CV error
 
 ```{r}
+par(bg = '#F9EBDE')
 plot(elastic_reg, xTrans = log, digits = 3)
 
 elastic_reg$results[elastic_reg$results$RMSE == min(elastic_reg$results$RMSE, na.rm = T),]
@@ -158,6 +159,8 @@ options(scipen = 999)
 ```
 
 ```{r}
+par(bg = '#F9EBDE')
+
 elasnet_coeffs <- coef(elastic_reg$finalModel, s = elastic_reg$bestTune$lambda)
 plot(elasnet_coeffs, ylab = "Coefficient")
 
@@ -167,6 +170,8 @@ round(elasnet_coeffs, 4)
 The intercept is quite large. Let's look at the variables in a more informative scale.
 
 ```{r}
+par(bg = '#F9EBDE')
+
 plot(elasnet_coeffs[-1,], ylab = "Coefficient")
 ```
 
@@ -284,7 +289,9 @@ varimp$importance %>%
   theme(axis.text.y = element_text(size = 7),
         plot.title = element_text(size = 16, hjust = 0.5),
         plot.margin = unit(c(1,1,1,1), "cm"),
-        plot.caption = element_text(size = 6, hjust = 0.5, vjust = -5))
+        plot.caption = element_text(size = 6, hjust = 0.5, vjust = -5),
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 ```
 
 Player value is the strongest predictor by far, with a few interesting ones right behind it (CB_rating?).

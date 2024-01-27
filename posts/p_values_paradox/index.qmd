@@ -79,6 +79,8 @@ length(p_values_null[p_values_null < .067])/length(p_values_null)
 Putting it in different words, the probability of getting p-values under a certain threshold equals to that threshold. or, **When population means are equal, p-values are distributed uniformly.**
 
 ```{r}
+par(bg = '#F9EBDE')
+
 hist(p_values_null, breaks = 50, xlab = NULL, freq = F)
 ```
 
@@ -122,6 +124,8 @@ length(p_values_80[p_values_80 < .05])/length(p_values_80)
 How does the distribution of p-values look when there is 80% Power (probability of 0.8 of getting a significant result)?
 
 ```{r}
+par(bg = '#F9EBDE')
+
 hist(p_values_80, breaks = 50, xlab = NULL, freq = F)
 ```
 
@@ -175,6 +179,8 @@ length(p_values_99[p_values_99 < .05])/length(p_values_99)
 And the distribution of p-values:
 
 ```{r}
+par(bg = '#F9EBDE')
+
 hist(p_values_99, breaks = 100, freq = F, xlab = NULL)
 ```
 
@@ -233,7 +239,7 @@ For example, the probability of observing a p-value between 0.03 and 0.04 given 
 ```{r}
 data.frame("p" = p_values_null) |>
 ggplot(aes(x = p)) +
-  geom_density(alpha = .6, fill = "#FF6666") +
+  geom_density(alpha = .6, fill = "#815854") +
   geom_area(aes(x = stage(p, after_stat = oob_censor(x, c(0.03, 0.04)))), stat = "density", fill = "gray") +
   annotate("text", x = 0.14, y = 0.5, label = "italic(p) == 0.0099",
   parse = TRUE) +
@@ -246,7 +252,9 @@ ggplot(aes(x = p)) +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         plot.title = element_text(family = "serif", size = 16, hjust = 0.5),
-        plot.subtitle = element_text(family = "serif", size = 13, hjust = 0.5))
+        plot.subtitle = element_text(family = "serif", size = 13, hjust = 0.5),
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 ```
 
 The probability of observing the same range of p-values when the effect size is $0.65$ is:
@@ -254,7 +262,7 @@ The probability of observing the same range of p-values when the effect size is 
 ```{r}
 data.frame("p" = p_values_80) |>
 ggplot(aes(x = p)) +
-  geom_density(alpha = .6, fill = "#FF6666") +
+  geom_density(alpha = .6, fill = "#815854") +
   geom_area(aes(x = stage(p, after_stat = oob_censor(x, c(0.03, 0.04)))), stat = "density", fill = "gray") +
   annotate("text", x = 0.14, y = 8, label = "italic(p) == 0.0437",
   parse = TRUE) +
@@ -267,7 +275,9 @@ ggplot(aes(x = p)) +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         plot.title = element_text(family = "serif", size = 16, hjust = 0.5),
-        plot.subtitle = element_text(family = "serif", size = 13, hjust = 0.5))
+        plot.subtitle = element_text(family = "serif", size = 13, hjust = 0.5),
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 ```
 
 And for effect size of $1.03$?
@@ -275,7 +285,7 @@ And for effect size of $1.03$?
 ```{r}
 data.frame("p" = p_values_99) |>
 ggplot(aes(x = p)) +
-  geom_density(alpha = .6, fill = "#FF6666") +
+  geom_density(alpha = .6, fill = "#815854") +
   geom_area(aes(x = stage(p, after_stat = oob_censor(x, c(0.03, 0.04)))), stat = "density", fill = "gray") +
   annotate("text", x = 0.14, y = 376, label = "italic(p) == 0.0056",
   parse = TRUE) +
@@ -288,7 +298,9 @@ ggplot(aes(x = p)) +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         plot.title = element_text(family = "serif", size = 16, hjust = 0.5),
-        plot.subtitle = element_text(family = "serif", size = 13, hjust = 0.5))
+        plot.subtitle = element_text(family = "serif", size = 13, hjust = 0.5),
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 ```
 
 The probability of getting a p-value in the range of $[0.03,0.04]$ is lower for greater effect sizes.
@@ -299,14 +311,16 @@ Explicitly incorporating prior knowledge into statistical modelling is a great s
 
 ```{r}
 ggplot(data.frame(x = c(0, 1.5)), aes(x)) +
-  stat_function(fun = dunif, geom = "area", args = list(min = 0, max = 1.5), fill = "#FF6666") +
+  stat_function(fun = dunif, geom = "area", args = list(min = 0, max = 1.5), fill = "#815854") +
   scale_x_continuous(breaks = seq(0, 1.5, 0.1)) +
   labs(x = "Effect Size", y = "", title = "Each effect size has equal prior probability") +
   theme_classic() +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         plot.title = element_text(family = "serif", size = 16, hjust = 0.5),
-        axis.title.x = element_text(family = "serif", size = 11))
+        axis.title.x = element_text(family = "serif", size = 11),
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 ```
 
 In this case the prior ratio cancels out and posterior ratio is equal to the likelihood ratio.

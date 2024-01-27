@@ -180,8 +180,8 @@ plot <- egg_clean2 %>%
         plot.subtitle = element_text(hjust = 0.5, size = 13, family = "serif", color = "#83502e"),
         plot.caption = element_text(family = "serif", color = "#83502e"),
         plot.margin = margin(0.5,0.5,0.5,0.7, "cm"),
-        plot.background = element_rect(fill = "#fffaf0"),
-        panel.background = element_rect(fill = "#fffaf0"))
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 plot
 ```
 

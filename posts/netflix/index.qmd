@@ -120,11 +120,11 @@ cloud1 <- plot_data |>
   labs(title = "Content trends in Netflix's new additions every year",
        subtitle = "Most common words in the description of every newly added Movie or TV series") +
   theme_minimal() +
-  theme(panel.background = element_blank(),
-        plot.background = element_blank(),
-        strip.text.x = element_text(size = 30, family = "Avengeance Heroic Avenger"),
+  theme(strip.text.x = element_text(size = 30, family = "Avengeance Heroic Avenger"),
         plot.title = element_text(size = 32, family = "Bebas Neue", hjust = 0.5),
-        plot.subtitle = element_text(size = 22, family = "Bebas Neue", hjust = 0.5))
+        plot.subtitle = element_text(size = 22, family = "Bebas Neue", hjust = 0.5),
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 ```
 
 ```{r}
@@ -272,7 +272,9 @@ get_recommendation_plot <- function(show) {
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-        legend.position = "none")
+        legend.position = "none",
+        plot.background = element_rect(fill = "#F9EBDE"),
+        panel.background = element_rect(fill = "#F9EBDE"))
 }
 ```
 
