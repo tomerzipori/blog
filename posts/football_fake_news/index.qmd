@@ -12,7 +12,6 @@ execute:
 format:
   html:
     theme: cosmo
-    backgroundcolor: "#e3e3e3"
     toc: true
     toc-depth: 2
     toc-location: right

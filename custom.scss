@@ -1,0 +1,32 @@
+/*-- scss:defaults --*/
+$body-bg: #F9EBDE !default;
+$body-color: #815854;
+$link-color: gray;
+$font-family-sans-serif: 'Exo';
+$font-family-monospace: 'Ubuntu';
+
+$navbar-bg: #F9EBDE;
+$navbar-fg: #815854;
+$navbar-hl: #815854;
+
+/*-- scss:rules --*/
+@font-face {
+    font-family: 'Exo';
+    src: url('static/fonts/Exo-VariableFont_wght.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('static/fonts/Ubuntu-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@media screen and (min-width: 56em) {
+  html {
+    font-size: 1.1em;
+  }
+}

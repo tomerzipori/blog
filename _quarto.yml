@@ -3,16 +3,24 @@ project:
   output-dir: docs
 
 website:
-  title: "Tomer"
   site-url: https://tomerzipori.github.io/blog/
+  title: "Tomer's stats tomfoolery"
+  favicon: "static/favicon.png"
   description: "Posting about more and less interesting things I learn"
   twitter-card:
-    title: "Tomer's data-science blog"
-    description: "Posting about more and less interesting things I learn"
-    card-style: summary
     creator: "@tomerzipori"
+    title: "Tomer's stats tomfoolery"
+    description: "Posting about more and less interesting things I learn"
+    card-style: "summary"
+  search: false
+  open-graph:
+    site-name:  Tomer's stats tomfoolery
+    description: "Posting about more and less interesting things I learn"
+    image: ""
   navbar:
-    background: "#525266"
+    logo: "static/favicon.png"
+    title: "Tomer's tomfooleRy"
+    background: primary
     search: true
     left:
       - text: "About me"
@@ -28,12 +36,27 @@ website:
         href: https://twitter.com/ZiporiTomer
       - icon: linkedin
         href: www.linkedin.com/in/tomer-zipori
+  page-footer:
+    left: "© 2024 Tomer Zipori"
+    center: "powered by [quarto](https://quarto.org)"
+    right:
+      - icon: github
+        href: https://github.com/tomerzipori
+      - icon: twitter
+        href: https://twitter.com/ZiporiTomer
+      - icon: linkedin
+        href: www.linkedin.com/in/tomer-zipori
 format:
   html:
     theme:
-      light: cosmo
-      dark: darkly
-    css: styles.css
+      - cosmo
+      - custom.scss
+    css:
+      - styles.css
+      - academicons.css
+    toc: true
+    execute:
+      freeze: auto
 
 editor: visual
 

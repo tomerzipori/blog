@@ -5,7 +5,7 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/" 
       version="2.0">
 <channel>
-<title>Tomer</title>
+<title>Tomer&#39;s stats tomfoolery</title>
 <link>https://tomerzipori.github.io/blog/blog.html</link>
 <atom:link href="https://tomerzipori.github.io/blog/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Posting about more and less interesting things I learn</description>
@@ -5484,7 +5484,7 @@ font-style: inherit;">ggbackground</span>(heatmap3, nightsky_img)</span></code><
 <h1>Setup</h1>
 <section id="libraries" class="level2">
 <h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_05ae20fe6c0434bed27e53bc5ad5a57d">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(tidytuesdayR) <span class="co" style="color: #5E5E5E;
@@ -5510,7 +5510,7 @@ font-style: inherit;"># fonts</span></span></code></pre></div>
 <section id="loading-fonts" class="level2">
 <h2 class="anchored" data-anchor-id="loading-fonts">Loading fonts</h2>
 <p><code>showtext</code> is an awesome package that allows to load installed fonts into <code>R</code> and use it in <code>ggplot2</code> plots (for example). For a really helpful video that I used see this <a href="https://www.youtube.com/watch?v=kyOCNPuQzog&amp;t=1010s">video</a> from the Riffomonas Project.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-2_129846770077acaa66fd7c8cfca8b8be">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">font_add</span>(<span class="at" style="color: #657422;
@@ -5530,7 +5530,7 @@ font-style: inherit;">showtext_auto</span>()</span></code></pre></div>
 </section>
 <section id="loading-data" class="level1">
 <h1>Loading data</h1>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_a2de8894bdd6525cd2c92055f41c9243">
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">eggproduction  <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;
@@ -5553,7 +5553,7 @@ font-style: inherit;">'https://raw.githubusercontent.com/rfordatascience/tidytue
 </div>
 <section id="taking-a-peak" class="level2">
 <h2 class="anchored" data-anchor-id="taking-a-peak">Taking a peak</h2>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_8aedcaa02b43719f8b63e16bbc056bce">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">head</span>(eggproduction)</span></code></pre></div>
@@ -5570,7 +5570,7 @@ font-style: inherit;">head</span>(eggproduction)</span></code></pre></div>
 </div>
 </div>
 <p><code>eggproduction</code> holds monthly data about number of hens and produced eggs in the US. <code>prod_type</code> specifies the type of egg produced, it has 2 levels:</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_a43e7eb1917cef666ad3e97e85d26492">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">unique</span>(eggproduction<span class="sc" style="color: #5E5E5E;
@@ -5582,7 +5582,7 @@ font-style: inherit;">$</span>prod_type)</span></code></pre></div>
 </div>
 <p>For the current mini-project, I’ll stay with “table eggs” only.</p>
 <p>The variable <code>prod_process</code> specifies the type of housing of the egg-producing hens. It has 3 levels:</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_71b16fa1a1833e87933ea6f079bdc3f6">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">unique</span>(eggproduction<span class="sc" style="color: #5E5E5E;
@@ -5597,7 +5597,7 @@ font-style: inherit;">$</span>prod_process)</span></code></pre></div>
 <section id="pre-processing-1" class="level3">
 <h3 class="anchored" data-anchor-id="pre-processing-1">Pre-processing 1</h3>
 <p>Filtering out irrelevant data and renaming some variables.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_2d6e0435e6402189dc894061e2083326">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">egg_clean <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> eggproduction <span class="sc" style="color: #5E5E5E;
@@ -5639,7 +5639,7 @@ font-style: inherit;"># Irrelevant columns</span></span></code></pre></div>
 </section>
 <section id="taking-a-peak-2" class="level3">
 <h3 class="anchored" data-anchor-id="taking-a-peak-2">Taking a peak 2</h3>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_f909d91a36ec594bbaf923eee9f5c614">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">head</span>(cagefreepercentages)</span></code></pre></div>
@@ -5656,7 +5656,7 @@ font-style: inherit;">head</span>(cagefreepercentages)</span></code></pre></div>
 </div>
 </div>
 <p>This data-frame also holds monthly data. The variable <code>percent_hens</code> specifies <em>observed or computed percentage of cage-free hens relative to all table-egg-laying hens</em> (from the Github repo). We’ll select these variables and use them to merge with the first data-frame.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_4200fc0ea2c1627bdd5f8e69ed57e09d">
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">egg_clean2 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> cagefreepercentages <span class="sc" style="color: #5E5E5E;
@@ -5759,7 +5759,7 @@ font-style: inherit;">"n_hens"</span>)</span></code></pre></div>
 <section id="identitfying-the-dates-of-interest" class="level3">
 <h3 class="anchored" data-anchor-id="identitfying-the-dates-of-interest">Identitfying the dates of interest</h3>
 <p>First thing, I found 6 dates that are equally spaced between the start and end points. The repetitive code below is quite ugly, and <code>lubridate</code> probably has a nice and elegant solution, I didn’t want to spend to much time on it.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_1d957a9ab9153f7d570a66f5f22e4dff">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">dates_for_plot <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -5818,7 +5818,7 @@ font-style: inherit;">"2020-03-31"</span>)</span></code></pre></div>
 <section id="creating-the-subset" class="level3">
 <h3 class="anchored" data-anchor-id="creating-the-subset">Creating the subset</h3>
 <p>I will use this subset in order to plot the 6 points on the general data. I will only need to specify <code>data = subset_for_points</code> in the relevant <code>geom</code> object.</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_92706dab5cdfedabd95616099076ba55">
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">subset_for_points <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> egg_clean2 <span class="sc" style="color: #5E5E5E;
@@ -5904,7 +5904,7 @@ font-style: inherit;">-</span>n_hens.y)</span></code></pre></div>
 <section id="actually-plotting" class="level2">
 <h2 class="anchored" data-anchor-id="actually-plotting">Actually plotting</h2>
 <p>I went with a simple stacked density plot. Watch how the number of cage-free goes from</p>
-<div class="cell">
+<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_18ea610390488a67364143b293bf840e">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">plot <span class="ot" style="color: #003B4F;

@@ -3,8 +3,6 @@ title: "Netflix trends"
 description: "Text data visualization and analysis"
 author: "Tomer Zipori"
 date: 2023-06-13
-title-block-banner: "#990011FF"
-title-block-banner-color: "#FCF6F5FF"
 categories: [code, text analysis, visualization, NLP]
 image: "medieval.png"
 execute: 
@@ -309,8 +307,3 @@ Play around with show recommendations. and see other visualizations of the curre
 This post is an extra step of my in the NLP domain. As always I try to explain the theory behind the interesting parts of the process. For example, I remember when I discovered the connection between the correlation coefficient and the angle between vectors, it was really eye opening!\
 
 The recommendation functions could be vastly improved with some more modern NLP methods (Transformers!). I hope that in the near future I will have the time to post about that to.
-
-
-
-
-

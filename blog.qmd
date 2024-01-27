@@ -1,5 +1,5 @@
 ---
-title: "Blog posts"
+title: ""
 listing:
   contents: posts
   sort: "date desc"
@@ -9,5 +9,5 @@ listing:
   sort-ui: false
   filter-ui: false
 page-layout: full
-title-block-banner: "#525266"
+title-block-banner: primary
 ---

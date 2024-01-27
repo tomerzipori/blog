@@ -3,8 +3,6 @@ title: "Rejecting the null hypothesis or not?"
 description: "When different interpretations of probability disagree on the meaning of p-values"
 author: "Tomer Zipori"
 date: 2023-09-04
-title-block-banner: "#990011FF"
-title-block-banner-color: "#FCF6F5FF"
 categories: [code, theory]
 image: "morty.jpg"
 execute: 
