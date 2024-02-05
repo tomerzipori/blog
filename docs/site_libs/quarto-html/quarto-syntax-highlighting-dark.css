@@ -34,7 +34,7 @@
 
 /* other quarto variables */
 :root {
-  --quarto-font-monospace: "IBM Plex Sans";
+  --quarto-font-monospace: "Ubuntu";
 }
 
 code span.al {

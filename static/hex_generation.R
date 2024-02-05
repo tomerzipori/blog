@@ -8,33 +8,32 @@ lyengar2022_b_ordinal_model_impersonation <- read_rds("C:/Users/tomer/OneDrive/G
 
 draws <- gather_draws(lyengar2022_b_ordinal_model_impersonation, b_Intercept[Response])
 
-mean(draws$.value[draws$Response == 1]) # -6.345
-sd(draws$.value[draws$Response == 1]) # 1.785
+mean(draws$.value[draws$Response == 1]) # -1.222616
+sd(draws$.value[draws$Response == 1]) # 0.03846351
 
-mean(draws$.value[draws$Response == 2]) # -2.595
-sd(draws$.value[draws$Response == 2]) # 0.740
+mean(draws$.value[draws$Response == 2]) # -0.5005143
+sd(draws$.value[draws$Response == 2]) # 0.02984227
 
-mean(draws$.value[draws$Response == 3]) # 0.412
-sd(draws$.value[draws$Response == 3]) # 0.18
+mean(draws$.value[draws$Response == 3]) # 0.07778103
+sd(draws$.value[draws$Response == 3]) # 0.02788536
 
-mean(draws$.value[draws$Response == 4]) # 3.124
-sd(draws$.value[draws$Response == 4]) # 0.885
+mean(draws$.value[draws$Response == 4]) # 0.6029847
+sd(draws$.value[draws$Response == 4]) # 0.03023413
 
-mean(draws$.value[draws$Response == 5]) # 5.156
-sd(draws$.value[draws$Response == 5]) # 1.449
+mean(draws$.value[draws$Response == 5]) # 1.000049
+sd(draws$.value[draws$Response == 5]) # 0.03424669
 
-mean(draws$.value[draws$Response == 6]) # 7.536
-sd(draws$.value[draws$Response == 6]) # 2.114
+mean(draws$.value[draws$Response == 6]) # 1.471166
+sd(draws$.value[draws$Response == 6]) # 0.04095912
 
 draws <- gather_draws(lyengar2022_b_ordinal_model_impersonation, b_Intercept[Response]) |>
-  mutate(.value = case_when(Response == 2 ~ 2.1*.value,
-                            Response == 3 ~ 7.9*.value,
-                            Response == 4 ~ 2*.value,
-                            .default = .value)) |>
-  mutate(.value = case_when(Response == 2 ~ .value - mean(.value) + -2.595,
-                            Response == 3 ~ .value - mean(.value) + 0.41,
-                            Response == 4 ~ .value - mean(.value) + 3.124,
-                            .default = .value))
+  mutate(.value = 45*.value) |>
+  mutate(.value = case_when(Response == 1 ~ .value + 51,
+                            Response == 2 ~ .value + 22,
+                            Response == 3 ~ .value,
+                            Response == 4 ~ .value - 20,
+                            Response == 5 ~ .value - 34,
+                            Response == 6 ~ .value - 51))
 
 p <- draws |>
   ggplot() +
@@ -51,8 +50,10 @@ p <- draws |>
         panel.background = element_blank(),
         legend.position = "none")
 
-s <- sticker(p, package = "tomfooleRy", p_size = 20, s_x=1, s_y=.57, s_width=2, s_height=1.8,
-             h_fill="#815854", h_color="black", filename = "static/favicon.png")
+p
+
+s <- sticker(p, package = "cool hex logo", p_color = "#1e1f21", p_size = 20, s_x=1, s_y=.57, s_width=2, s_height=1.8,
+             h_fill="#6e5774", h_color="black", filename = "static/favicon.png")
 
 plot(s)
 

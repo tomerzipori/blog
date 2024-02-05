@@ -1,7 +1,7 @@
 /* css styles */
 div.sourceCode{
-  background-color: #ddbea9;
-  border-color: black;
+  background-color: #E3E2DF;
+  border-color: #5D001E;
 }
 
 
@@ -10,13 +10,13 @@ h1,h2,h3,h4{
 }
 
 .listing-title{
-  color: #815854;
+  color: #9A1750;
   text-decoration: underline;
   font-weight: 700;
 }
 
 pre{
-  border: 1px solid gray;
+  border: 1px solid #5D001E;
   color: var(--navbar-fg);
   padding: 5px 5px 5px 5px;
 }
@@ -27,11 +27,11 @@ code{
 
 /* inline code */
 .post-body>p>code{
-  background-color: rgba(255,255,255,.1);
+  background-color: #E3AFBC;
 }
 
 a.btn-links:hover{
-  background-color: rgba(255,255,255,.1)!important;
+  background-color: #E3AFBC!important;
 }
 
 .habout{
@@ -55,12 +55,12 @@ h1.f3{
 /* navbar kink */
 @media screen and (min-width: 999px) {
   .navbar .navbar-nav .nav-link {
-    color: #815854;
+    color: #2E1114;
     font-size: 1rem;
     text-transform: uppercase;
   }
   .navbar .navbar-nav .nav-link:hover {
-    color: #815854;
+    color: #2E1114;
   }
   .navbar .navbar-nav .nav-item {
     position: relative;
@@ -71,7 +71,7 @@ h1.f3{
     left: 0;
     right: 0;
     margin: auto;
-    background-color: #815854;
+    background-color: #2E1114;
     width: 0%;
     content: "";
     height: 1px;
@@ -90,11 +90,11 @@ h1.f3{
 }
 
 .nav-footer a{
-  color: #815854;
+  color: #9A1750;
 }
 
 .active {
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #2E1114;
 }
 
 .navbar-brand {
@@ -112,12 +112,12 @@ h1.f3{
 /*buttons*/
 
 .btn-outline-success{
-  border-color: #815854;
+  border-color: #EE4C7C;
   background-color: transparent;
 }
 
 .btn-outline-success:hover{
-  border-color: #815854;
+  border-color: #EE4C7C;
   background-color: black;
 }
 
@@ -128,18 +128,18 @@ h1.f3{
 
 /* grid cards */
 .card-body{
-  background-color: #F9EBDE;
+  background-color: #5D001E;
 }
 
 .card-img-top{
-  background-color: #F9EBDE;
+  background-color: #5D001E;
   width: 80%;
   margin-left: auto;
   margin-right: auto;
 }
 
 .borderless{
-  background-color: #F9EBDE;
+  background-color: #5D001E;
 }
 
 .quarto-grid-item img.thumbnail-image {
@@ -168,6 +168,6 @@ div.column.col-v-center{
 }
 
 .socials a{
-  color: #815854;
+  color: #9A1750;
   margin-left: 0.5em;
 }

@@ -5,7 +5,7 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/" 
       version="2.0">
 <channel>
-<title>Tomer&#39;s stats tomfoolery</title>
+<title>Tomer&#39;s stats blog</title>
 <link>https://tomerzipori.github.io/blog/blog.html</link>
 <atom:link href="https://tomerzipori.github.io/blog/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Posting about more and less interesting things I learn</description>

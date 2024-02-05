@@ -4,22 +4,22 @@ project:
 
 website:
   site-url: https://tomerzipori.github.io/blog/
-  title: "Tomer's stats tomfoolery"
+  title: "Tomer's stats blog"
   favicon: "static/favicon.png"
   description: "Posting about more and less interesting things I learn"
   twitter-card:
     creator: "@tomerzipori"
-    title: "Tomer's stats tomfoolery"
+    title: "Tomer's stats blog"
     description: "Posting about more and less interesting things I learn"
     card-style: "summary"
   search: false
   open-graph:
-    site-name:  Tomer's stats tomfoolery
+    site-name:  "Tomer's stats blog"
     description: "Posting about more and less interesting things I learn"
     image: ""
   navbar:
     logo: "static/favicon.png"
-    title: "Tomer's tomfooleRy"
+    title: "Tomer's stats blog"
     background: primary
     search: true
     left:
