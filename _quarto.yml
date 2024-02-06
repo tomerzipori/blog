@@ -6,7 +6,7 @@ website:
   site-url: https://tomerzipori.github.io/blog/
   title: "Tomer's stats blog"
   favicon: "static/favicon.png"
-  description: "Posting about more and less interesting things I learn"
+  description: ""
   twitter-card:
     creator: "@tomerzipori"
     title: "Tomer's stats blog"
