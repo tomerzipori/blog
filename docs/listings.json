@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/bayes101/index.html",
       "/posts/p_values_paradox/index.html",
       "/posts/netflix/index.html",
       "/posts/football_fake_news/index.html",
