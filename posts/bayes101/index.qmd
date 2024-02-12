@@ -28,7 +28,6 @@ library(brms)
 library(distributional)
 library(ggdist)
 library(ggExtra)
-library(MASS)
 ```
 
 # Motivation
@@ -37,7 +36,8 @@ You ran your experiment, collected the data, figured out how to download it in a
 
 # Introduction
 
-Dependent on the stage you are in your academic career in Psychology, you are probably quite familiar with what I will refer to as *Frequentist* inferential statistics. The underlying assumption of these models is that *probability is relative frequency at infinity*. All frequency test are conducted under the assumption of a particular world (the Null-Hypothesis). In my opinion, this way of inference is only intuitive to us because we are so used to it. I argue that in the real world we update our knowledge in a different way. We assign *degrees of belief* to different possible hypotheses (worlds) - some worlds are more probable than others. When data is observed, it is used to *update* our beliefs, and make some possible worlds more probable, and others less probable.
+Dependent on the stage you are in your academic career in Psychology, you are probably quite familiar with what I will refer to as *Frequentist* inferential statistics. The underlying assumption of these models is that *probability is relative frequency at infinity*. Every statistical test is conducted under the assumption of a particular world (the Null-Hypothesis).\
+In my opinion, this way of inference is intuitive to us only because we are so used to it. I argue that in the real world we update our knowledge in a different way. We assign *degrees of belief* to different possible hypotheses (worlds) - some worlds are more probable than others. When data is observed, it is used to *update* our beliefs, and make some possible worlds more probable, and others less probable.
 
 The Bayesian interpretation of probability as degree of belief stands at the foundation of Bayesian statistical modeling (duh). We first assign probability to all possible worlds, than we observe the data, combining them together and update our beliefs.
 
@@ -45,11 +45,12 @@ The Bayesian interpretation of probability as degree of belief stands at the fou
 
 ### Discrete events
 
-So what is *Bayesian* about Bayesian statistics? going back to *Intro to statistics* in your BA, you learned to derive the Bayes theorem in probability: $$
+So what is *Bayesian* about Bayesian statistics? going back to *Intro to statistics* in your BA, you learned to derive the Bayes theorem in probability:
+$$
 P(A|B)=\frac{P(B|A) \cdot P(A)}{P(B)}
 $$
 
-In plain words: the probability of $A$ conditional on $B$ is equal to the product of the probability of $B$ conditional on $A$ and the prior probability of $A$, divided by the probability of $B$. The Bayes theorem gives a rigorous and mathematically defined way of updating beliefs in face of observed data. Sounds familiar? it should! this is exactly what you are doing (or at least want to do) in your thesis/research! you observe some *Data* and try to learn from it about the *World*. In your case, World = some statistical, model = some set of parameters.[^1]
+In plain words: the probability of $A$ conditional on $B$ is equal to the product of the probability of $B$ conditional on $A$ and the prior probability of $A$, divided by the probability of $B$. The Bayes theorem gives a rigorous and mathematically defined way of updating beliefs in face of observed data. Sounds familiar? it should! this is exactly what you are doing (or at least want to do) in your thesis/research! you observe some *Data* and try to learn from it about the *World*. In your case, World = some statistical model = some set of parameters.[^1]
 
 [^1]: For example, consider the hypothesis that people in condition A are faster in a certain task than people in condition B. Your formal hypothesis look something like this: Reaction time follows a normal distribution with $\mu=\beta_0+\beta_1condition$ and $\sigma^2$. This model has 3 total parameters ($\beta_0$, $\beta_1$ and $\sigma^2$).
 
@@ -69,7 +70,7 @@ Each of the terms above has an important role in the world of Bayesian modeling.
 
 ### Likelihood
 
-The term $P(Data|Parameters)$ describes the *likelihood* of the observed data under different sets of parameter values. In order to keep things simple I will not delve deeper into the theoretical aspects of likelihood (see @etz_introduction_2018, @pawitan_all_2001). The main things that are important to know as a researchers about the likelihood function is that you are responsible to choosing it! For example, if I suspect that my dependent variable comes from a normal distribution (where you otherwise would fit some sort of linear model for), I will use the normal likelihood function[^3]:
+The term $P(Data|Parameters)$ describes the *likelihood* of the observed data under different sets of parameter values. In order to keep things simple I will not delve deeper into the theoretical aspects of likelihood (see @etz_introduction_2018, @pawitan_all_2001). The main things that are important to know as researchers about the likelihood function is that you are responsible to choosing it! For example, if I suspect that my dependent variable comes from a normal distribution (where you otherwise would fit some sort of linear model), I will use the normal likelihood function[^3]:
 
 [^3]: Which is identical to the normal density function.
 
@@ -82,7 +83,9 @@ ggplot(data = data.frame(x = c(-4, 4)), aes(x)) +
   scale_y_continuous(breaks = NULL) +
   scale_x_continuous(breaks = seq(-4, 4, 1), labels = NULL) +
   theme_classic() +
-  theme(axis.title = element_text(size = 13))
+  theme(axis.title = element_text(size = 13),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"))
 ```
 
 If, on the other hand, I suspect that my dependent variable comes from a Poisson distribution (e.g. number of times a participant scratched their nose), I will use the Poisson likelihood function:
@@ -96,17 +99,19 @@ ggplot(data = data.frame(x = seq(0, 16, 1)), aes(x)) +
   scale_y_continuous(breaks = NULL) +
   scale_x_continuous(breaks = seq(0, 16, 1), labels = NULL) +
   theme_classic() +
-  theme(axis.title = element_text(size = 13))
+  theme(axis.title = element_text(size = 13),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"))
 ```
 
-In general, you as a researcher need to define the *Data Generating Process (DGP)* - How were your observations generated?\
+In general, you need to define the *Data Generating Process (DGP)* - How were your observations generated?\
 This choice is analogous to the choice of statistical model/test in the frequentist paradigm. A linear model (t-test, ANOVA, linear regression) assumes a normal DGP, a Generalized linear model assumes some other DGP like a Binomial, Poisson, Inverse Gaussian etc.
 
 ### Prior
 
-The next term - $P(Parameters)$ is called the *Prior* probability distribution. This term represents the prior knowledge about the parameters in your model. Choosing a prior, a process that is sometime called *prior elicitation*, is difficult. How can one take into account all of the prior knowledge about something and neatly represent it with one probability distribution?? For this reason I will refer to 2 relatively-easy-to-define aspects of prior elicitation:\
+The next term - $P(Parameters)$ is called the *Prior* probability distribution. This term represents the prior knowledge about the parameters in your model. Choosing a prior, a process that is sometime called *prior elicitation*, is difficult. How can one take into account all prior knowledge about something and neatly represent it with one probability distribution?? For this reason I will refer to 2 relatively-easy-to-define aspects of prior elicitation:\
 
--   Range of possible/probable parameter values - Some parameters can only take certain values, creating a-priori hard limits for them. For example, a normal distribution's variance $\sigma^2$ can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:
+-   _Range of possible/probable parameter values_ - Some parameters can only take certain values, creating a-priori hard limits for their value. For example, a normal distribution's variance $\sigma^2$ can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:
 
 ```{r}
 #| echo: false
@@ -120,7 +125,9 @@ ggplot(data = data.frame(x = c(0, 13)), aes(x)) +
   theme_classic() +
   theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
         plot.subtitle = element_text(size = 13, family = "serif", hjust = 0.5),
-        axis.title = element_text(size = 13))
+        axis.title = element_text(size = 13),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"))
 ```
 
 While in the second case, a prior like this would be better:
@@ -138,10 +145,12 @@ ggplot(data = data.frame(x = c(-5, 9)), aes(x)) +
   theme_classic() +
   theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
         plot.subtitle = element_text(size = 13, family = "serif", hjust = 0.5),
-        axis.title = element_text(size = 13))
+        axis.title = element_text(size = 13),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"))
 ```
 
--   Degree of informativeness - Priors also differ from each other in their impact on the model. A prior can be weak or strong in this aspect.
+-   _Degree of informativeness_ - Priors also differ from each other in their impact on the model. A prior can be weak or strong in this aspect.
 
     -   *Weak Priors* - These priors are typically wide and cover a large range of possible values.
     -   *Strong Priors* - These priors are narrower and leaves few parameter values probable.
@@ -159,7 +168,9 @@ ggplot(data = data.frame(x = c(-5, 9)), aes(x)) +
       labs(title = expression(N(0, 8^2))) +
       theme_classic() +
       theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
-            axis.title = element_text(size = 13))
+            axis.title = element_text(size = 13),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"))
 
     ggplot(data = data.frame(x = c(-28, 28)), aes(x)) +
       stat_function(fun = dt, args = list(df = 10), linewidth = 1, fill = "#a4c8f5", color = "#0373fc", geom = "area", outline.type = "upper") +
@@ -170,12 +181,14 @@ ggplot(data = data.frame(x = c(-5, 9)), aes(x)) +
       labs(title = expression(students_t(df = 10))) +
       theme_classic() +
       theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
-            axis.title = element_text(size = 13))
+            axis.title = element_text(size = 13),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"))
     ```
 
 ### Evidence
 
-The denominator of Bayes' theorem - $P(Data)$ is called the evidence. It's important role is to act as the *standardizing* term to the numerator ($Likelihood \cdot Prior$). Recall that the likelihood is not a probability distribution, so in order for it's product with the Prior - a probability distribution - to be equal to the Posterior - another probability distribution - a standardizing term is needed.[^4] This term is often impossible to calculate analytically, and therefore fancy numeric estimations are used.
+The denominator in Bayes' theorem - $P(Data)$ is called the evidence. It's important role is to act as the *standardizing* term to the numerator ($Likelihood \cdot Prior$). Recall that the likelihood is not a probability distribution, so in order for it's product with the Prior - a probability distribution - to be equal to the Posterior - another probability distribution - a standardizing term is needed. This term is often impossible to calculate analytically, and therefore fancy numeric estimations are used.[^4]
 
 [^4]: For the math nerds, the evidence is defined as this integral: $\int_{\theta}P(X|\theta)P(\theta)d\theta$.
 
@@ -200,10 +213,12 @@ ggplot(data.frame(y = means), aes(x = y)) +
         axis.ticks.y = element_blank(),
         plot.title = element_text(size = 17, family = "serif", hjust = .5),
         plot.subtitle = element_text(size = 13, family = "serif", hjust = .5),
-        axis.title.x = element_text(size = 13))
+        axis.title.x = element_text(size = 13),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"))
 ```
 
-I think that Getting the posterior from the Likelihood and the prior makes more sense visually (make sure to also play with Kristoffer Magnusson's wonderful interactive [visualization](https://rpsychologist.com/d3/bayes/)):
+I think that Getting a posterior from the Likelihood and the prior makes more sense visually (make sure to also play with Kristoffer Magnusson's wonderful interactive [visualization](https://rpsychologist.com/d3/bayes/)):
 
 ```{r}
 #| echo: false
@@ -253,7 +268,10 @@ ggplot(dists) +
         axis.text = element_blank(),
         axis.ticks.y = element_blank(),
         plot.title = element_text(size = 17, family = "serif", hjust = .5),
-        plot.subtitle = element_text(size = 13, family = "serif", hjust = .5))
+        plot.subtitle = element_text(size = 13, family = "serif", hjust = .5),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"),
+        legend.background = element_rect(fill = "#E3E2DF"))
 ```
 
 ::: {.callout-note icon="false"}
@@ -272,7 +290,7 @@ sd0 <- 1.5
 sd1 <- 2
 r <- -0.54
 
-data <- mvrnorm(n = 10000, mu = c(mu0, mu1), Sigma = matrix(c(sd0^2, sd0*sd1*r, sd0*sd1*r, sd1^2), nrow = 2)) |>
+data <- MASS::mvrnorm(n = 10000, mu = c(mu0, mu1), Sigma = matrix(c(sd0^2, sd0*sd1*r, sd0*sd1*r, sd1^2), nrow = 2)) |>
   data.frame() |>
   rename(b0 = X1, b1 = X2) |>
   mutate(b0 = b0 + runif(1, -4, 4)^2,
@@ -290,7 +308,7 @@ p <- data |>
     theme(legend.position = "none",
           axis.title = element_text(size = 13))
 
-ggMarginal(p, type = "histogram",
+ggMarginal(p, type = "density",
            xparams = list(fill = "#a4c8f5", colour = "black"),
            yparams = list(fill = "#a4c8f5", colour = "black"))
 ```
@@ -326,7 +344,7 @@ cmdstanr::set_cmdstan_path(path = "C:/Users/tomer/AppData/Local/R/win-library/4.
 Let's start with the most simple example. Consider the sex differences in cats' body weight:
 
 ```{r}
-data <- cats
+data <- MASS::cats
 
 head(data)
 ```
@@ -349,7 +367,7 @@ Male cats weigh $0.54$ Kg more than female cats, and this difference is statisti
 How many parameters are there?\
 1. Intercept - Representing the value of `Bwt` when the IV is $0$. Meaning it is the estimated mean weight of female cats.\
 2. Slope of $SexMale$ - Estimated difference in body weight between male and female cats.\
-3. $\sigma^2$ - The variance of the residuals (variance of the conditional-mean normal distribution of `Bwt`).\
+3. Sigma - The variance of the residuals (variance of the conditional-mean normal distribution of `Bwt`).\
 
 What prior knowledge can we incorporate into each parameter?\
 1. average weight of female cats should probably be \~2Kg-3Kg.\
@@ -377,13 +395,6 @@ posterior <- read_rds("b_model_t-test.rds")
 
 In case you missed it, we already defined our likelihood function to be the normal likelihood function. This is implicit in our choice of the ordinary linear regression model.
 
-This is code snippet is necessary when using the `cmdstanr` backend for `brms`.
-
-```{r}
-#| eval: false
-cmdstanr::set_cmdstan_path(path = "your_path_to_cmdstanr_directory")
-```
-
 ::: callout-important
 ## Convergence Measures
 
@@ -409,11 +420,21 @@ p <- spread_draws(posterior, b_Intercept) |>
           strip.text.x = element_blank(),
           axis.title.y = element_blank(),
           axis.title = element_text(size = 13, family = "serif"),
-          plot.title = element_text(size = 17, family = "serif", hjust = 0.5))
+          plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
+          plot.background = element_rect(fill = "#E3E2DF"),
+          panel.background = element_rect(fill = "#E3E2DF"),
+          legend.background = element_rect(fill = "#E3E2DF"))
 
 p
 ```
 :::
+
+One last thing before fitting the model, this is code snippet is necessary when using the `cmdstanr` backend for `brms`.
+
+```{r}
+#| eval: false
+cmdstanr::set_cmdstan_path(path = "your_path_to_cmdstanr_directory")
+```
 
 Now for posterior estimation!
 
@@ -470,7 +491,7 @@ p <- draws |>
     theme(legend.position = "none",
           axis.title = element_text(size = 13))
 
-ggMarginal(p, type = "histogram",
+ggMarginal(p, type = "density",
            xparams = list(fill = "#2ea64e", colour = "black"),
            yparams = list(fill = "#2ea64e", colour = "black"))
 ```
@@ -485,7 +506,10 @@ p <- draws |>
   theme_classic() +
   scale_x_continuous(limits = c(-0.2, 1), breaks = seq(-0.2, 1, 0.1)) +
   theme(axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+        axis.ticks.y = element_blank(),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"),
+        legend.background = element_rect(fill = "#E3E2DF"))
 
 p
 ```
@@ -505,7 +529,10 @@ p <- draws |>
   theme_classic() +
   scale_x_continuous(limits = c(-0.2, 1), breaks = seq(-0.2, 1, 0.1)) +
   theme(axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+        axis.ticks.y = element_blank(),
+        plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"),
+        legend.background = element_rect(fill = "#E3E2DF"))
 
 p
 ```
@@ -520,12 +547,15 @@ bayestestR::p_direction(posterior, parameters = "b_SexM")
 
 ```{r}
 plot(bayestestR::p_direction(posterior, parameters = "b_SexM")) +
-  scale_fill_manual(values = "#2ea64e")
+  scale_fill_manual(values = "#2ea64e") +
+  theme(plot.background = element_rect(fill = "#E3E2DF"),
+        panel.background = element_rect(fill = "#E3E2DF"),
+        legend.background = element_rect(fill = "#E3E2DF"))
 ```
 
 ##### Highest Density Interval (HDI)
 
-A common misconception of the frequentist's confidence interval (with 95% credibility) is that it has a 95% probability of containing the true value of the parameter. The Bayesian Highest Density Interval however gives exactly this. The main 95% of the posterior have a 95% probability of containing the real value of the parameter. 95% are obviuosly arbitrary, and can be defined to anything else:
+A common misconception of the frequentist's confidence interval (with 95% credibility) is that it has a 95% probability of containing the true value of the parameter. The Bayesian Highest Density Interval however gives exactly this. The main 95% of the posterior have a 95% probability of containing the real value of the parameter. 95% are obviously arbitrary, and can be defined to anything else:
 
 ```{r}
 #| echo: false
@@ -538,7 +568,10 @@ p <- bayestestR::hdi(posterior, parameters = "b_SexM", ci = 0.89) |>
     theme(legend.position = "none",
           axis.title.x = element_text(size = 13, family = "serif"),
           plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
-          plot.subtitle = element_text(size = 13, family = "serif", hjust = 0.5))
+          plot.subtitle = element_text(size = 13, family = "serif", hjust = 0.5),
+          plot.background = element_rect(fill = "#E3E2DF"),
+          panel.background = element_rect(fill = "#E3E2DF"),
+          legend.background = element_rect(fill = "#E3E2DF"))
 
 p
 ```
@@ -554,3 +587,4 @@ parameters::model_parameters(posterior, centrality = "all") |> insight::print_ht
 # Conclusion
 
 This post is just a brief introduction of Bayesian statistical modeling. For those psychology students who want to enrich their statistical analyses, it should provide the basic tools and intuition. This post will be followed up with a deeper dive in to more complex models (multiple linear models, mixed-effects linear models, generalized linear models, ordinal regression models...).
+

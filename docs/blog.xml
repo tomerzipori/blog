@@ -10,7 +10,7 @@
 <atom:link href="https://tomerzipori.github.io/blog/blog.xml" rel="self" type="application/rss+xml"/>
 <description></description>
 <generator>quarto-1.3.361</generator>
-<lastBuildDate>Sun, 11 Feb 2024 15:17:17 GMT</lastBuildDate>
+<lastBuildDate>Mon, 12 Feb 2024 13:42:57 GMT</lastBuildDate>
 <item>
   <title>Bayesian Modeling for Psychologists, Part 1</title>
   <dc:creator>Tomer Zipori</dc:creator>
@@ -26,14 +26,15 @@
 </section>
 <section id="introduction" class="level1 page-columns page-full">
 <h1>Introduction</h1>
-<p>Dependent on the stage you are in your academic career in Psychology, you are probably quite familiar with what I will refer to as <em>Frequentist</em> inferential statistics. The underlying assumption of these models is that <em>probability is relative frequency at infinity</em>. All frequency test are conducted under the assumption of a particular world (the Null-Hypothesis). In my opinion, this way of inference is only intuitive to us because we are so used to it. I argue that in the real world we update our knowledge in a different way. We assign <em>degrees of belief</em> to different possible hypotheses (worlds) - some worlds are more probable than others. When data is observed, it is used to <em>update</em> our beliefs, and make some possible worlds more probable, and others less probable.</p>
+<p>Dependent on the stage you are in your academic career in Psychology, you are probably quite familiar with what I will refer to as <em>Frequentist</em> inferential statistics. The underlying assumption of these models is that <em>probability is relative frequency at infinity</em>. Every statistical test is conducted under the assumption of a particular world (the Null-Hypothesis).<br>
+In my opinion, this way of inference is intuitive to us only because we are so used to it. I argue that in the real world we update our knowledge in a different way. We assign <em>degrees of belief</em> to different possible hypotheses (worlds) - some worlds are more probable than others. When data is observed, it is used to <em>update</em> our beliefs, and make some possible worlds more probable, and others less probable.</p>
 <p>The Bayesian interpretation of probability as degree of belief stands at the foundation of Bayesian statistical modeling (duh). We first assign probability to all possible worlds, than we observe the data, combining them together and update our beliefs.</p>
 <section id="bayes-theorem" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="bayes-theorem">Bayes theorem</h2>
 <section id="discrete-events" class="level3">
 <h3 class="anchored" data-anchor-id="discrete-events">Discrete events</h3>
 <p>So what is <em>Bayesian</em> about Bayesian statistics? going back to <em>Intro to statistics</em> in your BA, you learned to derive the Bayes theorem in probability: <img src="https://latex.codecogs.com/png.latex?%0AP(A%7CB)=%5Cfrac%7BP(B%7CA)%20%5Ccdot%20P(A)%7D%7BP(B)%7D%0A"></p>
-<p>In plain words: the probability of <img src="https://latex.codecogs.com/png.latex?A"> conditional on <img src="https://latex.codecogs.com/png.latex?B"> is equal to the product of the probability of <img src="https://latex.codecogs.com/png.latex?B"> conditional on <img src="https://latex.codecogs.com/png.latex?A"> and the prior probability of <img src="https://latex.codecogs.com/png.latex?A">, divided by the probability of <img src="https://latex.codecogs.com/png.latex?B">. The Bayes theorem gives a rigorous and mathematically defined way of updating beliefs in face of observed data. Sounds familiar? it should! this is exactly what you are doing (or at least want to do) in your thesis/research! you observe some <em>Data</em> and try to learn from it about the <em>World</em>. In your case, World = some statistical, model = some set of parameters.<sup>1</sup></p>
+<p>In plain words: the probability of <img src="https://latex.codecogs.com/png.latex?A"> conditional on <img src="https://latex.codecogs.com/png.latex?B"> is equal to the product of the probability of <img src="https://latex.codecogs.com/png.latex?B"> conditional on <img src="https://latex.codecogs.com/png.latex?A"> and the prior probability of <img src="https://latex.codecogs.com/png.latex?A">, divided by the probability of <img src="https://latex.codecogs.com/png.latex?B">. The Bayes theorem gives a rigorous and mathematically defined way of updating beliefs in face of observed data. Sounds familiar? it should! this is exactly what you are doing (or at least want to do) in your thesis/research! you observe some <em>Data</em> and try to learn from it about the <em>World</em>. In your case, World = some statistical model = some set of parameters.<sup>1</sup></p>
 </section>
 <section id="probability-distributions" class="level3">
 <h3 class="anchored" data-anchor-id="probability-distributions">Probability Distributions</h3>
@@ -44,7 +45,7 @@
 </section>
 <section id="likelihood" class="level3">
 <h3 class="anchored" data-anchor-id="likelihood">Likelihood</h3>
-<p>The term <img src="https://latex.codecogs.com/png.latex?P(Data%7CParameters)"> describes the <em>likelihood</em> of the observed data under different sets of parameter values. In order to keep things simple I will not delve deeper into the theoretical aspects of likelihood (see <span class="citation" data-cites="etz_introduction_2018">Etz (2018)</span>, <span class="citation" data-cites="pawitan_all_2001">Pawitan (2001)</span>). The main things that are important to know as a researchers about the likelihood function is that you are responsible to choosing it! For example, if I suspect that my dependent variable comes from a normal distribution (where you otherwise would fit some sort of linear model for), I will use the normal likelihood function<sup>3</sup>:</p>
+<p>The term <img src="https://latex.codecogs.com/png.latex?P(Data%7CParameters)"> describes the <em>likelihood</em> of the observed data under different sets of parameter values. In order to keep things simple I will not delve deeper into the theoretical aspects of likelihood (see <span class="citation" data-cites="etz_introduction_2018">Etz (2018)</span>, <span class="citation" data-cites="pawitan_all_2001">Pawitan (2001)</span>). The main things that are important to know as researchers about the likelihood function is that you are responsible to choosing it! For example, if I suspect that my dependent variable comes from a normal distribution (where you otherwise would fit some sort of linear model), I will use the normal likelihood function<sup>3</sup>:</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
@@ -56,15 +57,15 @@
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>In general, you as a researcher need to define the <em>Data Generating Process (DGP)</em> - How were your observations generated?<br>
+<p>In general, you need to define the <em>Data Generating Process (DGP)</em> - How were your observations generated?<br>
 This choice is analogous to the choice of statistical model/test in the frequentist paradigm. A linear model (t-test, ANOVA, linear regression) assumes a normal DGP, a Generalized linear model assumes some other DGP like a Binomial, Poisson, Inverse Gaussian etc.</p>
 </section>
 <section id="prior" class="level3 page-columns page-full">
 <h3 class="anchored" data-anchor-id="prior">Prior</h3>
-<p>The next term - <img src="https://latex.codecogs.com/png.latex?P(Parameters)"> is called the <em>Prior</em> probability distribution. This term represents the prior knowledge about the parameters in your model. Choosing a prior, a process that is sometime called <em>prior elicitation</em>, is difficult. How can one take into account all of the prior knowledge about something and neatly represent it with one probability distribution?? For this reason I will refer to 2 relatively-easy-to-define aspects of prior elicitation:<br>
+<p>The next term - <img src="https://latex.codecogs.com/png.latex?P(Parameters)"> is called the <em>Prior</em> probability distribution. This term represents the prior knowledge about the parameters in your model. Choosing a prior, a process that is sometime called <em>prior elicitation</em>, is difficult. How can one take into account all prior knowledge about something and neatly represent it with one probability distribution?? For this reason I will refer to 2 relatively-easy-to-define aspects of prior elicitation:<br>
 </p>
 <ul>
-<li>Range of possible/probable parameter values - Some parameters can only take certain values, creating a-priori hard limits for them. For example, a normal distribution’s variance <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2"> can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:</li>
+<li><em>Range of possible/probable parameter values</em> - Some parameters can only take certain values, creating a-priori hard limits for their value. For example, a normal distribution’s variance <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2"> can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
@@ -78,7 +79,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 </div>
 </div>
 <ul class="page-columns page-full">
-<li class="page-columns page-full"><p>Degree of informativeness - Priors also differ from each other in their impact on the model. A prior can be weak or strong in this aspect.</p>
+<li class="page-columns page-full"><p><em>Degree of informativeness</em> - Priors also differ from each other in their impact on the model. A prior can be weak or strong in this aspect.</p>
 <ul>
 <li><em>Weak Priors</em> - These priors are typically wide and cover a large range of possible values.</li>
 <li><em>Strong Priors</em> - These priors are narrower and leaves few parameter values probable.</li>
@@ -97,7 +98,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 </section>
 <section id="evidence" class="level3">
 <h3 class="anchored" data-anchor-id="evidence">Evidence</h3>
-<p>The denominator of Bayes’ theorem - <img src="https://latex.codecogs.com/png.latex?P(Data)"> is called the evidence. It’s important role is to act as the <em>standardizing</em> term to the numerator (<img src="https://latex.codecogs.com/png.latex?Likelihood%20%5Ccdot%20Prior">). Recall that the likelihood is not a probability distribution, so in order for it’s product with the Prior - a probability distribution - to be equal to the Posterior - another probability distribution - a standardizing term is needed.<sup>4</sup> This term is often impossible to calculate analytically, and therefore fancy numeric estimations are used.</p>
+<p>The denominator in Bayes’ theorem - <img src="https://latex.codecogs.com/png.latex?P(Data)"> is called the evidence. It’s important role is to act as the <em>standardizing</em> term to the numerator (<img src="https://latex.codecogs.com/png.latex?Likelihood%20%5Ccdot%20Prior">). Recall that the likelihood is not a probability distribution, so in order for it’s product with the Prior - a probability distribution - to be equal to the Posterior - another probability distribution - a standardizing term is needed. This term is often impossible to calculate analytically, and therefore fancy numeric estimations are used.<sup>4</sup></p>
 </section>
 <section id="posterior" class="level3">
 <h3 class="anchored" data-anchor-id="posterior">Posterior</h3>
@@ -108,7 +109,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>I think that Getting the posterior from the Likelihood and the prior makes more sense visually (make sure to also play with Kristoffer Magnusson’s wonderful interactive <a href="https://rpsychologist.com/d3/bayes/">visualization</a>):</p>
+<p>I think that Getting a posterior from the Likelihood and the prior makes more sense visually (make sure to also play with Kristoffer Magnusson’s wonderful interactive <a href="https://rpsychologist.com/d3/bayes/">visualization</a>):</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
@@ -172,7 +173,9 @@ Important
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">data <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">&lt;-</span> cats</span>
+font-style: inherit;">&lt;-</span> MASS<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span>cats</span>
 <span id="cb2-2"></span>
 <span id="cb2-3"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -698,7 +701,7 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
 <p>How many parameters are there?<br>
 1. Intercept - Representing the value of <code>Bwt</code> when the IV is <img src="https://latex.codecogs.com/png.latex?0">. Meaning it is the estimated mean weight of female cats.<br>
 2. Slope of <img src="https://latex.codecogs.com/png.latex?SexMale"> - Estimated difference in body weight between male and female cats.<br>
-3. <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2"> - The variance of the residuals (variance of the conditional-mean normal distribution of <code>Bwt</code>).<br>
+3. Sigma - The variance of the residuals (variance of the conditional-mean normal distribution of <code>Bwt</code>).<br>
 </p>
 <p>What prior knowledge can we incorporate into each parameter?<br>
 1. average weight of female cats should probably be ~2Kg-3Kg.<br>
@@ -748,18 +751,6 @@ font-style: inherit;">"sigma"</span>)</span></code></pre></div>
 </section></div><section id="posterior-estimation" class="level4">
 <h4 class="anchored" data-anchor-id="posterior-estimation">Posterior estimation</h4>
 <p>In case you missed it, we already defined our likelihood function to be the normal likelihood function. This is implicit in our choice of the ordinary linear regression model.</p>
-<p>This is code snippet is necessary when using the <code>cmdstanr</code> backend for <code>brms</code>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">cmdstanr<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">set_cmdstan_path</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">path =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"your_path_to_cmdstanr_directory"</span>)</span></code></pre></div>
-</div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -780,10 +771,22 @@ Convergence Measures
 </ul>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </div>
+</div>
+<p>One last thing before fitting the model, this is code snippet is necessary when using the <code>cmdstanr</code> backend for <code>brms</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">cmdstanr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set_cmdstan_path</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">path =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"your_path_to_cmdstanr_directory"</span>)</span></code></pre></div>
 </div>
 <p>Now for posterior estimation!</p>
 <div class="cell">
@@ -1450,7 +1453,7 @@ font-style: inherit;">ggMarginal</span>(p, <span class="at" style="color: #65742
 background-color: null;
 font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"histogram"</span>,</span>
+font-style: inherit;">"density"</span>,</span>
 <span id="cb12-16">           <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">xparams =</span> <span class="fu" style="color: #4758AB;
@@ -1537,7 +1540,38 @@ font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #6
 background-color: null;
 font-style: inherit;">values =</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"#2ea64e"</span>)</span></code></pre></div>
+font-style: inherit;">"#2ea64e"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb15-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#E3E2DF"</span>),</span>
+<span id="cb15-4">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">panel.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#E3E2DF"</span>),</span>
+<span id="cb15-5">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.background =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1545,7 +1579,7 @@ font-style: inherit;">"#2ea64e"</span>)</span></code></pre></div>
 </section>
 <section id="highest-density-interval-hdi" class="level5">
 <h5 class="anchored" data-anchor-id="highest-density-interval-hdi">Highest Density Interval (HDI)</h5>
-<p>A common misconception of the frequentist’s confidence interval (with 95% credibility) is that it has a 95% probability of containing the true value of the parameter. The Bayesian Highest Density Interval however gives exactly this. The main 95% of the posterior have a 95% probability of containing the real value of the parameter. 95% are obviuosly arbitrary, and can be defined to anything else:</p>
+<p>A common misconception of the frequentist’s confidence interval (with 95% credibility) is that it has a 95% probability of containing the true value of the parameter. The Bayesian Highest Density Interval however gives exactly this. The main 95% of the posterior have a 95% probability of containing the real value of the parameter. 95% are obviously arbitrary, and can be defined to anything else:</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
@@ -2116,7 +2150,7 @@ Vehtari, Aki, Andrew Gelman, Daniel Simpson, Bob Carpenter, and Paul-Christian B
   <category>tutorial</category>
   <category>Bayes</category>
   <guid>https://tomerzipori.github.io/blog/posts/bayes101/index.html</guid>
-  <pubDate>Sun, 11 Feb 2024 15:17:17 GMT</pubDate>
+  <pubDate>Mon, 12 Feb 2024 13:42:57 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/bayes101/favicon.png" medium="image" type="image/png" height="167" width="144"/>
 </item>
 <item>
