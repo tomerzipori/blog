@@ -19,15 +19,18 @@ editor: visual
 bibliography: Bayes101.bib
 ---
 
+# Setup
+
+Loading some packages that will be used for demonstrations and analysis:
+
 ```{r}
-#| echo: false
 #| output: false
-library(tidyverse)
-library(tidybayes)
-library(brms)
-library(distributional)
-library(ggdist)
-library(ggExtra)
+library(tidyverse)      # Data wrangling and plotting
+library(ggdist)         # Easy and aesthetic plotting of distributions
+library(ggExtra)        # Adding marginal distributions for 2d plots
+library(tidybayes)      # Tidy processing of Bayesian models and extraction of MCMC chains
+library(brms)           # Bayesian modeling and posterior estimation with MCMC using Stan
+library(distributional) # Plotting of theoretical distributions (for likelihood functions plots)
 ```
 
 # Motivation
@@ -75,7 +78,8 @@ The term $P(Data|Parameters)$ describes the *likelihood* of the observed data un
 [^3]: Which is identical to the normal density function.
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "ggplot code"
 ggplot(data = data.frame(x = c(-4, 4)), aes(x)) +
   stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 1), linewidth = 1, color = "#fca903") +
   ylab(expression(L(theta,x))) +
@@ -91,7 +95,8 @@ ggplot(data = data.frame(x = c(-4, 4)), aes(x)) +
 If, on the other hand, I suspect that my dependent variable comes from a Poisson distribution (e.g. number of times a participant scratched their nose), I will use the Poisson likelihood function:
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "ggplot code"
 ggplot(data = data.frame(x = seq(0, 16, 1)), aes(x)) +
   geom_line(aes(y = dpois(x, 6)), linewidth = 1, color = "#fca903") +
   ylab(expression(L(theta,x))) +
@@ -114,14 +119,15 @@ The next term - $P(Parameters)$ is called the *Prior* probability distribution. 
 -   _Range of possible/probable parameter values_ - Some parameters can only take certain values, creating a-priori hard limits for their value. For example, a normal distribution's variance $\sigma^2$ can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "ggplot code"
 ggplot(data = data.frame(x = c(0, 13)), aes(x)) +
-  stat_function(fun = dexp, n = 101, args = list(rate = 0.5), linewidth = 1, fill = "#a4c8f5", color = "#0373fc", geom = "area", outline.type = "upper") +
+  stat_function(fun = dexp, n = 101, args = list(rate = 1), linewidth = 1, fill = "#a4c8f5", color = "#0373fc", geom = "area", outline.type = "upper") +
   ylab(expression(density(theta))) +
   xlab(expression(theta)) +
   scale_y_continuous(breaks = NULL) +
   scale_x_continuous(breaks = seq(0, 13, 1)) +
-  labs(title = expression(Exp(0.5)), subtitle = "Values below 0 are assigned a probability of 0") +
+  labs(title = expression(Exp(1)), subtitle = "Values below 0 are assigned a probability of 0") +
   theme_classic() +
   theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
         plot.subtitle = element_text(size = 13, family = "serif", hjust = 0.5),
@@ -133,7 +139,8 @@ ggplot(data = data.frame(x = c(0, 13)), aes(x)) +
 While in the second case, a prior like this would be better:
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "ggplot code"
 ggplot(data = data.frame(x = c(-5, 9)), aes(x)) +
   stat_function(fun = dnorm, n = 101, args = list(mean = 2, sd = 1.5), linewidth = 1, fill = "#a4c8f5", color = "#0373fc", geom = "area", outline.type = "upper") +
   geom_vline(xintercept = 0, linetype = "dashed", linewidth = 0.5) +
@@ -155,36 +162,37 @@ ggplot(data = data.frame(x = c(-5, 9)), aes(x)) +
     -   *Weak Priors* - These priors are typically wide and cover a large range of possible values.
     -   *Strong Priors* - These priors are narrower and leaves few parameter values probable.
 
-    ```{r}
-    #| echo: false
-    #| column: screen-inset
-    #| layout-nrow: 1
-    ggplot(data = data.frame(x = c(-28, 28)), aes(x)) +
-      stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 8), linewidth = 1, fill = "#a4c8f5", color = "#0373fc", geom = "area", outline.type = "upper") +
-      ylab(expression(density(theta))) +
-      xlab(expression(theta)) +
-      scale_y_continuous(breaks = NULL) +
-      scale_x_continuous(breaks = seq(-28, 28, 2)) +
-      labs(title = expression(N(0, 8^2))) +
-      theme_classic() +
-      theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
-            axis.title = element_text(size = 13),
+```{r}
+#| code-fold: true
+#| code-summary: "ggplot code"
+#| column: screen-inset
+#| layout-nrow: 1
+ggplot(data = data.frame(x = c(-28, 28)), aes(x)) +
+  stat_function(fun = dnorm, n = 101, args = list(mean = 0, sd = 8), linewidth = 1, fill = "#a4c8f5", color = "#0373fc", geom = "area", outline.type = "upper") +
+  ylab(expression(density(theta))) +
+  xlab(expression(theta)) +
+  scale_y_continuous(breaks = NULL) +
+  scale_x_continuous(breaks = seq(-28, 28, 2)) +
+  labs(title = expression(N(0, 8^2))) +
+  theme_classic() +
+  theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
+        axis.title = element_text(size = 13),
         plot.background = element_rect(fill = "#E3E2DF"),
         panel.background = element_rect(fill = "#E3E2DF"))
 
-    ggplot(data = data.frame(x = c(-28, 28)), aes(x)) +
-      stat_function(fun = dt, args = list(df = 10), linewidth = 1, fill = "#a4c8f5", color = "#0373fc", geom = "area", outline.type = "upper") +
-      ylab(expression(density(theta))) +
-      xlab(expression(theta)) +
-      scale_y_continuous(breaks = NULL) +
-      scale_x_continuous(breaks = seq(-28, 28, 2)) +
-      labs(title = expression(students_t(df = 10))) +
-      theme_classic() +
-      theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
-            axis.title = element_text(size = 13),
+ggplot(data = data.frame(x = c(-28, 28)), aes(x)) +
+  stat_function(fun = dt, args = list(df = 10), linewidth = 1, fill = "#a4c8f5", color = "#0373fc", geom = "area", outline.type = "upper") +
+  ylab(expression(density(theta))) +
+  xlab(expression(theta)) +
+  scale_y_continuous(breaks = NULL) +
+  scale_x_continuous(breaks = seq(-28, 28, 2)) +
+  labs(title = expression(students_t(df = 10))) +
+  theme_classic() +
+  theme(plot.title = element_text(size = 17, family = "serif", hjust = 0.5),
+        axis.title = element_text(size = 13),
         plot.background = element_rect(fill = "#E3E2DF"),
         panel.background = element_rect(fill = "#E3E2DF"))
-    ```
+```
 
 ### Evidence
 
@@ -197,8 +205,10 @@ The denominator in Bayes' theorem - $P(Data)$ is called the evidence. It's impor
 The posterior probability of your model - $P(Parameters|Data)$ - is the ultimate goal of your analysis. This probability distribution tells you what values of your parameters are probable and what values not so much. This is a shift of perspective from the usual frequentist logic - instead of resulting in one number as estimate for your parameter, you end up with a whole distribution!\
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "ggplot code"
 set.seed(14)
+
 means <- rnorm(10000, -2, 1.5)
 freq_estimate <- mean(means)
 
@@ -221,7 +231,8 @@ ggplot(data.frame(y = means), aes(x = y)) +
 I think that Getting a posterior from the Likelihood and the prior makes more sense visually (make sure to also play with Kristoffer Magnusson's wonderful interactive [visualization](https://rpsychologist.com/d3/bayes/)):
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "simulated parameters"
 set.seed(14)
 
 actual_lambda <- 44
@@ -235,8 +246,8 @@ posterior_beta <- prior_beta + n
 ```
 
 ```{r}
-#| echo: false
-
+#| code-fold: true
+#| code-summary: "ggplot code"
 pois_likelihood <- function(theta, data, scale = 1) {
   sapply(theta, function(.theta) {
     scale * exp(sum(dpois(data, lambda = .theta, log = T)))
@@ -281,7 +292,8 @@ All of the examples above refer to estimation of one parameter. Often, your mode
 without getting into detail, know that the simple one-parameter case scales quite nicely into *n*-parameter models. For example, instead of the $P(\theta)$ prior from before, you can have $P(\theta_0, \theta_1,...,\theta_n)$ prior. A prior of an intercept and a slope for a simple regression model could look like this:
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "2d ggplot code"
 set.seed(14)
 
 mu0 <- -2
@@ -409,7 +421,8 @@ $$ Where $\hat{\tau}$ is a measure of chain auto-correlation (with a minimum val
 -   *Chain mixing (R-hat)* - when sampling more than two chains or more (most of the times), we will want to check if all of them converge to the same distribution. This is measured with the $\hat{R}$ measure (@vehtari_rank-normalization_2021) which equals to $1$ when convergence is maximal. Values above $1.01$ are not good.
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "tidybayes & ggplot code"
 p <- spread_draws(posterior, b_Intercept) |>
   ggplot(aes(x = .iteration, y = b_Intercept)) +
     geom_line(aes(color = factor(.chain))) +
@@ -475,7 +488,7 @@ If we omit the annoying sigma parameter, we can visualize the 2D posterior of th
 
 ```{r}
 #| code-fold: true
-#| code-summary: "See code"
+#| code-summary: "tidybayes & ggplot code"
 
 draws <- spread_draws(posterior, b_Intercept, b_SexM)
 
@@ -499,7 +512,8 @@ ggMarginal(p, type = "density",
 We can also inspect the posterior of the `SexM` coefficient alone (sex difference in weight) - also called a *marginal posterior*:
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "ggplot code"
 p <- draws |>
   ggplot(aes(x = b_SexM)) + 
   stat_density(fill = "#2ea64e", color = "#145726", linewidth = 1) +
@@ -521,7 +535,8 @@ Notice the values most probable in the posterior are in the range of our hypothe
 How much of the posterior is negative/positive? The answer to this question gives the probability that the parameter is different from zero:
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "ggplot code"
 p <- draws |>
   ggplot(aes(x = b_SexM)) + 
   stat_density(fill = "#2ea64e", color = "#145726", linewidth = 1) +
@@ -558,7 +573,8 @@ plot(bayestestR::p_direction(posterior, parameters = "b_SexM")) +
 A common misconception of the frequentist's confidence interval (with 95% credibility) is that it has a 95% probability of containing the true value of the parameter. The Bayesian Highest Density Interval however gives exactly this. The main 95% of the posterior have a 95% probability of containing the real value of the parameter. 95% are obviously arbitrary, and can be defined to anything else:
 
 ```{r}
-#| echo: false
+#| code-fold: true
+#| code-summary: "plotting the HDI"
 p <- bayestestR::hdi(posterior, parameters = "b_SexM", ci = 0.89) |>
   plot() +
     theme_classic() +
