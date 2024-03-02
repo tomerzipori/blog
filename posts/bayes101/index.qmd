@@ -2,7 +2,7 @@
 title: "Bayesian Modeling for Psychologists, Part 1"
 description: "Updating our statistical skills"
 author: "Tomer Zipori"
-date: last-modified
+date: "02/11/24"
 categories: [code, tutorial, Bayes]
 image: "favicon.png"
 execute: 
