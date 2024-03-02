@@ -48,8 +48,7 @@ The Bayesian interpretation of probability as degree of belief stands at the fou
 
 ### Discrete events
 
-So what is *Bayesian* about Bayesian statistics? going back to *Intro to statistics* in your BA, you learned to derive the Bayes theorem in probability:
-$$
+So what is *Bayesian* about Bayesian statistics? going back to *Intro to statistics* in your BA, you learned to derive the Bayes theorem in probability: $$
 P(A|B)=\frac{P(B|A) \cdot P(A)}{P(B)}
 $$
 
@@ -116,7 +115,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 
 The next term - $P(Parameters)$ is called the *Prior* probability distribution. This term represents the prior knowledge about the parameters in your model. Choosing a prior, a process that is sometime called *prior elicitation*, is difficult. How can one take into account all prior knowledge about something and neatly represent it with one probability distribution?? For this reason I will refer to 2 relatively-easy-to-define aspects of prior elicitation:\
 
--   _Range of possible/probable parameter values_ - Some parameters can only take certain values, creating a-priori hard limits for their value. For example, a normal distribution's variance $\sigma^2$ can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:
+-   *Range of possible/probable parameter values* - Some parameters can only take certain values, creating a-priori hard limits for their value. For example, a normal distribution's variance $\sigma^2$ can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:
 
 ```{r}
 #| code-fold: true
@@ -157,7 +156,7 @@ ggplot(data = data.frame(x = c(-5, 9)), aes(x)) +
         panel.background = element_rect(fill = "#E3E2DF"))
 ```
 
--   _Degree of informativeness_ - Priors also differ from each other in their impact on the model. A prior can be weak or strong in this aspect.
+-   *Degree of informativeness* - Priors also differ from each other in their impact on the model. A prior can be weak or strong in this aspect.
 
     -   *Weak Priors* - These priors are typically wide and cover a large range of possible values.
     -   *Strong Priors* - These priors are narrower and leaves few parameter values probable.
@@ -603,4 +602,3 @@ parameters::model_parameters(posterior, centrality = "all") |> insight::print_ht
 # Conclusion
 
 This post is just a brief introduction of Bayesian statistical modeling. For those psychology students who want to enrich their statistical analyses, it should provide the basic tools and intuition. This post will be followed up with a deeper dive in to more complex models (multiple linear models, mixed-effects linear models, generalized linear models, ordinal regression models...).
-

@@ -1,0 +1,1164 @@
+---
+title: "Bayesian Modeling for Psychologists, Part 2"
+description: "Mixed effects linear models, generalized linear models"
+author: "Tomer Zipori"
+date: last-modified
+categories: [code, tutorial, Bayes]
+image: "favicon.png"
+execute: 
+  warning: false
+  message: false
+  cache: false
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: right
+editor: visual
+bibliography: Bayes102.bib
+---
+
+# Setup
+
+Loading some packages for demonstrations and analysis:
+
+```{r}
+#| output: false
+library(tidyverse)      # Data wrangling and plotting
+library(ggdist)         # Easy and aesthetic plotting of distributions
+library(ggExtra)        # Adding marginal distributions for 2d plots
+library(tidybayes)      # Tidy processing of Bayesian models and extraction of MCMC chains
+library(bayestestR)     # Nice plots for brms models
+library(brms)           # Bayesian modeling and posterior estimation with MCMC using Stan
+library(lme4)           # fitting frequentist hierarchical linear models
+library(lmerTest)       # fitting frequentist hierarchical linear models
+library(parameters)     # clean extraction of model parameters
+library(distributional) # Plotting of theoretical distributions (for likelihood functions plots)
+```
+
+```{r}
+#| echo: false
+cmdstanr::set_cmdstan_path(path = "C:/Users/tomer/AppData/Local/R/win-library/4.2/cmdstan-2.32.1")
+```
+
+```{r}
+#| echo: false
+blog_theme <- theme_classic() + theme(plot.background = element_rect(fill = "#E3E2DF"),
+                                      panel.background = element_rect(fill = "#E3E2DF"),
+                                      legend.background = element_rect(fill = "#E3E2DF"),
+                                      plot.title = element_text(size = 20, family = "serif", hjust = 0.5),
+                                      plot.subtitle = element_text(size = 12, family = "serif", hjust = 0.5),
+                                      legend.title = element_text(size = 13, family = "serif", hjust = 0.5),
+                                      axis.title = element_text(size = 12, family = "serif"))
+```
+
+# Introduction
+
+This is the second part of "Bayesian modeling for Psychologists", see part 1 [here](https://tomerzipori.github.io/blog/posts/bayes101/). In this post I will show how to model some more complicated regression models, more similar to the ones you will fit in you research.
+
+# Gaussian regression
+
+## OLS Linear model
+
+In the first part we looked at a simple linear regression model with a categorical predictor (a t-test). Let's look at linear regression with one continuous predictor:
+
+```{r}
+iris <- iris
+
+head(iris)
+```
+
+Probably some relationship between Petal width and length:
+
+```{r}
+ols_model <- lm(Petal.Length ~ Petal.Width, data = iris)
+```
+
+```{r}
+model_parameters(ols_model) |> insight::print_html()
+```
+
+Maybe some interaction with species?
+
+```{r}
+ols_model_int <- lm(Petal.Length ~ Petal.Width * Species, data = iris)
+```
+
+```{r}
+model_parameters(ols_model_int) |> insight::print_html()
+```
+
+We get the following model:
+
+$$
+Petal.Length=1.33+0.55 \cdot Petal.Width+0.45 \cdot SpeciesVersicolor+2.91 \cdot SpeciesVirginica+1.32 \cdot Petal.Width \cdot SpeciesVersicolor+0.1 \cdot Petal.Width \cdot SpeciesVirginica
+$$
+
+In order for the intercept to have practical meaning we need to center the predictor `Petal.Width`:
+
+```{r}
+iris$Petal.Width_c <- scale(iris$Petal.Width, scale = FALSE)[,1]
+```
+
+Fitting the model again:
+
+```{r}
+ols_model_centered <- lm(Petal.Length ~ Petal.Width_c * Species, data = iris)
+```
+
+Now the intercept will be the predicted `Petal.Length` for Setosa flowers with mean `Petal.Width`:
+
+```{r}
+model_parameters(ols_model_centered) |> insight::print_html()
+```
+
+The model is:
+
+$$
+Petal.Length=1.98+0.55 \cdot Petal.Width+2.04 \cdot SpeciesVersicolor+3.03 \cdot SpeciesVirginica+1.32 \cdot Petal.Width \cdot SpeciesVersicolor+0.1 \cdot Petal.Width \cdot SpeciesVirginica
+$$
+
+### Visualization
+
+```{r}
+f_plot <- iris |>
+  ggplot(aes(x = Petal.Width, y = Petal.Length, color = Species, fill = Species)) +
+  geom_point(show.legend = F) +
+  geom_smooth(method = "lm") +
+  scale_fill_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  scale_color_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  blog_theme
+
+f_plot
+```
+
+## Bayesian linear model
+
+In order to fit the same model in a Bayesian way, we will first need to define the prior distribution. In this case there are a total of 7 parameters.
+
+Let's verify this with the `get_prior()` function:
+
+```{r}
+get_prior(formula = Petal.Length ~ Petal.Width_c * Species,
+          data = iris,
+          family = gaussian())
+```
+
+I will model some positive relationship between *length* and *width*, a relatively weakly-informed prior on the intercept, and a very wide prior on the not-interesting sigma parameter. On the other parameters I will have an "agnostic" zero-centered Normal distribution:
+
+::: column-margin
+#### student-t prior
+
+The student-t distribution is symmetrical like the Gaussian distribution, but it has thicker "tails". This allows the model to explore wider area of the possible parameter value space.
+
+```{r}
+#| echo: false
+data.frame(x = seq(-6, 6, length=80)) |>
+  mutate(d = dstudent_t(x = x, df = 3)) |>
+  ggplot(aes(x = x, y = d)) +
+  geom_area(alpha = 0.67, color = "black") +
+  scale_x_continuous(limits = c(-6, 6)) +
+  geom_area(data = data.frame(x = seq(-6, 6, length=80),
+                                 d = dnorm(seq(-6, 6, length=80), 0, 1)),
+               aes(x = x, y = d), inherit.aes = F, fill = "gray", color = "gray14") +
+  labs(title = "Student-t VS. Normal distributions") +
+  blog_theme
+```
+:::
+
+```{r}
+prior_iris <- set_prior("normal(1, 3)", coef = "Petal.Width_c") +
+  set_prior("normal(0, 3)", coef = "Speciesversicolor") +
+  set_prior("normal(0, 3)", coef = "Speciesvirginica") +
+  set_prior("normal(0, 3)", coef = "Petal.Width_c:Speciesversicolor") +
+  set_prior("normal(0, 3)", coef = "Petal.Width_c:Speciesvirginica") +
+  set_prior("normal(0, 3)", class = "Intercept") +
+  set_prior("exponential(0.001)", class = "sigma")
+```
+
+::: column-margin
+#### Exponential prior
+
+Because variances are strictly positive, the exponential distribution is a common choice for it (and other variance parameters):
+
+```{r}
+#| echo: false
+dummy_plot <- data.frame(x = seq(0, 500, length=2000)) |>
+  mutate(d = dexp(x = x, rate = 0.01)) |>
+  ggplot(aes(x = x, y = d)) +
+  geom_area(fill = "#a4c8f5", color = "gray34") +
+  labs(y = NULL, x = NULL) +
+  blog_theme +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank())
+
+
+dummy_plot
+```
+:::
+
+Fitting a model:
+
+```{r}
+#| eval: false
+bayes_model_iris <- brm(Petal.Length ~ Petal.Width_c * Species,
+                        data = iris,
+                        family = gaussian(),
+                        prior = prior_iris,
+                        cores = 4,
+                        chains = 4,
+                        iter = 4000,
+                        backend = "cmdstanr")
+```
+
+```{r}
+#| echo: false
+#| eval: false
+write_rds(bayes_model_iris, file = "../bayes102/b_model_iris.rds")
+```
+
+```{r}
+#| echo: false
+bayes_model_iris <- read_rds("../bayes102/b_model_iris.rds")
+```
+
+```{r}
+model_parameters(bayes_model_iris, centrality = "all") |> insight::print_html()
+```
+
+```{r}
+model_parameters(ols_model_centered)
+```
+
+Convergence metrics looking good, we can proceed to interpret the posterior.
+
+### Visualization
+
+Visualizing a Bayesian regression model can be done in several ways:
+
+#### Visualizing regression parameters themselves
+
+Like we saw in Part 1, we can directly inspect the marginal posteriors of the coefficients themselves. First we will extract them into a data.frame (and rename interaction terms for convenience):
+
+```{r}
+posterior_iris <- spread_draws(bayes_model_iris, b_Intercept, b_Petal.Width_c, b_Speciesversicolor, b_Speciesvirginica, !!sym("b_Petal.Width_c:Speciesversicolor"), !!sym("b_Petal.Width_c:Speciesvirginica"), sigma) |>
+  rename(b_Petal.WidthXSpeciesversicolor = !!sym("b_Petal.Width_c:Speciesversicolor"),
+         b_Petal.WidthXSpeciesvirginica = !!sym("b_Petal.Width_c:Speciesvirginica"))
+```
+
+```{r}
+head(posterior_iris)
+```
+
+In the output of `spread_draws` we get 10 columns:\
+\* *.chain* = the index of the MCMC chain (4 total in our case).\
+\* *.iteration* = the index of the draw within it's chain (each chain is 500 samples long).\
+\* *.draw* = the overall index of the draw (2000 samples in the posterior overall).\
+\* *parameter_name* - draw's value for each parameter.\
+
+Plotting the marginal posteriors:
+
+```{r}
+posterior_iris |>
+  pivot_longer(cols = c(b_Intercept, b_Petal.Width_c, b_Speciesversicolor, b_Speciesvirginica, b_Petal.WidthXSpeciesversicolor, b_Petal.WidthXSpeciesvirginica),
+               names_to = "variable") |>
+  ggplot(aes(x = value, y = variable, fill = after_stat(x > 0))) +
+  stat_halfeye() +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_manual(values = c("#d1495b", "#00798c"), labels = c("Negative", "Positive")) +
+  scale_x_continuous(breaks = seq(-4, 4, 0.5), labels = seq(-4, 4, 0.5)) +
+  labs(fill = "Direction of Effect") +
+  blog_theme
+```
+
+#### Visualizing the regression line(s)
+
+Marginal posteriors are nice, but are not a visualization of the model itself. Like in the frequentist model, we would like to see the regression line itself. How to do it?
+
+The regression line is a line of conditional means:
+
+$$
+\mu|X=\beta X
+$$/
+
+But, we have 4000 samples from the posterior containing possible values for each parameter $\beta_i$ - a.k.a a distribution. So for each possible row in the data set we will have a distribution (4000 values) of predicted conditional means $\mu|X$:
+
+::: column-margin
+#### Uncertainty
+
+Why not summarizing the MCMC chains when inferring or visualizing a Bayesian model?
+
+A key aspect of statistical modeling and visualization is the measurement of uncertainty in the data. In the frequentist world, this is represented with standard errors and confidence intervals.
+
+In the Bayesian world uncertainty is represented by the MCMC samples themselves, creating the posterior distribution. For that reason we will make calculations and visualizations with the MCMC samples and not with their summaries.
+:::
+
+Creating a data.frame of independent variables (a design matrix) for creating predictions from the posterior:
+
+```{r}
+new_data <- expand_grid(Petal.Width_c = seq(min(iris$Petal.Width_c), max(iris$Petal.Width_c), length=200),
+                        Species = unique(iris$Species))
+
+head(new_data)
+```
+
+We actually need to remove some rows from this data frame. This is because not all values of *Petal.Width* appear in all species. The range of observed widths is different between different species.
+
+```{r}
+range_setosa <- c(min(iris$Petal.Width_c[iris$Species == "setosa"]), max(iris$Petal.Width_c[iris$Species == "setosa"]))
+range_versicolor <- c(min(iris$Petal.Width_c[iris$Species == "versicolor"]), max(iris$Petal.Width_c[iris$Species == "versicolor"]))
+range_virginica <- c(min(iris$Petal.Width_c[iris$Species == "virginica"]), max(iris$Petal.Width_c[iris$Species == "virginica"]))
+
+
+new_data <- new_data |>
+  mutate(extrapolation = case_when((Species == "setosa" & Petal.Width_c < range_setosa[1]) | (Species == "setosa" & Petal.Width_c > range_setosa[2]) ~ TRUE,
+                                   (Species == "versicolor" & Petal.Width_c < range_versicolor[1]) | (Species == "versicolor" & Petal.Width_c > range_versicolor[2]) ~ TRUE,
+                                   (Species == "virginica" & Petal.Width_c < range_virginica[1]) | (Species == "virginica" & Petal.Width_c > range_virginica[2]) ~ TRUE,
+                                   .default = FALSE)) |>
+  filter(!extrapolation)
+```
+
+Calculating the distribution of conditional means for the second row: $Petal.Widthc=-1.099333; \ Species=versicolor$:
+
+```{r}
+posterior_iris |>
+  mutate(conditional_mean = b_Intercept + b_Petal.Width_c * -1.099333 + b_Speciesversicolor + b_Petal.WidthXSpeciesversicolor * -1.099333) |>
+  head()
+```
+
+```{r}
+posterior_iris |>
+  mutate(conditional_mean = b_Intercept + b_Petal.Width_c * -1.099333 + b_Speciesversicolor + b_Petal.WidthXSpeciesversicolor * -1.099333) |>
+  ggplot(aes(y = conditional_mean)) +
+  stat_slab(fill = "#d1495b", color = "gray34") +
+  labs(y = expression(mu)) +
+  blog_theme +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+```
+
+Calculating this for several rows gives us several more distributions of conditional means. I here use values realistic for each species to avoid extrapolation.
+
+```{r}
+width_values_setosa <- c(-1, -0.9, -0.7)
+width_values_versicolor <- c(0, 0.1, 0.3)
+width_values_virginica <- c(0.2, 0.8, 1.1)
+
+posterior_iris |>
+  mutate(conditionalmean_1_setosa = b_Intercept + b_Petal.Width_c * width_values_setosa[1],
+         conditionalmean_2_setosa = b_Intercept + b_Petal.Width_c * width_values_setosa[2],
+         conditionalmean_3_setosa = b_Intercept + b_Petal.Width_c * width_values_setosa[3],
+         conditionalmean_1_versicolor = b_Intercept + b_Petal.Width_c * width_values_versicolor[1] + b_Speciesversicolor + b_Petal.WidthXSpeciesversicolor * width_values_versicolor[1],
+         conditionalmean_2_versicolor = b_Intercept + b_Petal.Width_c * width_values_versicolor[2] + b_Speciesversicolor + b_Petal.WidthXSpeciesversicolor * width_values_versicolor[2],
+         conditionalmean_3_versicolor = b_Intercept + b_Petal.Width_c * width_values_versicolor[3] + b_Speciesversicolor + b_Petal.WidthXSpeciesversicolor * width_values_versicolor[3],
+         conditionalmean_1_virginica = b_Intercept + b_Petal.Width_c * width_values_virginica[1] + b_Speciesvirginica + b_Petal.WidthXSpeciesvirginica * width_values_virginica[1],
+         conditionalmean_2_virginica = b_Intercept + b_Petal.Width_c * width_values_virginica[2] + b_Speciesvirginica + b_Petal.WidthXSpeciesvirginica * width_values_virginica[2],
+         conditionalmean_3_virginica = b_Intercept + b_Petal.Width_c * width_values_virginica[3] + b_Speciesvirginica + b_Petal.WidthXSpeciesvirginica * width_values_virginica[3]) |>
+  pivot_longer(cols = c(conditionalmean_1_setosa, conditionalmean_2_setosa, conditionalmean_3_setosa,
+                        conditionalmean_1_versicolor, conditionalmean_2_versicolor, conditionalmean_3_versicolor,
+                        conditionalmean_1_virginica, conditionalmean_2_virginica, conditionalmean_3_virginica),
+               names_to = c("junk", "index", "Species"),
+               names_sep = "_") |>
+  mutate(index = case_when(index == 1 & Species == "setosa" ~ width_values_setosa[1],
+                           index == 2 & Species == "setosa" ~ width_values_setosa[2],
+                           index == 3 & Species == "setosa" ~ width_values_setosa[3],
+                           index == 1 & Species == "versicolor" ~ width_values_versicolor[1],
+                           index == 2 & Species == "versicolor" ~ width_values_versicolor[2],
+                           index == 3 & Species == "versicolor" ~ width_values_versicolor[3],
+                           index == 1 & Species == "virginica" ~ width_values_virginica[1],
+                           index == 2 & Species == "virginica" ~ width_values_virginica[2],
+                           index == 3 & Species == "virginica" ~ width_values_virginica[3])) |>
+  ggplot(aes(x = index, y = value, fill = Species)) +
+    stat_slab(color = "gray33", linewidth = 0.5) +
+    scale_fill_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+    labs(x = "Petal.Width", y = expression(mu)) +
+    blog_theme
+```
+
+We can use the `add_linpred_draws()` function from the awesome `tidybayes` package [@kay_tidybayes_2020] in order to do this thing for all values of X, and finally plot the regression line with the credible interval around it:
+
+```{r}
+new_data |>
+  add_linpred_draws(bayes_model_iris) |>
+  ggplot(aes(x = Petal.Width_c, y = .linpred, fill = Species, color = Species)) +
+  geom_point(data = iris, aes(y = Petal.Length, color = Species), show.legend = F) +
+  stat_lineribbon(.width = c(0.80, 0.85, 0.97), alpha = 0.7) +
+  scale_fill_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  scale_color_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  labs(y = expression(mu), fill = "Species", title = "80%, 85% and 97% Credible Intervals") +
+  guides(color = "none") +
+  blog_theme
+```
+
+This is similar to the frequentist confidence interval, just remember that these interval **actually** represents 80%, 85%, and 97% of regression lines.
+
+I think that a better way of visualizing uncertainty is by plotting the individual line themselves. Each draw represents a different regression line, plotting them all will give a nice uncertainty visualization:
+
+```{r}
+new_data <- new_data |>
+  select(-extrapolation) |>
+  add_linpred_draws(bayes_model_iris, ndraws = 44, seed = 14)
+```
+
+We can look at individual draws:
+
+```{r}
+new_data |>
+  filter(.draw == 14) |>
+  ggplot(aes(x = Petal.Width_c, y = .linpred, color = Species)) +
+  geom_line(linewidth = 1) +
+  geom_point(data = iris, aes(x = Petal.Width_c, y = Petal.Length, color = Species), inherit.aes = F, show.legend = F) +
+  scale_color_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  labs(y = "Petal.Length", title = "Draw number 14") +
+  blog_theme
+```
+
+Or we can group by draw index and look at all the lines:
+
+```{r}
+new_data |>
+  ggplot(aes(x = Petal.Width_c, y = .linpred, group = interaction(.draw, Species), color = Species)) +
+  geom_point(data = iris, aes(x = Petal.Width_c, y = Petal.Length, color = Species), inherit.aes = F, show.legend = F) +
+  geom_line(alpha = 0.4) +
+  scale_fill_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  scale_color_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  labs(y = "Petal.Length") +
+  blog_theme
+```
+
+# Hierarchical Linear Models (Mixed Effects Linear Models)
+
+Hierarchical linear regression models, or Mixed effects linear models are very popular in Psychology due to the fact that data in the field tends to be hierarchical (e.g. repeated measures of participants, participants nested in some larger groups, etc...). Because this post is already quite long, I will assume you have some knowledge about hierarchical structure, fixed and random effects and model estimation.\
+
+Luckily for us, `brms` is more then capable at estimating mixed effects models. It even has the `lme4`/`nlme` syntax in the logo!
+
+![the effect of r on b with random slopes of m to each grouping variable s???](../bayes102/brms.png){.lightbox fig-align="center" width="100"}
+
+Let's look at the classic `sleepstudy` dataset containing "*The average reaction time per day (in milliseconds) for subjects in a sleep deprivation study*".
+
+```{r}
+sleep <- sleepstudy
+
+glimpse(sleep)
+```
+
+```{r}
+sleep |>
+  ggplot(aes(x = Days, y = Reaction)) +
+  geom_point() +
+  geom_smooth(method = "lm", fill = "#d1495b", color = "#5D001E") +
+  scale_x_continuous(breaks = seq(0, 9, 1), labels = seq(0, 9, 1)) +
+  facet_wrap(~Subject) +
+  blog_theme
+```
+
+Full model for predicting reaction time can be:
+
+$$
+ReactionTime \sim N(\mu, \sigma^2)
+$$
+
+And:
+
+Level 1: Reaction time of subject $i$ in day $j$ is:/ $$
+RT_{ij}=\beta_{0i}+\beta_{1i} \cdot Days_j +e_{ij}
+$$
+
+Level 2 (random offset of coefficients for subject):/ $$
+\beta_{0i}=\gamma_{00}+\tau_{0i}
+$$
+
+$$
+\beta_{1i}=\gamma_{10}+\tau_{1i}
+$$
+
+Where:
+
+$$
+\begin{bmatrix}
+      \beta_0 \cr
+      \beta_1
+\end{bmatrix} \sim MVN(\begin{bmatrix}
+                       \gamma_{00} \cr
+                       \gamma_{10}
+                       \end{bmatrix},\begin{bmatrix}
+                                      \tau_0^2 & \tau_0\tau_1\rho_{01} \cr
+                                      \tau_1\tau_0\rho_{01} & \tau_1^2
+                                      \end{bmatrix})
+$$
+
+And $\rho_{01}$ is the correlation coefficient between random intercepts and slopes.
+
+## Maximum Likelihood Estimation
+
+Fitting this model with the frequentist ML method:
+
+```{r}
+sleep_model_ml <- lmer(Reaction ~ 1 + Days + (1 + Days | Subject),
+                       data = sleep)
+```
+
+Using the `sjPlot::tab_model()` function to produce a nice summarized statistics of mixed models:
+
+```{r}
+sjPlot::tab_model(sleep_model_ml)
+```
+
+## Bayesian Estimation
+
+How many parameters? we have 2 fixed effects (intercept and slope), 3 random effects (random intercept, random slope and their correlation), and sigma - A total of 6 parameters.
+
+```{r}
+get_prior(formula = Reaction ~ 1 + Days + (1 + Days | Subject),
+          data = sleep,
+          family = gaussian())
+```
+
+### Prior elicitation
+
+```{r}
+prior_sleep <- set_prior("normal(10, 4)", coef = "Days") + # RT should increase with continued sleep deprivation
+  set_prior("exponential(1)", class = "sd") + # setting a prior on all random variances at once
+  set_prior("exponential(0.01)", class = "sigma")
+```
+
+### Model estimation
+
+```{r}
+#| eval: false
+bayes_model_sleep <- brm(formula = Reaction ~ 1 + Days + (1 + Days | Subject),
+                         data = sleep,
+                         family = gaussian(),
+                         prior = prior_sleep,
+                         chains = 4,
+                         cores = 4,
+                         iter = 2000,
+                         backend = "cmdstanr")
+```
+
+As our models get more complicated, the posterior distribution gets more hard for the MCMC sampler to sample from. That can result in low ECC and/or high Rhat. One solution can be simply increasing the length of each MCMC chain! this change to model definition doesn't require compiling the *Stan* code again, use the `update()` function instead:
+
+```{r}
+#| eval: false
+bayes_model_sleep <- update(bayes_model_sleep, iter = 9000)
+```
+
+```{r}
+#| eval: false
+#| echo: false
+write_rds(bayes_model_sleep, file = "../bayes102/b_model_sleep.rds")
+```
+
+```{r}
+#| echo: false
+bayes_model_sleep <- read_rds("../bayes102/b_model_sleep.rds")
+```
+
+```{r}
+model_parameters(bayes_model_sleep, centrality = "all", effects = "all") |> insight::print_html()
+```
+
+Extracting MCMC draws:
+
+```{r}
+posterior_sleep <- spread_draws(bayes_model_sleep, b_Intercept, b_Days, sd_Subject__Intercept, sd_Subject__Days, cor_Subject__Intercept__Days)
+```
+
+#### The parameters themselves
+
+```{r}
+posterior_sleep |>
+  ggplot(aes(x = b_Intercept, fill = "#d1495b")) +
+  stat_slab(color = "gray34") +
+  guides(color = "none", fill = "none") +
+  labs(title = "Intercept", y = NULL, x = NULL) +
+  scale_x_continuous(breaks = seq(230, 270, 5), labels = seq(230, 270, 5)) +
+  blog_theme +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+```{r}
+posterior_sleep |>
+  ggplot(aes(x = b_Days, fill = "#d1495b")) +
+  stat_slab(color = "gray34") +
+  guides(color = "none", fill = "none") +
+  labs(title = "b_Days", y = NULL, x = NULL) +
+  scale_x_continuous(breaks = seq(5, 17, 1), labels = seq(5, 17, 1)) +
+  blog_theme +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+```{r}
+posterior_sleep |>
+  select(.draw, sd_Subject__Intercept, sd_Subject__Days) |>
+  pivot_longer(cols = c(sd_Subject__Intercept, sd_Subject__Days),
+               names_to = "variable") |>
+  ggplot(aes(x = value, y = variable)) +
+  stat_slab(fill = "#d1495b", color = "gray34") +
+  scale_x_continuous(breaks = seq(0, 24, 2), labels = seq(0, 24, 2)) +
+  labs(title = "SD of random effects") +
+  blog_theme
+```
+
+These are actually the error terms of the random effects. We saw that they should be correlated:
+
+```{r}
+posterior_sleep |>
+  ggplot(aes(x = cor_Subject__Intercept__Days, fill = after_stat(x < 0))) +
+  stat_halfeye() +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  scale_fill_manual(values = c("#d1495b", "#00798c"), labels = c("Negative", "Positive")) +
+  scale_x_continuous(breaks = seq(-1, 1, 0.25), labels = seq(-1, 1, 0.25)) +
+  labs(title = "Correlation between random effects", fill = "Direction of Correlation", y = NULL, x = expression(r)) +
+  blog_theme
+```
+
+```{r}
+p_direction(bayes_model_sleep, effects = "random", parameters = "cor*")
+```
+
+#### The line
+
+Generating an empty design matrix:
+
+```{r}
+new_data_sleep <- expand_grid(Subject = factor(unique(sleep$Subject)),
+                              Days = c(0:9)) |>
+  add_linpred_draws(bayes_model_sleep, ndraws = 45, seed = 14)
+```
+
+```{r}
+new_data_sleep |>
+  ggplot(aes(x = Days, y = .linpred)) +
+  stat_lineribbon(.width = c(0.80, 0.85, 0.97), alpha = 0.7) +
+  geom_point(data = sleep, aes(y = Reaction), color = "#5D001E") +
+  scale_fill_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  scale_color_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  scale_x_continuous(breaks = c(0:9), labels = c(0:9)) +
+  scale_y_continuous(breaks = seq(200, 600, 50), labels = seq(200, 600, 50)) +
+  labs(y = expression(mu), fill = "% Credible Interval", title = "80%, 85% and 97% Credible Intervals") +
+  guides(color = "none") +
+  blog_theme
+```
+
+Individual lines:
+
+```{r}
+new_data_sleep |>
+  ggplot(aes(x = Days, y = .linpred, group = interaction(.draw, Subject))) +
+  geom_line(color = "#d1495b") +
+  geom_point(data = sleep, aes(x = Days, y = Reaction, group = Subject), inherit.aes = F, color = "#5D001E") +
+  scale_x_continuous(breaks = c(0:9), labels = c(0:9)) +
+  scale_y_continuous(breaks = seq(200, 600, 50), labels = seq(200, 600, 50)) +
+  labs(y = "Reaction Time (ms)") +
+  guides(color = "none") +
+  blog_theme
+```
+
+Faceting by Subject
+
+```{r}
+new_data_sleep |>
+  ggplot(aes(x = Days, y = .linpred)) +
+  stat_lineribbon(.width = c(0.80, 0.85, 0.99), alpha = 0.7) +
+  geom_point(data = sleep, aes(y = Reaction)) +
+  facet_wrap(~Subject) +
+  scale_fill_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  scale_color_manual(values = c("#edae49", "#d1495b", "#00798c")) +
+  scale_x_continuous(breaks = c(0:9), labels = c(0:9)) +
+  scale_y_continuous(breaks = seq(200, 600, 100), labels = seq(200, 600, 100)) +
+  labs(y = expression(mu), fill = "% Credible Interval", title = "80%, 85% and 99% Credible Intervals") +
+  guides(color = "none") +
+  blog_theme
+```
+
+Individual lines:
+
+```{r}
+new_data_sleep |>
+  ggplot(aes(x = Days, y = .linpred, group = .draw)) +
+  geom_line(color = "#d1495b") +
+  geom_point(data = sleep, aes(x = Days, y = Reaction), color = "#5D001E",  inherit.aes = F) +
+  scale_x_continuous(breaks = c(0:9), labels = c(0:9)) +
+  scale_y_continuous(breaks = seq(200, 600, 100), labels = seq(200, 600, 100)) +
+  labs(y = "Reation Time (ms)") +
+  facet_wrap(~Subject) +
+  blog_theme
+```
+
+Another way of visualizing the uncertainty in Mixed effects models is:
+
+```{r}
+new_data_sleep |>
+  ggplot(aes(x = Days, y = .linpred, group = interaction(.draw, Subject))) +
+  geom_line(aes(color = Subject)) +
+  geom_point(data = sleep, aes(x = Days, y = Reaction, group = Subject), inherit.aes = F, color = "#5D001E") +
+  scale_x_continuous(breaks = c(0:9), labels = c(0:9)) +
+  scale_y_continuous(breaks = seq(200, 600, 100), labels = seq(200, 600, 100)) +
+  scale_color_brewer(type = "div", palette = 9) +
+  labs(y = "Reaction Time (ms)", title = "Subjects represented with colors") +
+  guides(color = "none") +
+  blog_theme
+```
+
+In this kind of plot we can also observe the random effects: low variability in intercepts + moderate variability in slopes.
+
+# Generalized Linear Models (GLMs)
+
+## Not-so-professional intro to GLMs
+
+### Likelihood Function
+
+Often, our interesting research questions demand yet more complex models. Recall that ordinary regression model assumes that the dependent variable $y$ is following a normal distribution with conditional mean $\beta_0+\beta_1 x_1+...+\beta_n x_n$ and variance $\sigma^2$. Generalized linear models can assume other distributions for the outcome variable $y$, for example: if our outcome is binary we can assume it follows a Bernoulli distribution: $y \sim Bernoulli(p)$. In this kind of model the parameter that is modeled is $p$.
+
+In part 1 we called this the assumption of a Data Generating Process (DGP).
+
+### Link Function
+
+Sometimes modeling other parameters creates other complexities: for example: the parameter $p$ is a probability, strictly bounded in $[0;1]$, but the linear predictor $\beta_0+\beta_1 x_1+...+\beta_n x_n$ should be allowed to be any value in $[-\infty;+\infty]$. Somehow, the parameter $p$ should be mapped from it's $[0;1]$ interval to the $[-\infty;+\infty]$ interval. This is done with a *Link Function*:\
+$$
+f(p)=\beta_0+\beta_1 x_1+...+\beta_n x_n
+$$
+
+For Bernoulli models this link function if often the *logit* function: $logit(p)=ln(\frac{p}{1-p})$ - giving Logistic regression it's name.
+
+The term $f(p)$ is often not easy or intuitive for interpretation, so the equation will be back-transformed[^1]:
+
+[^1]: Logistic regression parameters are usually interpreted on the odds ratio of $p$ instead of $p$ itself.
+
+$$
+\frac{p}{1-p} =e^{(\beta_0+\beta_1 x_1+...+\beta_n x_n)}=e^{\beta_0} \cdot e^{\beta_1x_1} \cdot... \cdot e^{\beta_nx_n}
+$$
+
+## Logistic Regression
+
+We will use the *Smarket* dataset from the package `ISLR` containing information about daily percentage returns for the S&P500 index between 2001-2005.
+
+```{r}
+data <- ISLR::Smarket
+
+head(data)
+```
+
+### Maximum Likelihood Estimation
+
+Predicting the direction of change `Direction` from returns the previous day `Lag1`:
+
+```{r}
+sp500 <- data |>
+  mutate(Direction = factor(Direction, levels = c("Down", "Up")),
+         Lag1 = scale(Lag1, scale = F)[,1])
+
+logistic_model <- glm(Direction ~ Lag1,
+                      data = sp500,
+                      family = binomial(link = "logit")) # 'binomial' is the DGP/likelihood function, 'link' is the link function
+```
+
+```{r}
+model_parameters(logistic_model) |> insight::print_html()
+```
+
+Back-transforming the parameters gives:
+
+```{r}
+model_parameters(logistic_model, exponentiate = T) |> insight::print_html()
+```
+
+And this is the logit function fitted to the data, the negative relationship between `Lag1` and market direction today can be seen:
+
+```{r}
+new_data_sp500 <- expand_grid(Lag1 = seq(-100, 100, 0.1))
+
+new_data_sp500$prob <- predict(logistic_model, new_data_sp500, type = "response")
+
+new_data_sp500 |>
+  ggplot(aes(x = Lag1, y = prob)) +
+  geom_smooth(method = "glm", method.args = list(family = "binomial"),
+              color = "#5D001E") +
+  scale_x_continuous(breaks = seq(-100, 100, 10), labels = seq(-100, 100, 10)) +
+  labs(x = "Market return yesterday (%)", y = "Predicted Probability", title = "Predicted probability of market going Up today") +
+  blog_theme
+```
+
+When the market doesn't change - $Lag1=0$, the probability of the market going Up is $1.08$ greater then the probability of it going down. The market tends to go up!
+
+And, for an increase in one unit of `Lag1`, the odds ratio $\frac {p(Direction=Up)}{p(Direction=Down)}$ decreases by a factor of $0.93$. Let's estimate the posterior!
+
+### Bayesian Estimation
+
+#### Prior elicitation
+
+Thinking about the priors in a model with a link function can be tricky. So we will define them on the response level (in this case: odds ratio), and transform them to the link level (logit).
+
+```{r}
+get_prior(Direction ~ Lag1,
+          data = sp500,
+          family = bernoulli(link = "logit"))
+```
+
+Let's guess that a positive return yesterday predicts a positive return today. Meaning a coefficient greater then $1$ for `Lag1`. If the odds ratio is greater then $1$, the log-odds ratio is greater then $ln(1)=0$. Furthermore, the overall direction of the stock market is positive, therefore the intercept should also be greater then $1$. We define a normal marginal prior with $\mu=1; \sigma=3$ for each parameter:
+
+```{r}
+prior_sp500 <- set_prior("normal(1, 3)", coef = "Lag1") +
+  set_prior("normal(1, 3)", class = "Intercept")
+```
+
+Let's fit!
+
+```{r}
+#| eval: false
+bayes_model_sp500 <- brm(Direction ~ Lag1,
+                         data = sp500,
+                         family = bernoulli(link = "logit"),
+                         prior = prior_sp500,
+                         iter = 2000,
+                         backend = "cmdstanr")
+```
+
+```{r}
+#| eval: false
+#| echo: false
+write_rds(bayes_model_sp500, file = "../bayes102/b_model_logistic_sp500.rds")
+```
+
+```{r}
+#| echo: false
+bayes_model_sp500 <- read_rds("../bayes102/b_model_logistic_sp500.rds")
+```
+
+```{r}
+model_parameters(bayes_model_sp500, exponentiate = T, centrality = "all") |> insight::print_html()
+```
+
+Convergence measures looking good and the parameter estimations are very similar to the Maximum Likelihood (frequentist) estimations.
+
+#### The parameters themselves
+
+```{r}
+#| column: screen-inset
+#| layout-nrow: 1
+chains_logistic <- spread_draws(bayes_model_sp500, b_Intercept, b_Lag1) |>
+  mutate(across(c(b_Intercept, b_Lag1), exp)) # transforming the distributions
+
+chains_logistic |>
+  ggplot(aes(x = b_Intercept, fill = after_stat(x < 1))) +
+  stat_slab(color = "gray34") +
+  scale_fill_manual(values = c("#00798c", "#d1495b"), labels = c("Positive", "Negative")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(x = "Intercept", y = NULL, fill = "Direction of effect") +
+  blog_theme
+
+chains_logistic |>
+  ggplot(aes(x = b_Lag1, fill = after_stat(x < 1))) +
+  stat_slab(color = "gray34") +
+  scale_fill_manual(values = c("#00798c", "#d1495b"), labels = c("Positive", "Negative")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(x = "Lag1", y = NULL, fill = "Direction of effect") +
+  blog_theme
+```
+
+#### The line
+
+```{r}
+new_data_sp500 |>
+  add_linpred_draws(bayes_model_sp500, ndraws = 40, seed = 140) |>
+  mutate(.linpred = exp(.linpred) / (1 + exp(.linpred))) |>
+  ggplot(aes(x = Lag1, y = .linpred)) +
+  stat_lineribbon(.width = c(0.80, 0.85, 0.90), alpha = 0.7) +
+  scale_x_continuous(breaks = seq(-100, 100, 20), labels = seq(-100, 100, 20)) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), labels = seq(0, 1, 0.1)) +
+  scale_fill_brewer() +
+  labs(y = "Probability of market going Up", x = "Market return yesterday", fill = "Credible Interval %") +
+  blog_theme
+```
+
+We will now use the `tidybayes::add_epred_draws()` function in order to extract (40) individual predictions from the posterior distribution.
+
+```{r}
+predicted_direction <- add_epred_draws(newdata = new_data_sp500, object = bayes_model_sp500, ndraws = 40, seed = 140)
+
+predicted_direction |>
+  mutate(.draw = factor(.draw)) |>
+  ggplot(aes(x = Lag1, y = .epred, group = .draw)) +
+  geom_line(color = "#d1495b") +
+  scale_x_continuous(breaks = seq(-100, 100, 10), labels = seq(-100, 100, 10)) +
+  labs(color = NULL, fill = NULL, x = "Market return yesterday (%)", y = "Predicted Probability", title = "Posterior Predicted probability of market going Up") +
+  guides(color = "none", fill = "none") +
+  blog_theme
+```
+
+The negative relationship is seen again, with a few odd outlier trends.
+
+## Poisson Regression - GLMer
+
+For the final example, we'll look at a Generalized Linear Mixed effects model. That is a GLM with a hierarchical structure. Let's look at the `epilepsy` dataset from `brms`.
+
+```{r}
+epilepsy <- epilepsy
+
+head(epilepsy)
+```
+
+```{r}
+#| echo: false
+epilepsy$visit <- as.numeric(epilepsy$visit)
+```
+
+The dataset contains information about patients in a randomized study for epilepsy treatment. Each patient's number of seizures was recorded 4 times during a 8-week period. We will try to predict the number of seizures from session number (should decrease overtime), and the experimental group (0 = control, 1 = Treatment).
+
+Because the response variable in this case is the count of seizures, we will fit a *Poisson* model. In this model the estimated parameter is the rate of the Poisson process - $\lambda$.
+
+```{r}
+epilepsy |>
+  ggplot(aes(x = count)) +
+  geom_histogram(bins = 50, color = "gray30", fill = "#d1495b") +
+  labs(x = "Number of seizures", y = "Count", title = "Looks Poisson-ish") +
+  scale_x_continuous(breaks = seq(0, 100, 10), labels = seq(0, 100, 10)) +
+  blog_theme
+```
+
+### The model
+
+Because the rate of the Poisson process is strictly positive, the $log$ link function is used.
+
+We start by assuming that number of seizures is Poisson distributed:
+
+$$
+Count \sim Poisson(\lambda)
+$$
+
+Level 1: The (log)rate of seizures for patient $i$ in trial $j$ is:
+
+$$
+ln(\lambda_{ij})=\beta_0+\beta_1 \cdot Session
+$$
+
+Level 2:
+
+$$
+\beta_{0i}=\gamma_{00}+\gamma_{01} \cdot Treatment_i + \tau_{0i}
+$$
+
+$$
+\beta_{1i}=\gamma_{10}+\gamma_{11} \cdot Treatment_i + \tau_{1i}
+$$
+
+$$
+\begin{bmatrix}
+      \beta_0 \cr
+      \beta_1
+\end{bmatrix} \sim MVN(\begin{bmatrix}
+                       \gamma_{00} \cr
+                       \gamma_{10}
+                       \end{bmatrix},\begin{bmatrix}
+                                      \tau_0^2 & \tau_0\tau_1\rho_{01} \cr
+                                      \tau_1\tau_0\rho_{01} & \tau_1^2
+                                      \end{bmatrix})
+$$
+
+And $\rho_{01}$ is the correlation coefficient between random intercepts and slopes.
+
+### Maximum Likelihood Estimation
+
+```{r}
+pois_model_freq <- glmer(count ~ visit * Trt + (visit | patient),
+                         data = epilepsy,
+                         family = poisson(link = "log"))
+```
+
+```{r}
+sjPlot::tab_model(pois_model_freq, transform = "exp")
+```
+
+### Bayesian Estimation
+
+```{r}
+get_prior(formula = count ~ visit * Trt + (visit | patient),
+          data = epilepsy,
+          family = poisson(link = "log"))
+```
+
+#### Prior elicitation
+
+We assume that seizure rate will decrease as the study progresses (negative effect of `visit`). We can also assume that this decrease will be greater for patients in the treatment group - a cross-levels interaction effect.
+
+If each increase of one-unit in `visit` lead to a decrease of 90% in seizure count - $\beta_{visit}=ln(0.9)=-0.11$. And if this effect will be 90% smaller in the treatment group then - $\beta_{visitXtreatment}=ln(0.9)=-0.11$.
+
+```{r}
+prior_epilepsy <- set_prior("normal(-0.11, 3)", coef = "visit") +
+  set_prior("normal(-0.11,3)", coef = "visit:Trt1") +
+  set_prior("exponential(1)", class = "sd") # setting prior on random effects' variance
+```
+
+#### Model estimation
+
+```{r}
+#| eval: false
+bayes_model_epilepsy <- brm(formula = count ~ visit * Trt + (visit | patient),
+                            data = epilepsy,
+                            family = poisson(link = "log"),
+                            prior = prior_epilepsy,
+                            chains = 4,
+                            cores = 4,
+                            iter = 3000,
+                            backend = "cmdstanr")
+```
+
+```{r}
+#| eval: false
+#| echo: false
+write_rds(bayes_model_epilepsy, file = "../bayes102/b_model_epilepsy.rds")
+```
+
+```{r}
+#| echo: false
+bayes_model_epilepsy <- read_rds("../bayes102/b_model_epilepsy.rds")
+```
+
+```{r}
+model_parameters(bayes_model_epilepsy, exponentiate = T, centrality = "all", effects = "all") |> insight::print_html()
+```
+
+##### The parameters themselves
+
+```{r}
+posterior_epilepsy <- spread_draws(bayes_model_epilepsy, b_Intercept, b_visit, b_Trt1, !!sym("b_visit:Trt1"), sd_patient__Intercept, sd_patient__visit, cor_patient__Intercept__visit) |>
+  mutate(across(contains("b_"), exp)) # back-transforming the regression coefficients
+```
+
+###### Regression coefficients
+
+```{r}
+posterior_epilepsy |>
+  ggplot(aes(x = b_Intercept, fill = "#d1495b")) +
+  stat_slab(color = "gray34") +
+  guides(color = "none", fill = "none") +
+  labs(title = "Intercept", y = NULL, x = NULL) +
+  scale_x_continuous(breaks = seq(0, 15, 1), labels = seq(0, 15, 1)) +
+  blog_theme +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+```{r}
+posterior_epilepsy |>
+  select(.draw, b_visit, b_Trt1, b_visitXTrt1 = !!sym("b_visit:Trt1")) |>
+  pivot_longer(cols = !.draw,
+               names_to = "variable") |>
+  ggplot(aes(x = value, y = variable, fill = after_stat(x > 1))) +
+  stat_slab(color = "gray34") +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  guides(color = "none") +
+  scale_fill_manual(values = c("#d1495b", "#00798c"), labels = c("Negative", "Positive")) +
+  scale_x_continuous(breaks = seq(0, 3, 0.25), labels = seq(0, 3, 0.25)) +
+  labs(title = "Regression coefficients", y = NULL, x = "Change in rate of seizures", fill = "Direction of effect") +
+  blog_theme
+```
+
+```{r}
+p_direction(bayes_model_epilepsy, parameters = "b_")
+```
+
+###### Random effects variances
+
+```{r}
+posterior_epilepsy |>
+  select(.draw, sd_patient__Intercept, sd_patient__visit) |>
+  pivot_longer(cols = !.draw,
+               names_to = "variable") |>
+  ggplot(aes(x = value, y = variable, fill = "#d1495b")) +
+  stat_slab(color = "gray34") +
+  guides(color = "none", fill = "none") +
+  scale_x_continuous(breaks = seq(0, 2, 0.25), labels = seq(0, 2, 0.25)) +
+  labs(title = "Random effects variances", y = NULL, x = "SD") +
+  blog_theme
+```
+
+```{r}
+posterior_epilepsy |>
+  ggplot(aes(x = cor_patient__Intercept__visit, fill = after_stat(x > 0))) +
+  stat_slab(color = "gray34") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  guides(color = "none") +
+  scale_fill_manual(values = c("#d1495b", "#00798c"), labels = c("Negative", "Positive")) +
+  scale_x_continuous(breaks = seq(-1, 1, 0.2), labels = seq(-1, 1, 0.2)) +
+  labs(title = "Correlation between random effects", y = NULL, x = expression(r), fill = "Direction of correlation") +
+  blog_theme +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
+```
+
+```{r}
+p_direction(bayes_model_epilepsy, effects = "random", parameters = "cor*")
+```
+
+##### The regression line
+
+```{r}
+new_data_epilepsy <- epilepsy |>
+  select(patient, Trt, visit) |>
+  distinct() |>
+  add_epred_draws(bayes_model_epilepsy, ndraws = 40, seed = 14)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Creating a 59-color & 14-color palettes"
+P59 <- Polychrome::createPalette(59, c("#543005", "#F5F5F5", "#003C30"), range = c(30, 80))
+names(P59) <- NULL
+
+P14 <- Polychrome::createPalette(14, c("#543005", "#F5F5F5", "#003C30"), range = c(30, 80))
+names(P14) <- NULL
+```
+
+Looking at the posterior predicted count of seizures (coloring by `patient`):
+
+```{r}
+new_data_epilepsy |>
+  mutate(Trt = case_when(Trt == 0 ~ "Control",
+                         Trt == 1 ~ "Treatment",
+                         .default = NA)) |>
+  ggplot(aes(x = visit, y = .epred, color = patient, group = interaction(patient, .draw))) +
+  geom_line(show.legend = FALSE) +
+  scale_color_manual(values = P59) +
+  guides(color = "none") +
+  labs(y = "Predicted count of seizures", x = "Visit") +
+  scale_y_continuous(breaks = seq(0, 100, 10), labels = seq(0, 100, 10)) +
+  facet_wrap(~Trt) +
+  blog_theme
+```
+
+Kinda messy... let's choose 14 random patients and plot them:
+
+```{r}
+set.seed(14)
+
+treatment_patients <- sample(unique(epilepsy$patient[epilepsy$Trt==1]), size = 7, replace = F)
+control_patients <- sample(unique(epilepsy$patient[epilepsy$Trt==0]), size = 7, replace = F)
+
+new_data_epilepsy |>
+  filter(patient %in% c(treatment_patients, control_patients)) |>
+  mutate(Trt = case_when(Trt == 0 ~ "Control",
+                         Trt == 1 ~ "Treatment",
+                         .default = NA)) |>
+  ggplot(aes(x = visit, y = .epred, color = patient, group = interaction(patient, .draw))) +
+  geom_line(show.legend = FALSE) +
+  scale_color_manual(values = P14) +
+  guides(color = "none") +
+  labs(y = "Predicted count of seizures", x = "Visit") +
+  scale_y_continuous(breaks = seq(0, 100, 10), labels = seq(0, 100, 10)) +
+  facet_wrap(~Trt) +
+  blog_theme
+```
+
+The slight overall decrease in seizure count can be seen, as well as the not-so-interesting main effect of Treatment. No visually significant interaction. Random variability in slopes of `visit` and intercept is also visible.
+
+# Conclusion
+
+In this post I covered the types of statistical models most popular in Psychology research today, and the Bayesian way of fitting them. Together with part 1, these posts should help you include Bayesian models in your research, and make your results more robust, interesting, and ✨ pretty ✨
+
+The next (and last?) part will be shorter and cover yet more advanced things like model performance, model comparison, prior predictive distributions and more.

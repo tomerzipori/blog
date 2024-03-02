@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://tomerzipori.github.io/blog/blog.html</loc>
-    <lastmod>2024-02-15T18:33:27.952Z</lastmod>
+    <lastmod>2024-03-02T11:11:47.228Z</lastmod>
   </url>
   <url>
     <loc>https://tomerzipori.github.io/blog/index.html</loc>
@@ -38,6 +38,10 @@
   </url>
   <url>
     <loc>https://tomerzipori.github.io/blog/posts/bayes101/index.html</loc>
-    <lastmod>2024-02-15T18:33:27.060Z</lastmod>
+    <lastmod>2024-03-02T11:09:48.510Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tomerzipori.github.io/blog/posts/bayes102/index.html</loc>
+    <lastmod>2024-03-02T11:11:53.139Z</lastmod>
   </url>
 </urlset>
