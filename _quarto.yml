@@ -34,10 +34,10 @@ website:
         href: https://github.com/tomerzipori
       - icon: twitter
         href: https://twitter.com/ZiporiTomer
-      - icon: linkedin
-        href: https://www.linkedin.com/in/tomer-zipori/
+      - icon: rss
+        href: blog.xml
   page-footer:
-    left: "© 2024 Tomer Zipori"
+    left: "© 2024 Tomer Zipori | Part of the [R-Bloggers](https://www.r-bloggers.com/) network"
     center: "powered by [quarto](https://quarto.org)"
     right:
       - icon: github
