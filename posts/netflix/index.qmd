@@ -308,7 +308,7 @@ Play around with show recommendations. and see other visualizations of the curre
 
 #### Shiny-Live
 
-```{r}
+```{shinylive-r}
 #| standalone: true
 #| viewerHeight: 800
 #| code-fold: true

@@ -73,6 +73,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content="../..">
+<script src="../../site_libs/quarto-contrib/shinylive-0.2.3/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="../../site_libs/quarto-contrib/shinylive-0.2.3/shinylive/run-python-blocks.js" type="module"></script>
+<link href="../../site_libs/quarto-contrib/shinylive-0.2.3/shinylive/shinylive.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "language": {
     "search-no-results-text": "No results",
@@ -556,113 +561,109 @@ r_{xy}=cos \ \theta_{xy}
 <p>Play around with show recommendations. and see other visualizations of the current data in this <a href="https://tomerzipori.shinyapps.io/Netflix/">shiny app</a>.</p>
 <section id="shiny-live" class="level4">
 <h4 class="anchored" data-anchor-id="shiny-live">Shiny-Live</h4>
-<div class="cell" data-standalone="true" data-viewerheight="800">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(extrafont)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggwordcloud)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda.textplots)</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda.textstats)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"C:/Users/tomer/OneDrive/GitHub/blog/posts/netflix/netflix_titles.csv"</span>, <span class="at">show_col_types =</span> F)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>months_names <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">name =</span> month.name,</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>                           <span class="at">month =</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="dv">12</span>,<span class="dv">1</span>))</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month_added =</span> <span class="fu">word</span>(date_added, <span class="dv">1</span>),</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">day_added =</span> <span class="fu">str_remove_all</span>(<span class="fu">word</span>(date_added, <span class="dv">2</span>), <span class="st">","</span>),</span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">year_added =</span> <span class="fu">word</span>(date_added, <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(months_names, <span class="at">by =</span> <span class="fu">join_by</span>(month_added <span class="sc">==</span> name)) <span class="sc">|&gt;</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date_added =</span> <span class="fu">paste</span>(day_added, month, year_added, <span class="at">sep =</span> <span class="st">"."</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>month_added, <span class="sc">-</span>day_added, <span class="sc">-</span>month) <span class="sc">|&gt;</span></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date_added =</span> <span class="fu">dmy</span>(date_added)) <span class="sc">|&gt;</span></span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date_added_ym =</span> zoo<span class="sc">::</span><span class="fu">as.yearmon</span>(date_added))</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>data_clean_dfm <span class="ot">&lt;-</span> data_clean <span class="sc">|&gt;</span></span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">description =</span> <span class="fu">str_remove_all</span>(description, <span class="at">pattern =</span> <span class="st">"[[:punct:]]"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">corpus</span>(<span class="at">text_field =</span> <span class="st">"description"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens</span>(<span class="at">remove_separators =</span> T) <span class="sc">|&gt;</span></span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_remove</span>(<span class="fu">stopwords</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm</span>()</span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>netflix_tf_idf <span class="ot">&lt;-</span> data_clean_dfm <span class="sc">|&gt;</span></span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm_tolower</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm_wordstem</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm_tfidf</span>()</span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Personal wordcloud</span></span>
-<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>personal_wordcloud <span class="ot">&lt;-</span> <span class="cf">function</span>(shows){</span>
-<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
-<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">month_added =</span> <span class="fu">word</span>(date_added, <span class="dv">1</span>),</span>
-<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>           <span class="at">day_added =</span> <span class="fu">str_remove_all</span>(<span class="fu">word</span>(date_added, <span class="dv">2</span>), <span class="st">","</span>),</span>
-<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>           <span class="at">year_added =</span> <span class="fu">word</span>(date_added, <span class="dv">3</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(title <span class="sc">%in%</span> shows) <span class="sc">|&gt;</span></span>
-<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(months_names, <span class="at">by =</span> <span class="fu">join_by</span>(month_added <span class="sc">==</span> name)) <span class="sc">|&gt;</span></span>
-<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">date_added =</span> <span class="fu">paste</span>(day_added, month, year_added, <span class="at">sep =</span> <span class="st">"."</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>month_added, <span class="sc">-</span>day_added, <span class="sc">-</span>month) <span class="sc">|&gt;</span></span>
-<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">date_added =</span> <span class="fu">dmy</span>(date_added)) <span class="sc">|&gt;</span></span>
-<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">date_added_ym =</span> zoo<span class="sc">::</span><span class="fu">as.yearmon</span>(date_added)) <span class="sc">|&gt;</span></span>
-<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">description =</span> <span class="fu">str_remove_all</span>(description, <span class="at">pattern =</span> <span class="st">"[[:punct:]]"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">corpus</span>(<span class="at">text_field =</span> <span class="st">"description"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tokens</span>(<span class="at">remove_separators =</span> T) <span class="sc">|&gt;</span></span>
-<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tokens_remove</span>(<span class="fu">stopwords</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dfm</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>    <span class="fu">textstat_frequency</span>() <span class="sc">|&gt;</span></span>
-<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">r_frequency =</span> <span class="dv">100</span><span class="sc">*</span>frequency<span class="sc">/</span><span class="fu">sum</span>(frequency)) <span class="sc">|&gt;</span></span>
-<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">label =</span> feature, <span class="at">size =</span> r_frequency, <span class="at">fill =</span> r_frequency, <span class="at">color =</span> r_frequency)) <span class="sc">+</span></span>
-<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_size_area</span>(<span class="at">max_size =</span> <span class="dv">7</span>) <span class="sc">+</span></span>
-<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text_wordcloud</span>(<span class="at">seed =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
-<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_gradient</span>(<span class="at">low =</span> <span class="st">"#000000"</span>, <span class="at">high =</span> <span class="st">"#990011FF"</span>) <span class="sc">+</span></span>
-<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>          <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">11</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
-<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
-<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">"Test app"</span>),</span>
-<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sidebarLayout</span>(</span>
-<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sidebarPanel</span>(</span>
-<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a>      <span class="fu">selectInput</span>(</span>
-<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a>        <span class="at">inputId =</span> <span class="st">"watched_wordcloud"</span>,</span>
-<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="st">"I watched..."</span>,</span>
-<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a>        <span class="at">choices =</span> data_clean<span class="sc">$</span>title,</span>
-<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a>        <span class="at">multiple =</span> T,</span>
-<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a>        <span class="at">selected =</span> data_clean<span class="sc">$</span>title[<span class="dv">14</span>]</span>
-<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mainPanel</span>(</span>
-<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plotOutput</span>(<span class="st">"cloud1"</span>, <span class="at">height =</span> <span class="st">"350px"</span>)</span>
-<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output) {</span>
-<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a>  shows_watched <span class="ot">&lt;-</span> <span class="fu">reactive</span>({input<span class="sc">$</span>watched_wordcloud})</span>
-<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>cloud1 <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
-<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">personal_wordcloud</span>(<span class="fu">shows_watched</span>())</span>
-<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(ui, server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<p></p><div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div><p></p>
-</div>
-</div>
+<pre class="shinylive-r" data-engine="r"><code>#| standalone: true
+#| viewerHeight: 800
+#| code-fold: true
+#| cache: false
+library(tidyverse)
+library(extrafont)
+library(lubridate)
+library(ggwordcloud)
+library(quanteda)
+library(quanteda.textplots)
+library(quanteda.textstats)
+library(shiny)
+
+data &lt;- read_csv("C:/Users/tomer/OneDrive/GitHub/blog/posts/netflix/netflix_titles.csv", show_col_types = F)
+
+months_names &lt;- data.frame(name = month.name,
+                           month = seq(1,12,1))
+
+data_clean &lt;- data |&gt;
+  mutate(month_added = word(date_added, 1),
+         day_added = str_remove_all(word(date_added, 2), ","),
+         year_added = word(date_added, 3)) |&gt;
+  left_join(months_names, by = join_by(month_added == name)) |&gt;
+  mutate(date_added = paste(day_added, month, year_added, sep = ".")) |&gt;
+  select(-month_added, -day_added, -month) |&gt;
+  mutate(date_added = dmy(date_added)) |&gt;
+  mutate(date_added_ym = zoo::as.yearmon(date_added))
+
+data_clean_dfm &lt;- data_clean |&gt;
+  mutate(description = str_remove_all(description, pattern = "[[:punct:]]")) |&gt;
+  corpus(text_field = "description") |&gt;
+  tokens(remove_separators = T) |&gt;
+  tokens_remove(stopwords()) |&gt;
+  dfm()
+
+netflix_tf_idf &lt;- data_clean_dfm |&gt;
+  dfm_tolower() |&gt;
+  dfm_wordstem() |&gt;
+  dfm_tfidf()
+
+# Personal wordcloud
+personal_wordcloud &lt;- function(shows){
+  data |&gt;
+    mutate(month_added = word(date_added, 1),
+           day_added = str_remove_all(word(date_added, 2), ","),
+           year_added = word(date_added, 3)) |&gt;
+    filter(title %in% shows) |&gt;
+    left_join(months_names, by = join_by(month_added == name)) |&gt;
+    mutate(date_added = paste(day_added, month, year_added, sep = ".")) |&gt;
+    select(-month_added, -day_added, -month) |&gt;
+    mutate(date_added = dmy(date_added)) |&gt;
+    mutate(date_added_ym = zoo::as.yearmon(date_added)) |&gt;
+    
+    
+    mutate(description = str_remove_all(description, pattern = "[[:punct:]]")) |&gt;
+    corpus(text_field = "description") |&gt;
+    tokens(remove_separators = T) |&gt;
+    tokens_remove(stopwords()) |&gt;
+    dfm() |&gt;
+    
+    
+    textstat_frequency() |&gt;
+    mutate(r_frequency = 100*frequency/sum(frequency)) |&gt;
+    
+    
+    ggplot(aes(label = feature, size = r_frequency, fill = r_frequency, color = r_frequency)) +
+    scale_size_area(max_size = 7) +
+    geom_text_wordcloud(seed = 14) +
+    scale_fill_gradient(low = "#000000", high = "#990011FF") +
+    theme_classic() +
+    theme(axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 11, face = "bold"),
+          legend.position = "none")
+}
+
+ui &lt;- fluidPage(
+  titlePanel("Test app"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput(
+        inputId = "watched_wordcloud",
+        label = "I watched...",
+        choices = data_clean$title,
+        multiple = T,
+        selected = data_clean$title[14]
+      )
+    ),
+    mainPanel(
+      plotOutput("cloud1", height = "350px")
+    )
+  )
+)
+
+server &lt;- function(input, output) {
+  shows_watched &lt;- reactive({input$watched_wordcloud})
+  
+  output$cloud1 &lt;- renderPlot({
+    personal_wordcloud(shows_watched())
+  })
+}
+
+shinyApp(ui, server)</code></pre>
 </section>
 </section>
 </section>
