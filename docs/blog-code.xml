@@ -16231,7 +16231,7 @@ font-style: inherit;">.03</span>))</span></code></pre></div>
 <p>It’s going to be a relatively short post, the first part will include some nice visualization (word clouds), and in the second part I will try and build a mini show-recommendation function.</p>
 <section id="setup" class="level1">
 <h1>Setup</h1>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-1_529bc7f50f1b802203b3bb60d4088b34">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">library</span>(tidyverse)</span>
@@ -16257,7 +16257,7 @@ font-style: inherit;">library</span>(quanteda.textstats)</span></code></pre></di
 </section>
 <section id="data-loading" class="level1">
 <h1>Data loading</h1>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-3_a5363e4f65ea604dd213d151a4b08e3b">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">data <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -16285,7 +16285,7 @@ font-style: inherit;">head</span>(data)</span></code></pre></div>
 </div>
 </div>
 <p>Let’s look at one of the more interesting fields in here:</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-4_16530a3e7260785018018613e5e30095">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">head</span>(data<span class="sc" style="color: #5E5E5E;
@@ -16304,7 +16304,7 @@ font-style: inherit;">3</span>)</span></code></pre></div>
 <section id="preprocessing" class="level1">
 <h1>Preprocessing</h1>
 <p>This part is sort of boring, but I’m creating a <em>Date</em> column in <code>lubridate</code> format. Didn’t know that <code>R</code> has built in object for this.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-5_424959b24104884091df0de45b81ec77">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">months_names <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -16415,7 +16415,7 @@ font-style: inherit;">as.yearmon</span>(date_added))</span></code></pre></div>
 <section id="text-analysis-of-show-description" class="level2">
 <h2 class="anchored" data-anchor-id="text-analysis-of-show-description">Text analysis of show description</h2>
 <p>Here I’m creating the DFM. It is basically a huge matrix with each document (show description) being a row, and each unique word being a column. Values represent the frequency of each word in each document.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-6_9b7c23a9fb326e4d851fa384bb618760">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">data_clean_dfm <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> data_clean <span class="sc" style="color: #5E5E5E;
@@ -16482,7 +16482,7 @@ docs    father nears end life filmmaker kirsten johnson stages death inventive
 <h1>Content trends in Netflix’s new additions</h1>
 <p>Although it is pretty basic, the DFM allows us to check many things. For example: Did Netflix’s new content changed over the years? I thought it would be interesting to see the most frequent words in the descriptions of items added in each year.</p>
 <p>As you can see, I have added a relative frequency column to the data. This is to control for the different number of items added in each year.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-7_b223ff369453010383b7b1920ea2a605">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">plot_data <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> data_clean_dfm <span class="sc" style="color: #5E5E5E;
@@ -16699,7 +16699,7 @@ font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 </div>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-8_5ad1f689cdb13c4bdd642584b4c324d2">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">cloud1</span></code></pre></div>
 <div class="cell-output-display">
 <p><img src="https://tomerzipori.github.io/blog/posts/netflix/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="1248"></p>
@@ -16728,7 +16728,7 @@ One problem that arises in our inner statistician is that longer documents conta
 <p>To get the final tf-idf value for every term, we simply multiply the Term-Frequency with the Inverse-Document-Frequency:<br>
 <img src="https://latex.codecogs.com/png.latex?%0Atfidf(word)=tf(word)%20%5Ccdot%20idf(word)%0A"></p>
 <p>In creating the tf-idf DFM, I have also converted every word to lower case and to it’s stem.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-9_bc834c97b37126348385b6f15dbf8695">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">netflix_tf_idf <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> data_clean_dfm <span class="sc" style="color: #5E5E5E;
@@ -16753,7 +16753,7 @@ font-style: inherit;">dfm_tfidf</span>()</span></code></pre></div>
 <section id="cosine-similarity" class="level2">
 <h2 class="anchored" data-anchor-id="cosine-similarity">Cosine Similarity</h2>
 <p>Now that we have the DFM, we have a vector representation of every description of every show. Every word in our dataset is a dimension and it’s tf-idf in each document is the vector component. For example, the vector representation of the description of “Attack on Titan” is:</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-10_708fa853e80c26a69a4c9345937ac3ce">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">dfm_subset</span>(netflix_tf_idf, <span class="at" style="color: #657422;
@@ -16806,7 +16806,7 @@ The nominator is the dot product of the vectors, which is exactly the sum of the
 <section id="functions" class="level3">
 <h3 class="anchored" data-anchor-id="functions">Functions</h3>
 <p>The main idea of the recommendation generator is simple. If you liked a TV show or a movie, you will probably like shows with similar description. Not any similarity, cosine similarity!</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-11_afda604af75a5e85da7f5d0fa219e569">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">get_recommendation <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
@@ -17153,7 +17153,7 @@ font-style: inherit;">"#F9EBDE"</span>))</span>
 <section id="getting-show-recommendations" class="level3">
 <h3 class="anchored" data-anchor-id="getting-show-recommendations">Getting show recommendations</h3>
 <p>Let’s use an example. Maybe I watched “Attack on Titan”, what are the top 10 recommended shows for me?</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-12_2867b73c553eb5bef8fc9dca2c8e4107">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">watched <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
@@ -17178,7 +17178,7 @@ font-style: inherit;">get_recommendation</span>(watched)</span></code></pre></di
 </div>
 </div>
 <p>What if I did not like a show? no problem, you will be recommended shows and movies that are not similar.</p>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-13_503fd1e92bdd52acb4eb03618831b2b3">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">get_recommendation</span>(<span class="st" style="color: #20794D;
@@ -17204,7 +17204,7 @@ font-style: inherit;">FALSE</span>)</span></code></pre></div>
 </div>
 <section id="in-a-plot" class="level4">
 <h4 class="anchored" data-anchor-id="in-a-plot">In a plot</h4>
-<div class="cell" data-hash="index_cache/html/unnamed-chunk-14_07b9fdb76aae8df7a1eb6f0ba26d3163">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">get_recommendation_plot</span>(watched)</span></code></pre></div>
@@ -17219,106 +17219,78 @@ font-style: inherit;">get_recommendation_plot</span>(watched)</span></code></pre
 <p>Play around with show recommendations. and see other visualizations of the current data in this <a href="https://tomerzipori.shinyapps.io/Netflix/">shiny app</a>.</p>
 <section id="shiny-live" class="level4">
 <h4 class="anchored" data-anchor-id="shiny-live">Shiny-Live</h4>
+<p><em>Update</em> from 11/3/24 - Apparently there is a new way of embedding shiny apps into quarto documents. The current app might not load for you as <code>shinylive</code> still struggles with heavy calculations…</p>
 <pre class="shinylive-r" data-engine="r"><code>#| standalone: true
-#| viewerHeight: 800
 #| code-fold: true
 #| cache: false
-library(tidyverse)
-library(extrafont)
-library(lubridate)
-library(ggwordcloud)
-library(quanteda)
-library(quanteda.textplots)
-library(quanteda.textstats)
 library(shiny)
-
-data &lt;- read_csv("C:/Users/tomer/OneDrive/GitHub/blog/posts/netflix/netflix_titles.csv", show_col_types = F)
-
-months_names &lt;- data.frame(name = month.name,
-                           month = seq(1,12,1))
-
-data_clean &lt;- data |&gt;
-  mutate(month_added = word(date_added, 1),
-         day_added = str_remove_all(word(date_added, 2), ","),
-         year_added = word(date_added, 3)) |&gt;
-  left_join(months_names, by = join_by(month_added == name)) |&gt;
-  mutate(date_added = paste(day_added, month, year_added, sep = ".")) |&gt;
-  select(-month_added, -day_added, -month) |&gt;
-  mutate(date_added = dmy(date_added)) |&gt;
-  mutate(date_added_ym = zoo::as.yearmon(date_added))
-
-data_clean_dfm &lt;- data_clean |&gt;
-  mutate(description = str_remove_all(description, pattern = "[[:punct:]]")) |&gt;
-  corpus(text_field = "description") |&gt;
-  tokens(remove_separators = T) |&gt;
-  tokens_remove(stopwords()) |&gt;
-  dfm()
-
-netflix_tf_idf &lt;- data_clean_dfm |&gt;
-  dfm_tolower() |&gt;
-  dfm_wordstem() |&gt;
-  dfm_tfidf()
-
-# Personal wordcloud
-personal_wordcloud &lt;- function(shows){
-  data |&gt;
-    mutate(month_added = word(date_added, 1),
-           day_added = str_remove_all(word(date_added, 2), ","),
-           year_added = word(date_added, 3)) |&gt;
-    filter(title %in% shows) |&gt;
-    left_join(months_names, by = join_by(month_added == name)) |&gt;
-    mutate(date_added = paste(day_added, month, year_added, sep = ".")) |&gt;
-    select(-month_added, -day_added, -month) |&gt;
-    mutate(date_added = dmy(date_added)) |&gt;
-    mutate(date_added_ym = zoo::as.yearmon(date_added)) |&gt;
-    
-    
-    mutate(description = str_remove_all(description, pattern = "[[:punct:]]")) |&gt;
-    corpus(text_field = "description") |&gt;
-    tokens(remove_separators = T) |&gt;
-    tokens_remove(stopwords()) |&gt;
-    dfm() |&gt;
-    
-    
-    textstat_frequency() |&gt;
-    mutate(r_frequency = 100*frequency/sum(frequency)) |&gt;
-    
-    
-    ggplot(aes(label = feature, size = r_frequency, fill = r_frequency, color = r_frequency)) +
-    scale_size_area(max_size = 7) +
-    geom_text_wordcloud(seed = 14) +
-    scale_fill_gradient(low = "#000000", high = "#990011FF") +
-    theme_classic() +
-    theme(axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
-          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 11, face = "bold"),
-          legend.position = "none")
-}
 
 ui &lt;- fluidPage(
   titlePanel("Test app"),
   sidebarLayout(
     sidebarPanel(
-      selectInput(
-        inputId = "watched_wordcloud",
-        label = "I watched...",
-        choices = data_clean$title,
-        multiple = T,
-        selected = data_clean$title[14]
-      )
+      selectInput(inputId = "watched_recommendation",
+                  label = "I watched...",
+                  choices = data_clean$title,
+                  selected = data_clean$title[14])
     ),
     mainPanel(
-      plotOutput("cloud1", height = "350px")
+      plotOutput('plot1', height = "350px")
     )
   )
 )
 
 server &lt;- function(input, output) {
-  shows_watched &lt;- reactive({input$watched_wordcloud})
+  show_watched &lt;- reactive({input$watched_recommendation})
   
-  output$cloud1 &lt;- renderPlot({
-    personal_wordcloud(shows_watched())
+  output$plot1 &lt;- renderPlot({
+  get_recommendation_plot(show_watched())
   })
+}
+
+shinyApp(ui, server)</code></pre>
+<p>If my app doesn’t load for you, comfort yourself with this demo app from <em>Posit</em>:</p>
+<pre class="shinylive-r" data-engine="r"><code>#| standalone: true
+#| viewerHeight: 650
+#| cache: false
+library(shiny)
+
+vars &lt;- setdiff(names(iris), "Species")
+
+ui &lt;- pageWithSidebar(
+  headerPanel('Iris k-means clustering'),
+  sidebarPanel(
+    selectInput('xcol', 'X Variable', vars),
+    selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
+    numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+  ),
+  mainPanel(
+    plotOutput('plot1')
+  )
+)
+
+server &lt;- function(input, output, session) {
+
+  # Combine the selected variables into a new data frame
+  selectedData &lt;- reactive({
+    iris[, c(input$xcol, input$ycol)]
+  })
+
+  clusters &lt;- reactive({
+    kmeans(selectedData(), input$clusters)
+  })
+
+  output$plot1 &lt;- renderPlot({
+    palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+      "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
+
+    par(mar = c(5.1, 4.1, 0, 1))
+    plot(selectedData(),
+         col = clusters()$cluster,
+         pch = 20, cex = 3)
+    points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
+  })
+
 }
 
 shinyApp(ui, server)</code></pre>
@@ -17328,7 +17300,7 @@ shinyApp(ui, server)</code></pre>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
-<p>This post is an extra step of my in the NLP domain. As always I try to explain the theory behind the interesting parts of the process. For example, I remember when I discovered the connection between the correlation coefficient and the angle between vectors, it was really eye opening!<br>
+<p>This post is an extra step for me in the NLP domain. As always I try to explain the theory behind the interesting parts of the process. For example, I remember when I discovered the connection between the correlation coefficient and the angle between vectors, it was really eye opening!<br>
 </p>
 <p>The recommendation functions could be vastly improved with some more modern NLP methods (Transformers!). I hope that in the near future I will have the time to post about that to.</p>
 
