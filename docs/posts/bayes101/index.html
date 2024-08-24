@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.361">
+<meta name="generator" content="quarto-1.4.555">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -61,6 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -101,6 +102,7 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -110,12 +112,41 @@ div.csl-indent {
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <link rel="stylesheet" href="../../styles.css">
 <link rel="stylesheet" href="../../academicons.css">
 <meta property="og:title" content="Tomer’s stats blog - Bayesian Modeling for Psychologists, Part 1">
 <meta property="og:description" content="Posting about more and less interesting things I learn">
-<meta property="og:image" content="">
-<meta property="og:site-name" content="Tomer's stats blog">
+<meta property="og:image" content="https://tomerzipori.github.io/blog/posts/bayes101/favicon.png">
+<meta property="og:site_name" content="Tomer's stats blog">
+<meta property="og:image:height" content="600">
+<meta property="og:image:width" content="518">
 <meta name="twitter:title" content="Tomer’s stats blog">
 <meta name="twitter:description" content="Posting about more and less interesting things I learn">
 <meta name="twitter:image" content="https://tomerzipori.github.io/blog/posts/bayes101/favicon.png">
@@ -128,10 +159,10 @@ div.csl-indent {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a href="../../index.html" class="navbar-brand navbar-brand-logo">
     <img src="../../static/favicon.png" alt="" class="navbar-logo">
     </a>
@@ -145,38 +176,38 @@ div.csl-indent {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../index.html" rel="" target="">
- <span class="menu-text">About me</span></a>
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../blog.html" rel="" target="">
- <span class="menu-text">Posts</span></a>
+    <a class="nav-link" href="../../blog.html"> 
+<span class="menu-text">Posts</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../cv.html" rel="" target="">
- <span class="menu-text">CV</span></a>
+    <a class="nav-link" href="../../cv.html"> 
+<span class="menu-text">CV</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/tomerzipori" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/tomerzipori"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/ZiporiTomer" rel="" target=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/ZiporiTomer"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../www.linkedin.com/in/tomer-zipori" rel="" target=""><i class="bi bi-linkedin" role="img">
+    <a class="nav-link" href="../../blog.xml"> <i class="bi bi-rss" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -261,6 +292,7 @@ div.csl-indent {
 
 
 
+
 <section id="setup" class="level1">
 <h1>Setup</h1>
 <p>Loading some packages that will be used for demonstrations and analysis:</p>
@@ -304,7 +336,7 @@ P(Parameters|Data)=\frac{P(Data|Parameters) \cdot P(Parameters)}{P(Data)}
 <h3 class="anchored" data-anchor-id="likelihood">Likelihood</h3>
 <p>The term <span class="math inline">\(P(Data|Parameters)\)</span> describes the <em>likelihood</em> of the observed data under different sets of parameter values. In order to keep things simple I will not delve deeper into the theoretical aspects of likelihood (see <span class="citation" data-cites="etz_introduction_2018">Etz (<a href="#ref-etz_introduction_2018" role="doc-biblioref">2018</a>)</span>, <span class="citation" data-cites="pawitan_all_2001">Pawitan (<a href="#ref-pawitan_all_2001" role="doc-biblioref">2001</a>)</span>). The main things that are important to know as researchers about the likelihood function is that you are responsible to choosing it! For example, if I suspect that my dependent variable comes from a normal distribution (where you otherwise would fit some sort of linear model), I will use the normal likelihood function<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>)), <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">n =</span> <span class="dv">101</span>, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>), <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"#fca903"</span>) <span class="sc">+</span></span>
@@ -318,12 +350,16 @@ P(Parameters|Data)=\frac{P(Data|Parameters) \cdot P(Parameters)}{P(Data)}
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>If, on the other hand, I suspect that my dependent variable comes from a Poisson distribution (e.g.&nbsp;number of times a participant scratched their nose), I will use the Poisson likelihood function:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">16</span>, <span class="dv">1</span>)), <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">dpois</span>(x, <span class="dv">6</span>)), <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"#fca903"</span>) <span class="sc">+</span></span>
@@ -337,7 +373,11 @@ P(Parameters|Data)=\frac{P(Data|Parameters) \cdot P(Parameters)}{P(Data)}
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>In general, you need to define the <em>Data Generating Process (DGP)</em> - How were your observations generated?<br>
@@ -351,7 +391,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <li><em>Range of possible/probable parameter values</em> - Some parameters can only take certain values, creating a-priori hard limits for their value. For example, a normal distribution’s variance <span class="math inline">\(\sigma^2\)</span> can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:</li>
 </ul>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">13</span>)), <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dexp, <span class="at">n =</span> <span class="dv">101</span>, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">rate =</span> <span class="dv">1</span>), <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> <span class="st">"#a4c8f5"</span>, <span class="at">color =</span> <span class="st">"#0373fc"</span>, <span class="at">geom =</span> <span class="st">"area"</span>, <span class="at">outline.type =</span> <span class="st">"upper"</span>) <span class="sc">+</span></span>
@@ -368,12 +408,16 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>While in the second case, a prior like this would be better:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">9</span>)), <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">n =</span> <span class="dv">101</span>, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="dv">2</span>, <span class="at">sd =</span> <span class="fl">1.5</span>), <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> <span class="st">"#a4c8f5"</span>, <span class="at">color =</span> <span class="st">"#0373fc"</span>, <span class="at">geom =</span> <span class="st">"area"</span>, <span class="at">outline.type =</span> <span class="st">"upper"</span>) <span class="sc">+</span></span>
@@ -391,7 +435,11 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ul>
@@ -401,8 +449,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <li><em>Strong Priors</em> - These priors are narrower and leaves few parameter values probable.</li>
 </ul></li>
 </ul>
-<div class="page-columns page-full">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">28</span>, <span class="dv">28</span>)), <span class="fu">aes</span>(x)) <span class="sc">+</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dnorm, <span class="at">n =</span> <span class="dv">101</span>, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">8</span>), <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">fill =</span> <span class="st">"#a4c8f5"</span>, <span class="at">color =</span> <span class="st">"#0373fc"</span>, <span class="at">geom =</span> <span class="st">"area"</span>, <span class="at">outline.type =</span> <span class="st">"upper"</span>) <span class="sc">+</span></span>
@@ -429,14 +476,13 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>),</span>
 <span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell column-screen-inset quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell column-screen-inset quarto-layout-panel" data-layout-nrow="1">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="index_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="672"></p>
-</div>
 </div>
 </div>
 </div>
@@ -450,7 +496,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <p>The posterior probability of your model - <span class="math inline">\(P(Parameters|Data)\)</span> - is the ultimate goal of your analysis. This probability distribution tells you what values of your parameters are probable and what values not so much. This is a shift of perspective from the usual frequentist logic - instead of resulting in one number as estimate for your parameter, you end up with a whole distribution!<br>
 </p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -473,12 +519,16 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>I think that Getting a posterior from the Likelihood and the prior makes more sense visually (make sure to also play with Kristoffer Magnusson’s wonderful interactive <a href="https://rpsychologist.com/d3/bayes/">visualization</a>):</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>simulated parameters</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -493,7 +543,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pois_likelihood <span class="ot">&lt;-</span> <span class="cf">function</span>(theta, data, <span class="at">scale =</span> <span class="dv">1</span>) {</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sapply</span>(theta, <span class="cf">function</span>(.theta) {</span>
@@ -532,7 +582,11 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -548,7 +602,7 @@ A note on higher dimesions
 <p>All of the examples above refer to estimation of one parameter. Often, your models will include several parameters (100’s if you include random effects). So how does it work?<br>
 without getting into detail, know that the simple one-parameter case scales quite nicely into <em>n</em>-parameter models. For example, instead of the <span class="math inline">\(P(\theta)\)</span> prior from before, you can have <span class="math inline">\(P(\theta_0, \theta_1,...,\theta_n)\)</span> prior. A prior of an intercept and a slope for a simple regression model could look like this:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>2d ggplot code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">14</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -581,7 +635,11 @@ without getting into detail, know that the simple one-parameter case scales quit
 <span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>           <span class="at">yparams =</span> <span class="fu">list</span>(<span class="at">fill =</span> <span class="st">"#a4c8f5"</span>, <span class="at">colour =</span> <span class="st">"black"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>In general, we will denote <span class="math inline">\(\theta\)</span> to be the set of <em>m</em> parameters <span class="math inline">\([\theta_0, \theta_1,...,\theta_m]\)</span>, and <span class="math inline">\(X\)</span> as the set of <em>n</em> data points <span class="math inline">\([x_1, x_2,...,x_n]\)</span>.</p>
@@ -639,7 +697,6 @@ Important
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">model_parameters</span>(lm_cats) <span class="sc">|&gt;</span> insight<span class="sc">::</span><span class="fu">print_html</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
 <div id="ouafjobozd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ouafjobozd table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -1080,38 +1137,43 @@ Important
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Coefficient">Coefficient</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="t(142)">t(142)</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="p">p</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Coefficient" class="gt_row gt_center">2.36</td>
-<td headers="SE" class="gt_row gt_center">0.06</td>
-<td headers="95% CI" class="gt_row gt_center">(2.24, 2.48)</td>
-<td headers="t(142)" class="gt_row gt_center">39.00</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Sex (M)</td>
-<td headers="Coefficient" class="gt_row gt_center">0.54</td>
-<td headers="SE" class="gt_row gt_center">0.07</td>
-<td headers="95% CI" class="gt_row gt_center">(0.39, 0.69)</td>
-<td headers="t(142)" class="gt_row gt_center">7.33</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="6"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Coefficient" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Coefficient</th>
+<th id="SE" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">SE</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="t(142)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">t(142)</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">p</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Coefficient">2.36</td>
+<td class="gt_row gt_center" headers="SE">0.06</td>
+<td class="gt_row gt_center" headers="95% CI">(2.24, 2.48)</td>
+<td class="gt_row gt_center" headers="t(142)">39.00</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Sex (M)</td>
+<td class="gt_row gt_center" headers="Coefficient">0.54</td>
+<td class="gt_row gt_center" headers="SE">0.07</td>
+<td class="gt_row gt_center" headers="95% CI">(0.39, 0.69)</td>
+<td class="gt_row gt_center" headers="t(142)">7.33</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="6" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -1166,7 +1228,7 @@ ESS=\frac{N}{\hat{\tau}}
 <li><em>Chain mixing (R-hat)</em> - when sampling more than two chains or more (most of the times), we will want to check if all of them converge to the same distribution. This is measured with the <span class="math inline">\(\hat{R}\)</span> measure (<span class="citation" data-cites="vehtari_rank-normalization_2021">Vehtari et al. (<a href="#ref-vehtari_rank-normalization_2021" role="doc-biblioref">2021</a>)</span>) which equals to <span class="math inline">\(1\)</span> when convergence is maximal. Values above <span class="math inline">\(1.01\)</span> are not good.</li>
 </ul>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>tidybayes &amp; ggplot code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">spread_draws</span>(posterior, b_Intercept) <span class="sc">|&gt;</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .iteration, <span class="at">y =</span> b_Intercept)) <span class="sc">+</span></span>
@@ -1186,7 +1248,11 @@ ESS=\frac{N}{\hat{\tau}}
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </div>
@@ -1207,7 +1273,11 @@ ESS=\frac{N}{\hat{\tau}}
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>On the right we can see the Markov Chains and their (good) convergence, and on the left we can see the marginal posterior distribution of every parameter. Let’s inspect the <em>R-hat</em> and <em>ESS</em> convergence measures (aiming at <span class="math inline">\(\hat{R} \le 1.01\)</span> and <span class="math inline">\(ESS \ge 1000\)</span>):</p>
@@ -1221,7 +1291,6 @@ ESS=\frac{N}{\hat{\tau}}
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>bayestestR<span class="sc">::</span><span class="fu">effective_sample</span>(posterior) <span class="sc">|&gt;</span> insight<span class="sc">::</span><span class="fu">print_html</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
 <div id="ankbflamze" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ankbflamze table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -1662,33 +1731,38 @@ ESS=\frac{N}{\hat{\tau}}
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ESS">ESS</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left">b_Intercept</td>
-<td headers="ESS" class="gt_row gt_center">3946</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left">b_SexM</td>
-<td headers="ESS" class="gt_row gt_center">4140</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="2"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="ESS" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">ESS</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter">b_Intercept</td>
+<td class="gt_row gt_center" headers="ESS">3946</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter">b_SexM</td>
+<td class="gt_row gt_center" headers="ESS">4140</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="2" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <p>These measures also appear in the <code>parameters::model_parameters()</code> summary, so no need to actually calculate them separately.</p>
 <p>If we omit the annoying sigma parameter, we can visualize the 2D posterior of the Intercept and Slope:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>tidybayes &amp; ggplot code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">spread_draws</span>(posterior, b_Intercept, b_SexM)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1709,12 +1783,16 @@ ESS=\frac{N}{\hat{\tau}}
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">yparams =</span> <span class="fu">list</span>(<span class="at">fill =</span> <span class="st">"#2ea64e"</span>, <span class="at">colour =</span> <span class="st">"black"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>We can also inspect the posterior of the <code>SexM</code> coefficient alone (sex difference in weight) - also called a <em>marginal posterior</em>:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> draws <span class="sc">|&gt;</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> b_SexM)) <span class="sc">+</span> </span>
@@ -1730,7 +1808,11 @@ ESS=\frac{N}{\hat{\tau}}
 <span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Notice the values most probable in the posterior are in the range of our hypothesis, and also in the range of the frequentist model. Some calculations that can be done on the posterior include:</p>
@@ -1738,7 +1820,7 @@ ESS=\frac{N}{\hat{\tau}}
 <h5 class="anchored" data-anchor-id="probability-of-direction">Probability of direction</h5>
 <p>How much of the posterior is negative/positive? The answer to this question gives the probability that the parameter is different from zero:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> draws <span class="sc">|&gt;</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> b_SexM)) <span class="sc">+</span> </span>
@@ -1755,7 +1837,11 @@ ESS=\frac{N}{\hat{\tau}}
 <span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The posterior is entirely positive, yielding a 100% probability that the parameter is positive.</p>
@@ -1777,7 +1863,11 @@ SexM      | 100%</code></pre>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>),</span>
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"#E3E2DF"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -1785,7 +1875,7 @@ SexM      | 100%</code></pre>
 <h5 class="anchored" data-anchor-id="highest-density-interval-hdi">Highest Density Interval (HDI)</h5>
 <p>A common misconception of the frequentist’s confidence interval (with 95% credibility) is that it has a 95% probability of containing the true value of the parameter. The Bayesian Highest Density Interval however gives exactly this. The main 95% of the posterior have a 95% probability of containing the real value of the parameter. 95% are obviously arbitrary, and can be defined to anything else:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>plotting the HDI</summary>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> bayestestR<span class="sc">::</span><span class="fu">hdi</span>(posterior, <span class="at">parameters =</span> <span class="st">"b_SexM"</span>, <span class="at">ci =</span> <span class="fl">0.89</span>) <span class="sc">|&gt;</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>() <span class="sc">+</span></span>
@@ -1804,7 +1894,11 @@ SexM      | 100%</code></pre>
 <span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -1814,7 +1908,6 @@ SexM      | 100%</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>parameters<span class="sc">::</span><span class="fu">model_parameters</span>(posterior, <span class="at">centrality =</span> <span class="st">"all"</span>) <span class="sc">|&gt;</span> insight<span class="sc">::</span><span class="fu">print_html</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
 <div id="qwqvncvcxj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#qwqvncvcxj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -2255,62 +2348,68 @@ SexM      | 100%</code></pre>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_heading">
-      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Model Summary</td>
-    </tr>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Median">Median</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="MAP">MAP</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="pd">pd</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Rhat">Rhat</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ESS">ESS</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Fixed Effects ">Fixed Effects </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">2.36</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">2.36</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">2.36</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(2.24, 2.48)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">3946.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">SexM</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">0.54</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">0.54</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">0.53</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(0.40, 0.69)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">4140.00</td></tr>
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Sigma ">Sigma </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Sigma   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">sigma</td>
-<td headers="Sigma   Median" class="gt_row gt_center">0.42</td>
-<td headers="Sigma   Mean" class="gt_row gt_center">0.42</td>
-<td headers="Sigma   MAP" class="gt_row gt_center">0.41</td>
-<td headers="Sigma   95% CI" class="gt_row gt_center">(0.37, 0.47)</td>
-<td headers="Sigma   pd" class="gt_row gt_center">100%</td>
-<td headers="Sigma   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Sigma   ESS" class="gt_row gt_center">3277.00</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="8"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border">Model Summary</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Median</th>
+<th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Mean</th>
+<th id="MAP" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">MAP</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">pd</th>
+<th id="Rhat" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Rhat</th>
+<th id="ESS" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">ESS</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd gt_group_heading_row">
+<td colspan="8" id="Fixed Effects " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Fixed Effects</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">2.36</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">2.36</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">2.36</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(2.24, 2.48)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">3946.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">SexM</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">0.54</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">0.54</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">0.53</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(0.40, 0.69)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">4140.00</td>
+</tr>
+<tr class="even gt_group_heading_row">
+<td colspan="8" id="Sigma " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Sigma</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td class="gt_row gt_left" headers="Sigma   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">sigma</td>
+<td class="gt_row gt_center" headers="Sigma   Median">0.42</td>
+<td class="gt_row gt_center" headers="Sigma   Mean">0.42</td>
+<td class="gt_row gt_center" headers="Sigma   MAP">0.41</td>
+<td class="gt_row gt_center" headers="Sigma   95% CI">(0.37, 0.47)</td>
+<td class="gt_row gt_center" headers="Sigma   pd">100%</td>
+<td class="gt_row gt_center" headers="Sigma   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Sigma   ESS">3277.00</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="8" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -2326,7 +2425,7 @@ SexM      | 100%</code></pre>
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-burkner_brms_2017" class="csl-entry" role="listitem">
 Bürkner, Paul-Christian. 2017. <span>“Brms: An r Package for Bayesian Multilevel Models Using Stan.”</span> <em>Journal of Statistical Software</em> 80 (1): 1–28. <a href="https://doi.org/10.18637/jss.v080.i01">https://doi.org/10.18637/jss.v080.i01</a>.
 </div>
@@ -2433,10 +2532,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/tomerzipori\.github\.io\/blog\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -2446,8 +2562,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -2459,7 +2584,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -2503,6 +2751,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -2528,6 +2777,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -2590,8 +2865,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">© 2024 Tomer Zipori</div>   
-    <div class="nav-footer-center">powered by <a href="https://quarto.org">quarto</a></div>
+    <div class="nav-footer-left">
+<p>© 2024 Tomer Zipori | Part of the <a href="https://www.r-bloggers.com/">R-Bloggers</a> network</p>
+</div>   
+    <div class="nav-footer-center">
+<p>powered by <a href="https://quarto.org">quarto</a></p>
+</div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item compact">
@@ -2607,7 +2886,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </a>
   </li>  
     <li class="nav-item compact">
-    <a class="nav-link" href="../../www.linkedin.com/in/tomer-zipori">
+    <a class="nav-link" href="https://www.linkedin.com/in/tomer-zipori/">
       <i class="bi bi-linkedin" role="img">
 </i> 
     </a>
@@ -2616,6 +2895,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>
   </div>
 </footer>
+
 
 
 

@@ -9,13 +9,14 @@
 <link>https://tomerzipori.github.io/blog/blog.html#category=code</link>
 <atom:link href="https://tomerzipori.github.io/blog/blog-code.xml" rel="self" type="application/rss+xml"/>
 <description></description>
-<generator>quarto-1.3.361</generator>
-<lastBuildDate>Sat, 02 Mar 2024 11:00:01 GMT</lastBuildDate>
+<generator>quarto-1.4.555</generator>
+<lastBuildDate>Sat, 27 Apr 2024 08:54:27 GMT</lastBuildDate>
 <item>
   <title>Bayesian Modeling for Psychologists, Part 2</title>
   <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/bayes102/index.html</link>
+  <link>https://tomerzipori.github.io/blog/posts/bayes102/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -126,7 +127,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="ngzurexirt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ngzurexirt table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -567,38 +567,43 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Coefficient">Coefficient</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="t(148)">t(148)</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="p">p</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Coefficient" class="gt_row gt_center">1.08</td>
-<td headers="SE" class="gt_row gt_center">0.07</td>
-<td headers="95% CI" class="gt_row gt_center">(0.94, 1.23)</td>
-<td headers="t(148)" class="gt_row gt_center">14.85</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal Width</td>
-<td headers="Coefficient" class="gt_row gt_center">2.23</td>
-<td headers="SE" class="gt_row gt_center">0.05</td>
-<td headers="95% CI" class="gt_row gt_center">(2.13, 2.33)</td>
-<td headers="t(148)" class="gt_row gt_center">43.39</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="6"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Coefficient" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Coefficient</th>
+<th id="SE" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">SE</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="t(148)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">t(148)</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">p</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Coefficient">1.08</td>
+<td class="gt_row gt_center" headers="SE">0.07</td>
+<td class="gt_row gt_center" headers="95% CI">(0.94, 1.23)</td>
+<td class="gt_row gt_center" headers="t(148)">14.85</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal Width</td>
+<td class="gt_row gt_center" headers="Coefficient">2.23</td>
+<td class="gt_row gt_center" headers="SE">0.05</td>
+<td class="gt_row gt_center" headers="95% CI">(2.13, 2.33)</td>
+<td class="gt_row gt_center" headers="t(148)">43.39</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="6" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -627,7 +632,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="kvrbcjzwwo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#kvrbcjzwwo table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -1068,62 +1072,75 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Coefficient">Coefficient</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="t(144)">t(144)</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="p">p</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Coefficient" class="gt_row gt_center">1.33</td>
-<td headers="SE" class="gt_row gt_center">0.13</td>
-<td headers="95% CI" class="gt_row gt_center">(1.07, 1.59)</td>
-<td headers="t(144)" class="gt_row gt_center">10.14</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal Width</td>
-<td headers="Coefficient" class="gt_row gt_center">0.55</td>
-<td headers="SE" class="gt_row gt_center">0.49</td>
-<td headers="95% CI" class="gt_row gt_center">(-0.42, 1.52)</td>
-<td headers="t(144)" class="gt_row gt_center">1.12</td>
-<td headers="p" class="gt_row gt_center">0.267 </td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Species (versicolor)</td>
-<td headers="Coefficient" class="gt_row gt_center">0.45</td>
-<td headers="SE" class="gt_row gt_center">0.37</td>
-<td headers="95% CI" class="gt_row gt_center">(-0.28, 1.19)</td>
-<td headers="t(144)" class="gt_row gt_center">1.21</td>
-<td headers="p" class="gt_row gt_center">0.227 </td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Species (virginica)</td>
-<td headers="Coefficient" class="gt_row gt_center">2.91</td>
-<td headers="SE" class="gt_row gt_center">0.41</td>
-<td headers="95% CI" class="gt_row gt_center">(2.11, 3.72)</td>
-<td headers="t(144)" class="gt_row gt_center">7.17</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal Width × Species (versicolor)</td>
-<td headers="Coefficient" class="gt_row gt_center">1.32</td>
-<td headers="SE" class="gt_row gt_center">0.56</td>
-<td headers="95% CI" class="gt_row gt_center">(0.23, 2.42)</td>
-<td headers="t(144)" class="gt_row gt_center">2.38</td>
-<td headers="p" class="gt_row gt_center">0.019 </td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal Width × Species (virginica)</td>
-<td headers="Coefficient" class="gt_row gt_center">0.10</td>
-<td headers="SE" class="gt_row gt_center">0.52</td>
-<td headers="95% CI" class="gt_row gt_center">(-0.94, 1.14)</td>
-<td headers="t(144)" class="gt_row gt_center">0.19</td>
-<td headers="p" class="gt_row gt_center">0.848 </td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="6"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Coefficient" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Coefficient</th>
+<th id="SE" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">SE</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="t(144)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">t(144)</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">p</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Coefficient">1.33</td>
+<td class="gt_row gt_center" headers="SE">0.13</td>
+<td class="gt_row gt_center" headers="95% CI">(1.07, 1.59)</td>
+<td class="gt_row gt_center" headers="t(144)">10.14</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal Width</td>
+<td class="gt_row gt_center" headers="Coefficient">0.55</td>
+<td class="gt_row gt_center" headers="SE">0.49</td>
+<td class="gt_row gt_center" headers="95% CI">(-0.42, 1.52)</td>
+<td class="gt_row gt_center" headers="t(144)">1.12</td>
+<td class="gt_row gt_center" headers="p">0.267</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Species (versicolor)</td>
+<td class="gt_row gt_center" headers="Coefficient">0.45</td>
+<td class="gt_row gt_center" headers="SE">0.37</td>
+<td class="gt_row gt_center" headers="95% CI">(-0.28, 1.19)</td>
+<td class="gt_row gt_center" headers="t(144)">1.21</td>
+<td class="gt_row gt_center" headers="p">0.227</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Species (virginica)</td>
+<td class="gt_row gt_center" headers="Coefficient">2.91</td>
+<td class="gt_row gt_center" headers="SE">0.41</td>
+<td class="gt_row gt_center" headers="95% CI">(2.11, 3.72)</td>
+<td class="gt_row gt_center" headers="t(144)">7.17</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal Width × Species (versicolor)</td>
+<td class="gt_row gt_center" headers="Coefficient">1.32</td>
+<td class="gt_row gt_center" headers="SE">0.56</td>
+<td class="gt_row gt_center" headers="95% CI">(0.23, 2.42)</td>
+<td class="gt_row gt_center" headers="t(144)">2.38</td>
+<td class="gt_row gt_center" headers="p">0.019</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal Width × Species (virginica)</td>
+<td class="gt_row gt_center" headers="Coefficient">0.10</td>
+<td class="gt_row gt_center" headers="SE">0.52</td>
+<td class="gt_row gt_center" headers="95% CI">(-0.94, 1.14)</td>
+<td class="gt_row gt_center" headers="t(144)">0.19</td>
+<td class="gt_row gt_center" headers="p">0.848</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="6" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -1173,7 +1190,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="vdpwulkuye" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#vdpwulkuye table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -1614,62 +1630,75 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Coefficient">Coefficient</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="t(144)">t(144)</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="p">p</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Coefficient" class="gt_row gt_center">1.98</td>
-<td headers="SE" class="gt_row gt_center">0.47</td>
-<td headers="95% CI" class="gt_row gt_center">(1.05, 2.91)</td>
-<td headers="t(144)" class="gt_row gt_center">4.22</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal Width c</td>
-<td headers="Coefficient" class="gt_row gt_center">0.55</td>
-<td headers="SE" class="gt_row gt_center">0.49</td>
-<td headers="95% CI" class="gt_row gt_center">(-0.42, 1.52)</td>
-<td headers="t(144)" class="gt_row gt_center">1.12</td>
-<td headers="p" class="gt_row gt_center">0.267 </td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Species (versicolor)</td>
-<td headers="Coefficient" class="gt_row gt_center">2.04</td>
-<td headers="SE" class="gt_row gt_center">0.47</td>
-<td headers="95% CI" class="gt_row gt_center">(1.10, 2.98)</td>
-<td headers="t(144)" class="gt_row gt_center">4.31</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Species (virginica)</td>
-<td headers="Coefficient" class="gt_row gt_center">3.03</td>
-<td headers="SE" class="gt_row gt_center">0.50</td>
-<td headers="95% CI" class="gt_row gt_center">(2.05, 4.02)</td>
-<td headers="t(144)" class="gt_row gt_center">6.10</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal Width c × Species (versicolor)</td>
-<td headers="Coefficient" class="gt_row gt_center">1.32</td>
-<td headers="SE" class="gt_row gt_center">0.56</td>
-<td headers="95% CI" class="gt_row gt_center">(0.23, 2.42)</td>
-<td headers="t(144)" class="gt_row gt_center">2.38</td>
-<td headers="p" class="gt_row gt_center">0.019 </td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal Width c × Species (virginica)</td>
-<td headers="Coefficient" class="gt_row gt_center">0.10</td>
-<td headers="SE" class="gt_row gt_center">0.52</td>
-<td headers="95% CI" class="gt_row gt_center">(-0.94, 1.14)</td>
-<td headers="t(144)" class="gt_row gt_center">0.19</td>
-<td headers="p" class="gt_row gt_center">0.848 </td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="6"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Coefficient" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Coefficient</th>
+<th id="SE" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">SE</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="t(144)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">t(144)</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">p</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Coefficient">1.98</td>
+<td class="gt_row gt_center" headers="SE">0.47</td>
+<td class="gt_row gt_center" headers="95% CI">(1.05, 2.91)</td>
+<td class="gt_row gt_center" headers="t(144)">4.22</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal Width c</td>
+<td class="gt_row gt_center" headers="Coefficient">0.55</td>
+<td class="gt_row gt_center" headers="SE">0.49</td>
+<td class="gt_row gt_center" headers="95% CI">(-0.42, 1.52)</td>
+<td class="gt_row gt_center" headers="t(144)">1.12</td>
+<td class="gt_row gt_center" headers="p">0.267</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Species (versicolor)</td>
+<td class="gt_row gt_center" headers="Coefficient">2.04</td>
+<td class="gt_row gt_center" headers="SE">0.47</td>
+<td class="gt_row gt_center" headers="95% CI">(1.10, 2.98)</td>
+<td class="gt_row gt_center" headers="t(144)">4.31</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Species (virginica)</td>
+<td class="gt_row gt_center" headers="Coefficient">3.03</td>
+<td class="gt_row gt_center" headers="SE">0.50</td>
+<td class="gt_row gt_center" headers="95% CI">(2.05, 4.02)</td>
+<td class="gt_row gt_center" headers="t(144)">6.10</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal Width c × Species (versicolor)</td>
+<td class="gt_row gt_center" headers="Coefficient">1.32</td>
+<td class="gt_row gt_center" headers="SE">0.56</td>
+<td class="gt_row gt_center" headers="95% CI">(0.23, 2.42)</td>
+<td class="gt_row gt_center" headers="t(144)">2.38</td>
+<td class="gt_row gt_center" headers="p">0.019</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal Width c × Species (virginica)</td>
+<td class="gt_row gt_center" headers="Coefficient">0.10</td>
+<td class="gt_row gt_center" headers="SE">0.52</td>
+<td class="gt_row gt_center" headers="95% CI">(-0.94, 1.14)</td>
+<td class="gt_row gt_center" headers="t(144)">0.19</td>
+<td class="gt_row gt_center" headers="p">0.848</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="6" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -1748,7 +1777,11 @@ font-style: inherit;">+</span></span>
 <span id="cb11-8"></span>
 <span id="cb11-9">f_plot</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -1803,7 +1836,11 @@ font-style: inherit;">gaussian</span>())</span></code></pre></div>
 <p>The student-t distribution is symmetrical like the Gaussian distribution, but it has thicker “tails”. This allows the model to explore wider area of the possible parameter value space.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section></div><div class="cell">
@@ -1891,7 +1928,11 @@ font-style: inherit;">"sigma"</span>)</span></code></pre></div>
 <p>Because variances are strictly positive, the exponential distribution is a common choice for it (and other variance parameters):</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section></div><p>Fitting a model:</p>
@@ -1952,7 +1993,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="gmbrmqmovn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#gmbrmqmovn table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -2393,94 +2433,108 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_heading">
-      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Model Summary</td>
-    </tr>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Median">Median</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="MAP">MAP</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="pd">pd</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Rhat">Rhat</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ESS">ESS</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Fixed Effects ">Fixed Effects </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">2.14</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">2.14</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">2.15</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(1.24, 3.04)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.002</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">1473.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal.Width_c</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">0.71</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">0.71</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">0.71</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(-0.22, 1.65)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">93.39%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.002</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">1466.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Speciesversicolor</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">1.89</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">1.88</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">1.90</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(0.98, 2.79)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.002</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">1507.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Speciesvirginica</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">2.87</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">2.87</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">2.85</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(1.92, 3.81)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.002</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">1676.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal.Width_c:Speciesversicolor</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">1.16</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">1.16</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">1.16</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(0.11, 2.22)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">98.38%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.002</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">1712.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Petal.Width_c:Speciesvirginica</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">-0.05</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">-0.05</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">-0.04</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(-1.07, 0.97)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">54.23%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.002</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">1618.00</td></tr>
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Sigma ">Sigma </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Sigma   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">sigma</td>
-<td headers="Sigma   Median" class="gt_row gt_center">0.36</td>
-<td headers="Sigma   Mean" class="gt_row gt_center">0.36</td>
-<td headers="Sigma   MAP" class="gt_row gt_center">0.36</td>
-<td headers="Sigma   95% CI" class="gt_row gt_center">(0.32, 0.41)</td>
-<td headers="Sigma   pd" class="gt_row gt_center">100%</td>
-<td headers="Sigma   Rhat" class="gt_row gt_center">1.001</td>
-<td headers="Sigma   ESS" class="gt_row gt_center">3753.00</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="8"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border">Model Summary</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Median</th>
+<th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Mean</th>
+<th id="MAP" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">MAP</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">pd</th>
+<th id="Rhat" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Rhat</th>
+<th id="ESS" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">ESS</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd gt_group_heading_row">
+<td colspan="8" id="Fixed Effects " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Fixed Effects</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">2.14</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">2.14</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">2.15</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(1.24, 3.04)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.002</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">1473.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal.Width_c</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">0.71</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">0.71</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">0.71</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(-0.22, 1.65)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">93.39%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.002</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">1466.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Speciesversicolor</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">1.89</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">1.88</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">1.90</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(0.98, 2.79)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.002</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">1507.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Speciesvirginica</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">2.87</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">2.87</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">2.85</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(1.92, 3.81)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.002</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">1676.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal.Width_c:Speciesversicolor</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">1.16</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">1.16</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">1.16</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(0.11, 2.22)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">98.38%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.002</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">1712.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Petal.Width_c:Speciesvirginica</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">-0.05</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">-0.05</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">-0.04</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(-1.07, 0.97)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">54.23%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.002</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">1618.00</td>
+</tr>
+<tr class="even gt_group_heading_row">
+<td colspan="8" id="Sigma " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Sigma</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td class="gt_row gt_left" headers="Sigma   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">sigma</td>
+<td class="gt_row gt_center" headers="Sigma   Median">0.36</td>
+<td class="gt_row gt_center" headers="Sigma   Mean">0.36</td>
+<td class="gt_row gt_center" headers="Sigma   MAP">0.36</td>
+<td class="gt_row gt_center" headers="Sigma   95% CI">(0.32, 0.41)</td>
+<td class="gt_row gt_center" headers="Sigma   pd">100%</td>
+<td class="gt_row gt_center" headers="Sigma   Rhat">1.001</td>
+<td class="gt_row gt_center" headers="Sigma   ESS">3753.00</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="8" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -2689,7 +2743,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb22-10">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -3065,7 +3123,11 @@ font-style: inherit;">axis.ticks.x =</span> <span class="fu" style="color: #4758
 background-color: null;
 font-style: inherit;">element_blank</span>())</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Calculating this for several rows gives us several more distributions of conditional means. I here use values realistic for each species to avoid extrapolation.</p>
@@ -3472,7 +3534,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb29-33">    blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>We can use the <code>add_linpred_draws()</code> function from the awesome <code>tidybayes</code> package <span class="citation" data-cites="kay_tidybayes_2020">(Kay 2020)</span> in order to do this thing for all values of X, and finally plot the regression line with the credible interval around it:</p>
@@ -3592,7 +3658,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb30-10">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>This is similar to the frequentist confidence interval, just remember that these interval <strong>actually</strong> represents 80%, 85%, and 97% of regression lines.</p>
@@ -3707,7 +3777,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb32-8">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Or we can group by draw index and look at all the lines:</p>
@@ -3801,7 +3875,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb33-8">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -3814,8 +3892,12 @@ font-style: inherit;">+</span></span>
 <p>Luckily for us, <code>brms</code> is more then capable at estimating mixed effects models. It even has the <code>lme4</code>/<code>nlme</code> syntax in the logo!</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/brms.png" class="lightbox img-fluid figure-img" width="100"></p>
-<figcaption class="figure-caption">the effect of r on b with random slopes of m to each grouping variable s???</figcaption>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../bayes102/brms.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="the effect of r on b with random slopes of m to each grouping variable s???"><img src="https://tomerzipori.github.io/blog/posts/bayes102/brms.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="100" alt="the effect of r on b with random slopes of m to each grouping variable s???"></a></p>
+</figure>
+</div>
+<figcaption>the effect of r on b with random slopes of m to each grouping variable s???</figcaption>
 </figure>
 </div>
 <p>Let’s look at the classic <code>sleepstudy</code> dataset containing “<em>The average reaction time per day (in milliseconds) for subjects in a sleep deprivation study</em>”.</p>
@@ -3906,7 +3988,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb36-7">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Full model for predicting reaction time can be:</p>
@@ -3953,7 +4039,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">tab_model</span>(sleep_model_ml)</span></code></pre></div>
 <div class="cell-output-display">
-
 <table style="border-collapse:collapse; border:none;">
 <tbody><tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">&nbsp;</th>
@@ -4204,7 +4289,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="lnovdrbdcn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#lnovdrbdcn table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -4645,89 +4729,101 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_heading">
-      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Model Summary</td>
-    </tr>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Median">Median</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="MAP">MAP</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="pd">pd</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Rhat">Rhat</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ESS">ESS</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Fixed Effects ">Fixed Effects </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">251.44</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">251.44</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">251.58</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(243.45, 259.61)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">18190.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Days</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">10.38</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">10.37</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">10.47</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(7.53, 13.22)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">12965.00</td></tr>
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Sigma ">Sigma </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Sigma   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">sigma</td>
-<td headers="Sigma   Median" class="gt_row gt_center">28.66</td>
-<td headers="Sigma   Mean" class="gt_row gt_center">28.72</td>
-<td headers="Sigma   MAP" class="gt_row gt_center">28.59</td>
-<td headers="Sigma   95% CI" class="gt_row gt_center">(25.51, 32.32)</td>
-<td headers="Sigma   pd" class="gt_row gt_center">100%</td>
-<td headers="Sigma   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Sigma   ESS" class="gt_row gt_center">14323.00</td></tr>
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Random Effects Variances ">Random Effects Variances </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Random Effects Variances   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">SD (Intercept: Subject)</td>
-<td headers="Random Effects Variances   Median" class="gt_row gt_center">2.58</td>
-<td headers="Random Effects Variances   Mean" class="gt_row gt_center">3.57</td>
-<td headers="Random Effects Variances   MAP" class="gt_row gt_center">0.16</td>
-<td headers="Random Effects Variances   95% CI" class="gt_row gt_center">(0.06, 11.71)</td>
-<td headers="Random Effects Variances   pd" class="gt_row gt_center">100%</td>
-<td headers="Random Effects Variances   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Random Effects Variances   ESS" class="gt_row gt_center">4650.00</td></tr>
-    <tr><td headers="Random Effects Variances   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">SD (Days: Subject)</td>
-<td headers="Random Effects Variances   Median" class="gt_row gt_center">5.75</td>
-<td headers="Random Effects Variances   Mean" class="gt_row gt_center">5.82</td>
-<td headers="Random Effects Variances   MAP" class="gt_row gt_center">5.64</td>
-<td headers="Random Effects Variances   95% CI" class="gt_row gt_center">(3.94, 8.08)</td>
-<td headers="Random Effects Variances   pd" class="gt_row gt_center">100%</td>
-<td headers="Random Effects Variances   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Random Effects Variances   ESS" class="gt_row gt_center">6902.00</td></tr>
-    <tr><td headers="Random Effects Variances   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Cor (Intercept~Days: Subject)</td>
-<td headers="Random Effects Variances   Median" class="gt_row gt_center">0.59</td>
-<td headers="Random Effects Variances   Mean" class="gt_row gt_center">0.46</td>
-<td headers="Random Effects Variances   MAP" class="gt_row gt_center">0.96</td>
-<td headers="Random Effects Variances   95% CI" class="gt_row gt_center">(-0.74, 0.98)</td>
-<td headers="Random Effects Variances   pd" class="gt_row gt_center">84.40%</td>
-<td headers="Random Effects Variances   Rhat" class="gt_row gt_center">1.001</td>
-<td headers="Random Effects Variances   ESS" class="gt_row gt_center">1453.00</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="8"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border">Model Summary</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Median</th>
+<th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Mean</th>
+<th id="MAP" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">MAP</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">pd</th>
+<th id="Rhat" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Rhat</th>
+<th id="ESS" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">ESS</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd gt_group_heading_row">
+<td colspan="8" id="Fixed Effects " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Fixed Effects</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">251.44</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">251.44</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">251.58</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(243.45, 259.61)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">18190.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Days</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">10.38</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">10.37</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">10.47</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(7.53, 13.22)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">12965.00</td>
+</tr>
+<tr class="even gt_group_heading_row">
+<td colspan="8" id="Sigma " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Sigma</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td class="gt_row gt_left" headers="Sigma   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">sigma</td>
+<td class="gt_row gt_center" headers="Sigma   Median">28.66</td>
+<td class="gt_row gt_center" headers="Sigma   Mean">28.72</td>
+<td class="gt_row gt_center" headers="Sigma   MAP">28.59</td>
+<td class="gt_row gt_center" headers="Sigma   95% CI">(25.51, 32.32)</td>
+<td class="gt_row gt_center" headers="Sigma   pd">100%</td>
+<td class="gt_row gt_center" headers="Sigma   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Sigma   ESS">14323.00</td>
+</tr>
+<tr class="even gt_group_heading_row">
+<td colspan="8" id="Random Effects Variances " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Random Effects Variances</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td class="gt_row gt_left" headers="Random Effects Variances   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">SD (Intercept: Subject)</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Median">2.58</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Mean">3.57</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   MAP">0.16</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   95% CI">(0.06, 11.71)</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   pd">100%</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   ESS">4650.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Random Effects Variances   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">SD (Days: Subject)</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Median">5.75</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Mean">5.82</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   MAP">5.64</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   95% CI">(3.94, 8.08)</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   pd">100%</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   ESS">6902.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Random Effects Variances   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Cor (Intercept~Days: Subject)</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Median">0.59</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Mean">0.46</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   MAP">0.96</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   95% CI">(-0.74, 0.98)</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   pd">84.40%</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   Rhat">1.001</td>
+<td class="gt_row gt_center" headers="Random Effects Variances   ESS">1453.00</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="8" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -4838,7 +4934,11 @@ font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758
 background-color: null;
 font-style: inherit;">element_blank</span>())</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
@@ -4938,7 +5038,11 @@ font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758
 background-color: null;
 font-style: inherit;">element_blank</span>())</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
@@ -5024,7 +5128,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb48-9">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-48-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-48-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>These are actually the error terms of the random effects. We saw that they should be correlated:</p>
@@ -5140,7 +5248,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb49-8">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
@@ -5363,7 +5475,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb53-11">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Individual lines:</p>
@@ -5486,7 +5602,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb54-9">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-53-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Faceting by Subject</p>
@@ -5650,7 +5770,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb55-12">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Individual lines:</p>
@@ -5767,7 +5891,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb56-9">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-55-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-55-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Another way of visualizing the uncertainty in Mixed effects models is:</p>
@@ -5907,7 +6035,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb57-10">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-56-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-56-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>In this kind of plot we can also observe the random effects: low variability in intercepts + moderate variability in slopes.</p>
@@ -6023,7 +6155,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="ditwgqxxve" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ditwgqxxve table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -6464,38 +6595,43 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Coefficient">Coefficient</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="z">z</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="p">p</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Coefficient" class="gt_row gt_center">0.07</td>
-<td headers="SE" class="gt_row gt_center">0.06</td>
-<td headers="95% CI" class="gt_row gt_center">(-0.04, 0.18)</td>
-<td headers="z" class="gt_row gt_center">1.30</td>
-<td headers="p" class="gt_row gt_center">0.193</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Lag1</td>
-<td headers="Coefficient" class="gt_row gt_center">-0.07</td>
-<td headers="SE" class="gt_row gt_center">0.05</td>
-<td headers="95% CI" class="gt_row gt_center">(-0.17, 0.03)</td>
-<td headers="z" class="gt_row gt_center">-1.40</td>
-<td headers="p" class="gt_row gt_center">0.160</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="6"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Coefficient" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Coefficient</th>
+<th id="SE" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">SE</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="z" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">z</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">p</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Coefficient">0.07</td>
+<td class="gt_row gt_center" headers="SE">0.06</td>
+<td class="gt_row gt_center" headers="95% CI">(-0.04, 0.18)</td>
+<td class="gt_row gt_center" headers="z">1.30</td>
+<td class="gt_row gt_center" headers="p">0.193</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Lag1</td>
+<td class="gt_row gt_center" headers="Coefficient">-0.07</td>
+<td class="gt_row gt_center" headers="SE">0.05</td>
+<td class="gt_row gt_center" headers="95% CI">(-0.17, 0.03)</td>
+<td class="gt_row gt_center" headers="z">-1.40</td>
+<td class="gt_row gt_center" headers="p">0.160</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="6" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -6513,7 +6649,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="fdpiazflds" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#fdpiazflds table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -6954,38 +7089,43 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Coefficient">Coefficient</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="z">z</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="p">p</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Coefficient" class="gt_row gt_center">1.08</td>
-<td headers="SE" class="gt_row gt_center">0.06</td>
-<td headers="95% CI" class="gt_row gt_center">(0.96, 1.20)</td>
-<td headers="z" class="gt_row gt_center">1.30</td>
-<td headers="p" class="gt_row gt_center">0.193</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Lag1</td>
-<td headers="Coefficient" class="gt_row gt_center">0.93</td>
-<td headers="SE" class="gt_row gt_center">0.05</td>
-<td headers="95% CI" class="gt_row gt_center">(0.84, 1.03)</td>
-<td headers="z" class="gt_row gt_center">-1.40</td>
-<td headers="p" class="gt_row gt_center">0.160</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="6"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Coefficient" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Coefficient</th>
+<th id="SE" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">SE</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="z" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">z</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">p</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Coefficient">1.08</td>
+<td class="gt_row gt_center" headers="SE">0.06</td>
+<td class="gt_row gt_center" headers="95% CI">(0.96, 1.20)</td>
+<td class="gt_row gt_center" headers="z">1.30</td>
+<td class="gt_row gt_center" headers="p">0.193</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Lag1</td>
+<td class="gt_row gt_center" headers="Coefficient">0.93</td>
+<td class="gt_row gt_center" headers="SE">0.05</td>
+<td class="gt_row gt_center" headers="95% CI">(0.84, 1.03)</td>
+<td class="gt_row gt_center" headers="z">-1.40</td>
+<td class="gt_row gt_center" headers="p">0.160</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="6" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -7105,7 +7245,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb63-11">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>When the market doesn’t change - <img src="https://latex.codecogs.com/png.latex?Lag1=0">, the probability of the market going Up is <img src="https://latex.codecogs.com/png.latex?1.08"> greater then the probability of it going down. The market tends to go up!</p>
@@ -7218,7 +7362,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="eetclffabx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#eetclffabx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -7659,48 +7802,52 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_heading">
-      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Model Summary</td>
-    </tr>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Median">Median</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="MAP">MAP</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="pd">pd</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Rhat">Rhat</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ESS">ESS</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Median" class="gt_row gt_center">1.08</td>
-<td headers="Mean" class="gt_row gt_center">1.08</td>
-<td headers="MAP" class="gt_row gt_center">1.08</td>
-<td headers="95% CI" class="gt_row gt_center">(0.96, 1.20)</td>
-<td headers="pd" class="gt_row gt_center">89.72%</td>
-<td headers="Rhat" class="gt_row gt_center">1.000</td>
-<td headers="ESS" class="gt_row gt_center">3739.00</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Lag1</td>
-<td headers="Median" class="gt_row gt_center">0.93</td>
-<td headers="Mean" class="gt_row gt_center">0.93</td>
-<td headers="MAP" class="gt_row gt_center">0.93</td>
-<td headers="95% CI" class="gt_row gt_center">(0.85, 1.03)</td>
-<td headers="pd" class="gt_row gt_center">91.92%</td>
-<td headers="Rhat" class="gt_row gt_center">0.999</td>
-<td headers="ESS" class="gt_row gt_center">3351.00</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="8"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border">Model Summary</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Median</th>
+<th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Mean</th>
+<th id="MAP" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">MAP</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">pd</th>
+<th id="Rhat" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Rhat</th>
+<th id="ESS" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">ESS</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Median">1.08</td>
+<td class="gt_row gt_center" headers="Mean">1.08</td>
+<td class="gt_row gt_center" headers="MAP">1.08</td>
+<td class="gt_row gt_center" headers="95% CI">(0.96, 1.20)</td>
+<td class="gt_row gt_center" headers="pd">89.72%</td>
+<td class="gt_row gt_center" headers="Rhat">1.000</td>
+<td class="gt_row gt_center" headers="ESS">3739.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Lag1</td>
+<td class="gt_row gt_center" headers="Median">0.93</td>
+<td class="gt_row gt_center" headers="Mean">0.93</td>
+<td class="gt_row gt_center" headers="MAP">0.93</td>
+<td class="gt_row gt_center" headers="95% CI">(0.85, 1.03)</td>
+<td class="gt_row gt_center" headers="pd">91.92%</td>
+<td class="gt_row gt_center" headers="Rhat">0.999</td>
+<td class="gt_row gt_center" headers="ESS">3351.00</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="even">
+<td colspan="8" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -7708,7 +7855,6 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
 </section>
 <section id="the-parameters-themselves-1" class="level4 page-columns page-full">
 <h4 class="anchored" data-anchor-id="the-parameters-themselves-1">The parameters themselves</h4>
-<div class="page-columns page-full">
 <div class="sourceCode cell-code" id="cb69" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1">chains_logistic <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -7888,14 +8034,13 @@ font-style: inherit;">"Direction of effect"</span>) <span class="sc" style="colo
 background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb69-17">  blog_theme</span></code></pre></div>
-<div class="cell column-screen-inset quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell column-screen-inset quarto-layout-panel" data-layout-nrow="1">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-68-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-68-2.png" class="img-fluid" width="672"></p>
-</div>
 </div>
 </div>
 </div>
@@ -8044,7 +8189,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb70-10">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-69-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-69-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>We will now use the <code>tidybayes::add_epred_draws()</code> function in order to extract (40) individual predictions from the posterior distribution.</p>
@@ -8170,7 +8319,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb71-10">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-70-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-70-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The negative relationship is seen again, with a few odd outlier trends.</p>
@@ -8274,7 +8427,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb74-6">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-73-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-73-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <section id="the-model" class="level3">
@@ -8330,7 +8487,6 @@ font-style: inherit;">transform =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"exp"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-
 <table style="border-collapse:collapse; border:none;">
 <tbody><tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">&nbsp;</th>
@@ -8580,7 +8736,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="hmhtmjalxx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#hmhtmjalxx table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -9021,94 +9176,108 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_heading">
-      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Model Summary</td>
-    </tr>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Median">Median</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="MAP">MAP</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="pd">pd</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Rhat">Rhat</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ESS">ESS</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Fixed Effects ">Fixed Effects </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">6.50</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">6.48</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">6.58</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(4.17, 9.91)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.002</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">1473.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">visit</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">0.95</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">0.95</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">0.95</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(0.87, 1.04)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">84.00%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.001</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">3563.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Trt1</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">0.78</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">0.78</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">0.79</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(0.42, 1.47)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">79.17%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.002</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">1461.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">visit:Trt1</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">0.99</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">0.98</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">0.99</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(0.87, 1.12)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">59.13%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">3207.00</td></tr>
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Random Effects ">Random Effects </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Random Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">SD (Intercept: patient)</td>
-<td headers="Random Effects   Median" class="gt_row gt_center">2.83</td>
-<td headers="Random Effects   Mean" class="gt_row gt_center">2.86</td>
-<td headers="Random Effects   MAP" class="gt_row gt_center">2.79</td>
-<td headers="Random Effects   95% CI" class="gt_row gt_center">(2.31, 3.79)</td>
-<td headers="Random Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Random Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Random Effects   ESS" class="gt_row gt_center">2415.00</td></tr>
-    <tr><td headers="Random Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">SD (visit: patient)</td>
-<td headers="Random Effects   Median" class="gt_row gt_center">1.17</td>
-<td headers="Random Effects   Mean" class="gt_row gt_center">1.17</td>
-<td headers="Random Effects   MAP" class="gt_row gt_center">1.16</td>
-<td headers="Random Effects   95% CI" class="gt_row gt_center">(1.10, 1.26)</td>
-<td headers="Random Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Random Effects   Rhat" class="gt_row gt_center">1.001</td>
-<td headers="Random Effects   ESS" class="gt_row gt_center">2123.00</td></tr>
-    <tr><td headers="Random Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Cor (Intercept~visit: patient)</td>
-<td headers="Random Effects   Median" class="gt_row gt_center">0.70</td>
-<td headers="Random Effects   Mean" class="gt_row gt_center">0.71</td>
-<td headers="Random Effects   MAP" class="gt_row gt_center">0.68</td>
-<td headers="Random Effects   95% CI" class="gt_row gt_center">(0.52, 1.06)</td>
-<td headers="Random Effects   pd" class="gt_row gt_center">95.60%</td>
-<td headers="Random Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Random Effects   ESS" class="gt_row gt_center">3899.00</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="8"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border">Model Summary</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Median</th>
+<th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Mean</th>
+<th id="MAP" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">MAP</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">pd</th>
+<th id="Rhat" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Rhat</th>
+<th id="ESS" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">ESS</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd gt_group_heading_row">
+<td colspan="8" id="Fixed Effects " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Fixed Effects</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">6.50</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">6.48</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">6.58</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(4.17, 9.91)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.002</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">1473.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">visit</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">0.95</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">0.95</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">0.95</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(0.87, 1.04)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">84.00%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.001</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">3563.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Trt1</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">0.78</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">0.78</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">0.79</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(0.42, 1.47)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">79.17%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.002</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">1461.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">visit:Trt1</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">0.99</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">0.98</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">0.99</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(0.87, 1.12)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">59.13%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">3207.00</td>
+</tr>
+<tr class="even gt_group_heading_row">
+<td colspan="8" id="Random Effects " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Random Effects</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td class="gt_row gt_left" headers="Random Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">SD (Intercept: patient)</td>
+<td class="gt_row gt_center" headers="Random Effects   Median">2.83</td>
+<td class="gt_row gt_center" headers="Random Effects   Mean">2.86</td>
+<td class="gt_row gt_center" headers="Random Effects   MAP">2.79</td>
+<td class="gt_row gt_center" headers="Random Effects   95% CI">(2.31, 3.79)</td>
+<td class="gt_row gt_center" headers="Random Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Random Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Random Effects   ESS">2415.00</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Random Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">SD (visit: patient)</td>
+<td class="gt_row gt_center" headers="Random Effects   Median">1.17</td>
+<td class="gt_row gt_center" headers="Random Effects   Mean">1.17</td>
+<td class="gt_row gt_center" headers="Random Effects   MAP">1.16</td>
+<td class="gt_row gt_center" headers="Random Effects   95% CI">(1.10, 1.26)</td>
+<td class="gt_row gt_center" headers="Random Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Random Effects   Rhat">1.001</td>
+<td class="gt_row gt_center" headers="Random Effects   ESS">2123.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Random Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Cor (Intercept~visit: patient)</td>
+<td class="gt_row gt_center" headers="Random Effects   Median">0.70</td>
+<td class="gt_row gt_center" headers="Random Effects   Mean">0.71</td>
+<td class="gt_row gt_center" headers="Random Effects   MAP">0.68</td>
+<td class="gt_row gt_center" headers="Random Effects   95% CI">(0.52, 1.06)</td>
+<td class="gt_row gt_center" headers="Random Effects   pd">95.60%</td>
+<td class="gt_row gt_center" headers="Random Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Random Effects   ESS">3899.00</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="8" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -9239,7 +9408,11 @@ font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758
 background-color: null;
 font-style: inherit;">element_blank</span>())</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-83-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-83-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
@@ -9392,7 +9565,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb84-12">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-84-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-84-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
@@ -9521,7 +9698,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb87-10">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-86-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-86-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
@@ -9663,7 +9844,11 @@ font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758
 background-color: null;
 font-style: inherit;">element_blank</span>())</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-87-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-87-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
@@ -9719,7 +9904,7 @@ background-color: null;
 font-style: inherit;">14</span>)</span></code></pre></div>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>Creating a 59-color &amp; 14-color palettes</summary>
 <div class="sourceCode cell-code" id="cb92" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1">P59 <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -9913,7 +10098,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb93-12">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-91-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-91-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Kinda messy… let’s choose 14 random patients and plot them:</p>
@@ -10099,7 +10288,11 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span id="cb94-18">  blog_theme</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-92-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes102/index_files/figure-html/unnamed-chunk-92-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The slight overall decrease in seizure count can be seen, as well as the not-so-interesting main effect of Treatment. No visually significant interaction. Random variability in slopes of <code>visit</code> and intercept is also visible.</p>
@@ -10115,10 +10308,11 @@ font-style: inherit;">+</span></span>
 
 
 
+
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-kay_tidybayes_2020" class="csl-entry">
 Kay, Matthew. 2020. <span>“Tidybayes: Tidy Data and Geoms for Bayesian Models.”</span> <em>R Package Version</em> 2 (1): 1.
 </div>
@@ -10131,15 +10325,16 @@ Kay, Matthew. 2020. <span>“Tidybayes: Tidy Data and Geoms for Bayesian Models.
   <category>code</category>
   <category>tutorial</category>
   <category>Bayes</category>
-  <guid>https://tomerzipori.github.io/blog/posts/bayes102/index.html</guid>
-  <pubDate>Sat, 02 Mar 2024 11:00:01 GMT</pubDate>
+  <guid>https://tomerzipori.github.io/blog/posts/bayes102/</guid>
+  <pubDate>Sat, 27 Apr 2024 08:54:27 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/bayes102/favicon.png" medium="image" type="image/png" height="167" width="144"/>
 </item>
 <item>
   <title>Bayesian Modeling for Psychologists, Part 1</title>
   <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/bayes101/index.html</link>
+  <link>https://tomerzipori.github.io/blog/posts/bayes101/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -10207,7 +10402,7 @@ In my opinion, this way of inference is intuitive to us only because we are so u
 <h3 class="anchored" data-anchor-id="likelihood">Likelihood</h3>
 <p>The term <img src="https://latex.codecogs.com/png.latex?P(Data%7CParameters)"> describes the <em>likelihood</em> of the observed data under different sets of parameter values. In order to keep things simple I will not delve deeper into the theoretical aspects of likelihood (see <span class="citation" data-cites="etz_introduction_2018">Etz (2018)</span>, <span class="citation" data-cites="pawitan_all_2001">Pawitan (2001)</span>). The main things that are important to know as researchers about the likelihood function is that you are responsible to choosing it! For example, if I suspect that my dependent variable comes from a normal distribution (where you otherwise would fit some sort of linear model), I will use the normal likelihood function<sup>3</sup>:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -10343,12 +10538,16 @@ background-color: null;
 font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>If, on the other hand, I suspect that my dependent variable comes from a Poisson distribution (e.g.&nbsp;number of times a participant scratched their nose), I will use the Poisson likelihood function:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -10472,7 +10671,11 @@ background-color: null;
 font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>In general, you need to define the <em>Data Generating Process (DGP)</em> - How were your observations generated?<br>
@@ -10486,7 +10689,7 @@ This choice is analogous to the choice of statistical model/test in the frequent
 <li><em>Range of possible/probable parameter values</em> - Some parameters can only take certain values, creating a-priori hard limits for their value. For example, a normal distribution’s variance <img src="https://latex.codecogs.com/png.latex?%5Csigma%5E2"> can only take positive values. Softer limits can also exist, for example: in a new/old recognition task, it is reasonable to predict that new items will be identified as new, more than old items - the regression coefficient should be positive. In the first case, a prior with hard boundary will be appropriate:</li>
 </ul>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -10673,12 +10876,16 @@ background-color: null;
 font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>While in the second case, a prior like this would be better:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -10896,7 +11103,11 @@ background-color: null;
 font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <ul>
@@ -10906,8 +11117,7 @@ font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 <li><em>Strong Priors</em> - These priors are narrower and leaves few parameter values probable.</li>
 </ul></li>
 </ul>
-<div class="page-columns page-full">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -11250,14 +11460,13 @@ font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 </details>
-<div class="cell column-screen-inset quarto-layout-panel">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="cell column-screen-inset quarto-layout-panel" data-layout-nrow="1">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid" width="672"></p>
-</div>
 </div>
 </div>
 </div>
@@ -11271,7 +11480,7 @@ font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 <p>The posterior probability of your model - <img src="https://latex.codecogs.com/png.latex?P(Parameters%7CData)"> - is the ultimate goal of your analysis. This probability distribution tells you what values of your parameters are probable and what values not so much. This is a shift of perspective from the usual frequentist logic - instead of resulting in one number as estimate for your parameter, you end up with a whole distribution!<br>
 </p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -11494,12 +11703,16 @@ background-color: null;
 font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>I think that Getting a posterior from the Likelihood and the prior makes more sense visually (make sure to also play with Kristoffer Magnusson’s wonderful interactive <a href="https://rpsychologist.com/d3/bayes/">visualization</a>):</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>simulated parameters</summary>
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -11548,7 +11761,7 @@ font-style: inherit;">+</span> n</span></code></pre></div>
 </details>
 </div>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">pois_likelihood <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -11893,7 +12106,11 @@ background-color: null;
 font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
@@ -11909,7 +12126,7 @@ A note on higher dimesions
 <p>All of the examples above refer to estimation of one parameter. Often, your models will include several parameters (100’s if you include random effects). So how does it work?<br>
 without getting into detail, know that the simple one-parameter case scales quite nicely into <em>n</em>-parameter models. For example, instead of the <img src="https://latex.codecogs.com/png.latex?P(%5Ctheta)"> prior from before, you can have <img src="https://latex.codecogs.com/png.latex?P(%5Ctheta_0,%20%5Ctheta_1,...,%5Ctheta_n)"> prior. A prior of an intercept and a slope for a simple regression model could look like this:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>2d ggplot code</summary>
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -12240,7 +12457,11 @@ background-color: null;
 font-style: inherit;">"black"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>In general, we will denote <img src="https://latex.codecogs.com/png.latex?%5Ctheta"> to be the set of <em>m</em> parameters <img src="https://latex.codecogs.com/png.latex?%5B%5Ctheta_0,%20%5Ctheta_1,...,%5Ctheta_m%5D">, and <img src="https://latex.codecogs.com/png.latex?X"> as the set of <em>n</em> data points <img src="https://latex.codecogs.com/png.latex?%5Bx_1,%20x_2,...,x_n%5D">.</p>
@@ -12326,7 +12547,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="ouafjobozd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ouafjobozd table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -12767,38 +12987,43 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Coefficient">Coefficient</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="t(142)">t(142)</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="p">p</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Coefficient" class="gt_row gt_center">2.36</td>
-<td headers="SE" class="gt_row gt_center">0.06</td>
-<td headers="95% CI" class="gt_row gt_center">(2.24, 2.48)</td>
-<td headers="t(142)" class="gt_row gt_center">39.00</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">Sex (M)</td>
-<td headers="Coefficient" class="gt_row gt_center">0.54</td>
-<td headers="SE" class="gt_row gt_center">0.07</td>
-<td headers="95% CI" class="gt_row gt_center">(0.39, 0.69)</td>
-<td headers="t(142)" class="gt_row gt_center">7.33</td>
-<td headers="p" class="gt_row gt_center">&lt; .001</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="6"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Coefficient" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Coefficient</th>
+<th id="SE" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">SE</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="t(142)" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">t(142)</th>
+<th id="p" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">p</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Coefficient">2.36</td>
+<td class="gt_row gt_center" headers="SE">0.06</td>
+<td class="gt_row gt_center" headers="95% CI">(2.24, 2.48)</td>
+<td class="gt_row gt_center" headers="t(142)">39.00</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">Sex (M)</td>
+<td class="gt_row gt_center" headers="Coefficient">0.54</td>
+<td class="gt_row gt_center" headers="SE">0.07</td>
+<td class="gt_row gt_center" headers="95% CI">(0.39, 0.69)</td>
+<td class="gt_row gt_center" headers="t(142)">7.33</td>
+<td class="gt_row gt_center" headers="p">&lt; .001</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="6" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -12881,7 +13106,7 @@ Convergence Measures
 <li><em>Chain mixing (R-hat)</em> - when sampling more than two chains or more (most of the times), we will want to check if all of them converge to the same distribution. This is measured with the <img src="https://latex.codecogs.com/png.latex?%5Chat%7BR%7D"> measure (<span class="citation" data-cites="vehtari_rank-normalization_2021">Vehtari et al. (2021)</span>) which equals to <img src="https://latex.codecogs.com/png.latex?1"> when convergence is maximal. Values above <img src="https://latex.codecogs.com/png.latex?1.01"> are not good.</li>
 </ul>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>tidybayes &amp; ggplot code</summary>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">p <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -13029,7 +13254,11 @@ font-style: inherit;">"#E3E2DF"</span>))</span>
 <span id="cb16-16">p</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </div>
@@ -13084,7 +13313,11 @@ font-style: inherit;"># setting a seed for the random MCMC sampling algorithm</s
 background-color: null;
 font-style: inherit;">plot</span>(posterior)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>On the right we can see the Markov Chains and their (good) convergence, and on the left we can see the marginal posterior distribution of every parameter. Let’s inspect the <em>R-hat</em> and <em>ESS</em> convergence measures (aiming at <img src="https://latex.codecogs.com/png.latex?%5Chat%7BR%7D%20%5Cle%201.01"> and <img src="https://latex.codecogs.com/png.latex?ESS%20%5Cge%201000">):</p>
@@ -13118,7 +13351,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="ankbflamze" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#ankbflamze table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -13559,33 +13791,38 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ESS">ESS</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Parameter" class="gt_row gt_left">b_Intercept</td>
-<td headers="ESS" class="gt_row gt_center">3946</td></tr>
-    <tr><td headers="Parameter" class="gt_row gt_left">b_SexM</td>
-<td headers="ESS" class="gt_row gt_center">4140</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="2"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="ESS" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">ESS</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Parameter">b_Intercept</td>
+<td class="gt_row gt_center" headers="ESS">3946</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Parameter">b_SexM</td>
+<td class="gt_row gt_center" headers="ESS">4140</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="2" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
 <p>These measures also appear in the <code>parameters::model_parameters()</code> summary, so no need to actually calculate them separately.</p>
 <p>If we omit the annoying sigma parameter, we can visualize the 2D posterior of the Intercept and Slope:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>tidybayes &amp; ggplot code</summary>
 <div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">draws <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -13740,12 +13977,16 @@ background-color: null;
 font-style: inherit;">"black"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>We can also inspect the posterior of the <code>SexM</code> coefficient alone (sex difference in weight) - also called a <em>marginal posterior</em>:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">p <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -13853,7 +14094,11 @@ font-style: inherit;">"#E3E2DF"</span>))</span>
 <span id="cb24-12">p</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Notice the values most probable in the posterior are in the range of our hypothesis, and also in the range of the frequentist model. Some calculations that can be done on the posterior include:</p>
@@ -13861,7 +14106,7 @@ font-style: inherit;">"#E3E2DF"</span>))</span>
 <h5 class="anchored" data-anchor-id="probability-of-direction">Probability of direction</h5>
 <p>How much of the posterior is negative/positive? The answer to this question gives the probability that the parameter is different from zero:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>ggplot code</summary>
 <div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">p <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -13986,7 +14231,11 @@ font-style: inherit;">"#E3E2DF"</span>))</span>
 <span id="cb25-13">p</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The posterior is entirely positive, yielding a 100% probability that the parameter is positive.</p>
@@ -14062,7 +14311,11 @@ font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -14070,7 +14323,7 @@ font-style: inherit;">"#E3E2DF"</span>))</span></code></pre></div>
 <h5 class="anchored" data-anchor-id="highest-density-interval-hdi">Highest Density Interval (HDI)</h5>
 <p>A common misconception of the frequentist’s confidence interval (with 95% credibility) is that it has a 95% probability of containing the true value of the parameter. The Bayesian Highest Density Interval however gives exactly this. The main 95% of the posterior have a 95% probability of containing the real value of the parameter. 95% are obviously arbitrary, and can be defined to anything else:</p>
 <div class="cell">
-<details>
+<details class="code-fold">
 <summary>plotting the HDI</summary>
 <div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">p <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -14241,7 +14494,11 @@ font-style: inherit;">"#E3E2DF"</span>))</span>
 <span id="cb29-15">p</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/bayes101/index_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -14265,7 +14522,6 @@ font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">print_html</span>()</span></code></pre></div>
 <div class="cell-output-display">
-
 <div id="qwqvncvcxj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#qwqvncvcxj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -14706,62 +14962,68 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
   text-indent: 25px;
 }
 </style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    <tr class="gt_heading">
-      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Model Summary</td>
-    </tr>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Parameter">Parameter</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Median">Median</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="MAP">MAP</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="95% CI">95% CI</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="pd">pd</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Rhat">Rhat</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="ESS">ESS</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Fixed Effects ">Fixed Effects </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">(Intercept)</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">2.36</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">2.36</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">2.36</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(2.24, 2.48)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">3946.00</td></tr>
-    <tr><td headers="Fixed Effects   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">SexM</td>
-<td headers="Fixed Effects   Median" class="gt_row gt_center">0.54</td>
-<td headers="Fixed Effects   Mean" class="gt_row gt_center">0.54</td>
-<td headers="Fixed Effects   MAP" class="gt_row gt_center">0.53</td>
-<td headers="Fixed Effects   95% CI" class="gt_row gt_center">(0.40, 0.69)</td>
-<td headers="Fixed Effects   pd" class="gt_row gt_center">100%</td>
-<td headers="Fixed Effects   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Fixed Effects   ESS" class="gt_row gt_center">4140.00</td></tr>
-    <tr class="gt_group_heading_row">
-      <th colspan="8" class="gt_group_heading" scope="colgroup" id="Sigma ">Sigma </th>
-    </tr>
-    <tr class="gt_row_group_first"><td headers="Sigma   Parameter" class="gt_row gt_left" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3;">sigma</td>
-<td headers="Sigma   Median" class="gt_row gt_center">0.42</td>
-<td headers="Sigma   Mean" class="gt_row gt_center">0.42</td>
-<td headers="Sigma   MAP" class="gt_row gt_center">0.41</td>
-<td headers="Sigma   95% CI" class="gt_row gt_center">(0.37, 0.47)</td>
-<td headers="Sigma   pd" class="gt_row gt_center">100%</td>
-<td headers="Sigma   Rhat" class="gt_row gt_center">1.000</td>
-<td headers="Sigma   ESS" class="gt_row gt_center">3277.00</td></tr>
-  </tbody>
-  <tfoot class="gt_sourcenotes">
-    <tr>
-      <td class="gt_sourcenote" colspan="8"></td>
-    </tr>
-  </tfoot>
-  
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border">Model Summary</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Parameter" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Parameter</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Median</th>
+<th id="Mean" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Mean</th>
+<th id="MAP" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">MAP</th>
+<th id="95% CI" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">95% CI</th>
+<th id="pd" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">pd</th>
+<th id="Rhat" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">Rhat</th>
+<th id="ESS" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">ESS</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd gt_group_heading_row">
+<td colspan="8" id="Fixed Effects " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Fixed Effects</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">(Intercept)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">2.36</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">2.36</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">2.36</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(2.24, 2.48)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">3946.00</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Fixed Effects   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">SexM</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Median">0.54</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Mean">0.54</td>
+<td class="gt_row gt_center" headers="Fixed Effects   MAP">0.53</td>
+<td class="gt_row gt_center" headers="Fixed Effects   95% CI">(0.40, 0.69)</td>
+<td class="gt_row gt_center" headers="Fixed Effects   pd">100%</td>
+<td class="gt_row gt_center" headers="Fixed Effects   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Fixed Effects   ESS">4140.00</td>
+</tr>
+<tr class="even gt_group_heading_row">
+<td colspan="8" id="Sigma " class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Sigma</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td class="gt_row gt_left" headers="Sigma   Parameter" style="border-right-width: 1px; border-right-style: solid; border-right-color: #d3d3d3">sigma</td>
+<td class="gt_row gt_center" headers="Sigma   Median">0.42</td>
+<td class="gt_row gt_center" headers="Sigma   Mean">0.42</td>
+<td class="gt_row gt_center" headers="Sigma   MAP">0.41</td>
+<td class="gt_row gt_center" headers="Sigma   95% CI">(0.37, 0.47)</td>
+<td class="gt_row gt_center" headers="Sigma   pd">100%</td>
+<td class="gt_row gt_center" headers="Sigma   Rhat">1.000</td>
+<td class="gt_row gt_center" headers="Sigma   ESS">3277.00</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="8" class="gt_sourcenote"></td>
+</tr>
+</tfoot>
+
 </table>
+
 </div>
 </div>
 </div>
@@ -14777,7 +15039,7 @@ font-style: inherit;">print_html</span>()</span></code></pre></div>
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-burkner_brms_2017" class="csl-entry">
 Bürkner, Paul-Christian. 2017. <span>“Brms: An r Package for Bayesian Multilevel Models Using Stan.”</span> <em>Journal of Statistical Software</em> 80 (1): 1–28. <a href="https://doi.org/10.18637/jss.v080.i01">https://doi.org/10.18637/jss.v080.i01</a>.
 </div>
@@ -14808,15 +15070,16 @@ Vehtari, Aki, Andrew Gelman, Daniel Simpson, Bob Carpenter, and Paul-Christian B
   <category>code</category>
   <category>tutorial</category>
   <category>Bayes</category>
-  <guid>https://tomerzipori.github.io/blog/posts/bayes101/index.html</guid>
+  <guid>https://tomerzipori.github.io/blog/posts/bayes101/</guid>
   <pubDate>Sat, 10 Feb 2024 22:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/bayes101/favicon.png" medium="image" type="image/png" height="167" width="144"/>
 </item>
 <item>
   <title>Rejecting the null hypothesis or not?</title>
   <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/p_values_paradox/index.html</link>
+  <link>https://tomerzipori.github.io/blog/posts/p_values_paradox/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -14962,7 +15225,11 @@ font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">freq =</span> F)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -15086,7 +15353,11 @@ font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">freq =</span> F)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Smaller p-values are more probable, and the uniform distribution from before “gets skewed”.</p>
@@ -15207,7 +15478,11 @@ font-style: inherit;">xlab =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NULL</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -15216,7 +15491,7 @@ font-style: inherit;">NULL</span>)</span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/bayes.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">All about the Bayes</figcaption>
+<figcaption>All about the Bayes</figcaption>
 </figure>
 </div>
 <p>As we said before, p-values represent the probability of getting certain data when the null hypothesis is true. What if we looked at it from the other side? What is the probability that the null hypothesis is true, given a certain p-value?</p>
@@ -15478,7 +15753,11 @@ font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The probability of observing the same range of p-values when the effect size is <img src="https://latex.codecogs.com/png.latex?0.65"> is:</p>
@@ -15708,7 +15987,11 @@ font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>And for effect size of <img src="https://latex.codecogs.com/png.latex?1.03">?</p>
@@ -15946,7 +16229,11 @@ font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The probability of getting a p-value in the range of <img src="https://latex.codecogs.com/png.latex?%5B0.03,0.04%5D"> is lower for greater effect sizes.</p>
@@ -16099,7 +16386,11 @@ font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>In this case the prior ratio cancels out and posterior ratio is equal to the likelihood ratio.</p>
@@ -16203,7 +16494,7 @@ font-style: inherit;">.03</span>))</span></code></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://tomerzipori.github.io/blog/posts/p_values_paradox/meme.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Meme-form</figcaption>
+<figcaption>Meme-form</figcaption>
 </figure>
 </div>
 
@@ -16213,15 +16504,16 @@ font-style: inherit;">.03</span>))</span></code></pre></div>
  ]]></description>
   <category>code</category>
   <category>theory</category>
-  <guid>https://tomerzipori.github.io/blog/posts/p_values_paradox/index.html</guid>
+  <guid>https://tomerzipori.github.io/blog/posts/p_values_paradox/</guid>
   <pubDate>Sun, 03 Sep 2023 21:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/p_values_paradox/morty2.png" medium="image" type="image/png" height="136" width="144"/>
 </item>
 <item>
   <title>Netflix trends</title>
   <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/netflix/index.html</link>
+  <link>https://tomerzipori.github.io/blog/posts/netflix/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -16702,7 +16994,11 @@ font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">cloud1</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/netflix/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="1248"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/netflix/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="1248"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -16777,7 +17073,7 @@ docs      father near end life filmmak kirsten johnson stage death invent
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://tomerzipori.github.io/blog/posts/netflix/vectors.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Two vectors</figcaption>
+<figcaption>Two vectors</figcaption>
 </figure>
 </div>
 <p>It is natural to think of the similarity between two vectors as the degree to which they point in the same direction. In other words, the angle between two vectors. It is possible to calculate the <em>cosine</em> between two vectors the following way:<br>
@@ -17209,7 +17505,11 @@ font-style: inherit;">FALSE</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">get_recommendation_plot</span>(watched)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/netflix/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/netflix/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -17312,15 +17612,16 @@ shinyApp(ui, server)</code></pre>
   <category>text analysis</category>
   <category>visualization</category>
   <category>NLP</category>
-  <guid>https://tomerzipori.github.io/blog/posts/netflix/index.html</guid>
+  <guid>https://tomerzipori.github.io/blog/posts/netflix/</guid>
   <pubDate>Mon, 12 Jun 2023 21:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/netflix/medieval.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Real Vs. Fake news in football</title>
   <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/football_fake_news/index.html</link>
+  <link>https://tomerzipori.github.io/blog/posts/football_fake_news/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -17819,7 +18120,7 @@ pred_lr fake real
 <section id="plot-important-words-for-classification" class="level2">
 <h2 class="anchored" data-anchor-id="plot-important-words-for-classification">Plot important words for classification</h2>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-17_fe08c6cad81d9f8b36bf576f4462570c">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">lr_summary <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -18093,7 +18394,11 @@ background-color: null;
 font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/football_fake_news/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" style="width:200.0%"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/football_fake_news/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" style="width:200.0%"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -18106,7 +18411,7 @@ font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-welbers2017" class="csl-entry">
 Welbers, Kasper, Wouter Van Atteveldt, and Kenneth Benoit. 2017. <span>“Text Analysis in r.”</span> <em>Communication Methods and Measures</em> 11 (4): 245–65. <a href="https://doi.org/10.1080/19312458.2017.1387238">https://doi.org/10.1080/19312458.2017.1387238</a>.
 </div>
@@ -18115,15 +18420,16 @@ Welbers, Kasper, Wouter Van Atteveldt, and Kenneth Benoit. 2017. <span>“Text A
   <category>analysis</category>
   <category>Machine Learning</category>
   <category>NLP</category>
-  <guid>https://tomerzipori.github.io/blog/posts/football_fake_news/index.html</guid>
+  <guid>https://tomerzipori.github.io/blog/posts/football_fake_news/</guid>
   <pubDate>Thu, 11 May 2023 21:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/football_fake_news/football-fake-news.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>What makes FIFA 23 players good?</title>
   <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/fifa23/index.html</link>
+  <link>https://tomerzipori.github.io/blog/posts/fifa23/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -18685,7 +18991,11 @@ font-style: inherit;">digits =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">elastic_reg<span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -18745,7 +19055,11 @@ font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Coefficient"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -18852,7 +19166,11 @@ font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Coefficient"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -19055,7 +19373,7 @@ Heading_Accuracy         0.1497</code></pre>
 <section id="plotting-variable-importance" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-variable-importance">Plotting variable importance</h3>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-27_29755b4e109668190ee126103d6629ab">
-<details>
+<details class="code-fold">
 <summary>Show the plot’s code</summary>
 <div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -19262,7 +19580,11 @@ background-color: null;
 font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/fifa23/index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Player value is the strongest predictor by far, with a few interesting ones right behind it (CB_rating?).</p>
@@ -19280,15 +19602,16 @@ font-style: inherit;">"#F9EBDE"</span>))</span></code></pre></div>
   <category>code</category>
   <category>analysis</category>
   <category>Machine Learning</category>
-  <guid>https://tomerzipori.github.io/blog/posts/fifa23/index.html</guid>
+  <guid>https://tomerzipori.github.io/blog/posts/fifa23/</guid>
   <pubDate>Fri, 05 May 2023 21:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/fifa23/reece.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Who is the leading US state in UFO reports? probably not what you thought</title>
   <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/ufo/index.html</link>
+  <link>https://tomerzipori.github.io/blog/posts/ufo/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -19959,7 +20282,11 @@ font-style: inherit;">0</span>))</span>
 <span id="cb12-15"></span>
 <span id="cb12-16">heatmap</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/ufo/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/ufo/index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Looking at these results, I thought that of course California, Texas and Florida have the most reports, they also have the most people!<br>
@@ -20195,7 +20522,11 @@ font-style: inherit;">0</span>))</span>
 <span id="cb15-15"></span>
 <span id="cb15-16">heatmap2</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/ufo/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/ufo/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Nice!</p>
@@ -20204,7 +20535,7 @@ font-style: inherit;">0</span>))</span>
 <h2 class="anchored" data-anchor-id="heatmap3">Heatmap3</h2>
 <p>Let’s add some aesthetics because why not (I’ve only spent 6 hours on Google researching color theory and ggplot2’s internal logic). Unfold the code chunk if you are interested in seeing the monstrosity.</p>
 <div class="cell" data-fig.dpi="96" data-hash="index_cache/html/unnamed-chunk-15_5c65f1475e83ecf47a1273a3e4113787">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">heatmap3 <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -20652,7 +20983,7 @@ font-style: inherit;">ggbackground</span>(heatmap3, nightsky_img)</span></code><
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://tomerzipori.github.io/blog/posts/ufo/heatmap3.png" class="img-fluid figure-img"></p>
+<p><img src="https://tomerzipori.github.io/blog/posts/ufo/heatmap3.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
 </figure>
 </div>
 </section>
@@ -20669,15 +21000,16 @@ font-style: inherit;">ggbackground</span>(heatmap3, nightsky_img)</span></code><
   <category>visualization</category>
   <category>ggplot2</category>
   <category>tidytuesday</category>
-  <guid>https://tomerzipori.github.io/blog/posts/ufo/index.html</guid>
+  <guid>https://tomerzipori.github.io/blog/posts/ufo/</guid>
   <pubDate>Sat, 15 Apr 2023 21:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/ufo/ufo1.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
 <item>
   <title>Cage-free vs. caged hens in the US</title>
   <dc:creator>Tomer Zipori</dc:creator>
-  <link>https://tomerzipori.github.io/blog/posts/eggs/index.html</link>
+  <link>https://tomerzipori.github.io/blog/posts/eggs/</link>
   <description><![CDATA[ 
+
 
 
 
@@ -21120,7 +21452,7 @@ font-style: inherit;">-</span>n_hens.y)</span></code></pre></div>
 <h2 class="anchored" data-anchor-id="actually-plotting">Actually plotting</h2>
 <p>I went with a simple stacked density plot. Watch how the number of cage-free goes from</p>
 <div class="cell" data-hash="index_cache/html/unnamed-chunk-12_48dcae3dc25eacf5ed00add1f21a06c0">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">plot <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -21533,7 +21865,11 @@ font-style: inherit;">"#F9EBDE"</span>))</span>
 <span id="cb16-31">plot</span></code></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="https://tomerzipori.github.io/blog/posts/eggs/index_files/figure-html/unnamed-chunk-12-1.png" width="800" height="501"></p>
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/eggs/index_files/figure-html/unnamed-chunk-12-1.png" width="800" height="501" class="figure-img"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -21553,7 +21889,7 @@ font-style: inherit;">"#F9EBDE"</span>))</span>
   <category>visualization</category>
   <category>ggplot2</category>
   <category>tidytuesday</category>
-  <guid>https://tomerzipori.github.io/blog/posts/eggs/index.html</guid>
+  <guid>https://tomerzipori.github.io/blog/posts/eggs/</guid>
   <pubDate>Tue, 11 Apr 2023 21:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/eggs/eggs.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
