@@ -5,26 +5,26 @@ toc: false
 css: index.css
 ---
 
-::: columns
+:::::::::: columns
 ::: {.column .col-v-left width="5%"}
 :::
 
-::: {.column .col-v-left width="30%"}
-::: {.column-margin width="5%"}
+::::: {.column .col-v-left width="30%"}
+:::: {.column-margin width="5%"}
 ::: portrait
 ![](static/favicon.png)
 :::
-:::
-:::
+::::
+:::::
 
 ::: {.column .col-v-left width="10%"}
 :::
 
-::: {.column .col-v-left width="35%"}
+:::: {.column .col-v-left width="35%"}
 # I'm Tomer
 
 ::: {tomer-intro}
-Data science & data visualization nerd. I'm studying for my MA in Cognitive Psychology at Ben-Gurion University of the Negev. I hope to record and share my journey in studying and applying cool data-science stuff!
+Former Psychology student, A Data science & data visualization enjoyer, and lowkey just a chill guy.
 :::
-:::
-:::
+::::
+::::::::::

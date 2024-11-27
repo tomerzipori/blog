@@ -114,8 +114,7 @@ showtext_auto()
 
 ## Data pre-processing
 
-Preparing the data for plotting:
-      1. Leaving only reports from the US.\
+Preparing the data for plotting:       1. Leaving only reports from the US.\
       2. Leaving only reports for *continental* US.\
       3. Selecting the relevant variables.\
       4. Calculating decades.

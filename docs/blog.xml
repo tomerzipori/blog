@@ -9,7 +9,7 @@
 <link>https://tomerzipori.github.io/blog/blog.html</link>
 <atom:link href="https://tomerzipori.github.io/blog/blog.xml" rel="self" type="application/rss+xml"/>
 <description></description>
-<generator>quarto-1.4.555</generator>
+<generator>quarto-1.5.57</generator>
 <lastBuildDate>Sat, 27 Apr 2024 08:54:27 GMT</lastBuildDate>
 <item>
   <title>Bayesian Modeling for Psychologists, Part 2</title>
@@ -11767,6 +11767,7 @@ font-style: inherit;">+</span> n</span></code></pre></div>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(theta, data, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">scale =</span> <span class="dv" style="color: #AD0000;
@@ -11776,6 +11777,7 @@ font-style: inherit;">1</span>) {</span>
 background-color: null;
 font-style: inherit;">sapply</span>(theta, <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(.theta) {</span>
 <span id="cb9-3">    scale <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -15128,8 +15130,10 @@ font-style: inherit;">140000</span>)</span>
 <span id="cb1-7"></span>
 <span id="cb1-8"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
@@ -15273,8 +15277,10 @@ font-style: inherit;">140000</span>)</span>
 <span id="cb7-7"></span>
 <span id="cb7-8"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
@@ -15400,8 +15406,10 @@ font-style: inherit;">140000</span>)</span>
 <span id="cb11-7"></span>
 <span id="cb11-8"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
@@ -17107,6 +17115,7 @@ The nominator is the dot product of the vectors, which is exactly the sum of the
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(show, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">liked =</span> T) {</span>
@@ -17159,6 +17168,7 @@ font-style: inherit;">"cosine"</span>)</span>
 <span id="cb14-10">  </span>
 <span id="cb14-11">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (liked) {</span>
 <span id="cb14-12">  simil_df <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -17237,6 +17247,7 @@ font-style: inherit;">11</span>)</span>
 <span id="cb14-20">  }</span>
 <span id="cb14-21">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">!</span>liked){</span>
@@ -17331,6 +17342,7 @@ font-style: inherit;">1</span>,])</span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(show) {</span>
 <span id="cb14-36">  <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -19820,6 +19832,7 @@ $ longitude                  &lt;dbl&gt; -97.941111, -98.581082, -2.916667, -96.
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(x) { </span>
 <span id="cb5-2">  sub_string <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -19845,6 +19858,7 @@ font-style: inherit;">as.numeric</span>(d))</span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(x){</span>
 <span id="cb5-7">  <span class="fu" style="color: #4758AB;
 background-color: null;
