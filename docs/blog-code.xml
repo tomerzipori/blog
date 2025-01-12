@@ -21907,5 +21907,3280 @@ font-style: inherit;">"#F9EBDE"</span>))</span>
   <pubDate>Tue, 11 Apr 2023 21:00:00 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/eggs/eggs.png" medium="image" type="image/png" height="144" width="144"/>
 </item>
+<item>
+  <title>US Presidential Elections - A Bayesian Perspective</title>
+  <dc:creator>Tomer Zipori</dc:creator>
+  <link>https://tomerzipori.github.io/blog/posts/elections2024/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># As always</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(brms)      <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># For Bayesian modeling</span></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidybayes) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># For visualization</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(patchwork)</span></code></pre></div>
+</div>
+</section>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Ever since I’ve finished my grad studies (Few months ago), I wanted to experiment with some “real life” applications of statistics. Things that interest real people. With the 2024 American presidential elections being the hot issue around the world, and Bayesian statistics being the hot issue of my personal projects, I thought how can these two mix.</p>
+<p>Two features of Bayesian statistics pop to mind when thinking about election polling:</p>
+<section id="prior-distributions" class="level2">
+<h2 class="anchored" data-anchor-id="prior-distributions">Prior Distributions</h2>
+<p>The need to explicitly define a prior distribution for any Bayesian model is a point of contention. Some (rightfully) argue that this definition can’t be objective, and it is practically impossible to represent the existing body of knowledge in a single probability distribution. Others (rightfully) argue that every statistical model have prior assumptions which are rarely checked, and can influence the model as much as a prior distribution.<sup>1</sup></p>
+<p>One reason the incorporation of past studies into the prior distribution is hard, is that it depends on the specific parameters of the model.</p>
+<p>While prior elicitation can be hard in many cases, election polling is one area where it should be relatively easy! every poll is essentially the same statistical model (how many votes for red, and how many votes for blue), but every time with different data. This is the ideal scenario for a Bayesian statistician as the posterior distribution (the result) of any poll can be used as the prior distribution for the next poll!</p>
+<section id="graphic" class="level3">
+<h3 class="anchored" data-anchor-id="graphic">Graphic</h3>
+</section>
+</section>
+<section id="posterior-predictive-distributions" class="level2">
+<h2 class="anchored" data-anchor-id="posterior-predictive-distributions">Posterior Predictive Distributions</h2>
+<p>One tool of Bayesian statistical inference is the Posterior Predictive Distributions - PPD. This is the prediction of the model. For example, one possible PPD from a Bayesian election poll could be the expected electoral college result for each candidate, or the expected number of seats in the parliament.</p>
+</section>
+</section>
+<section id="data" class="level1">
+<h1>Data</h1>
+<p>The following dataset is a summary of many polls conducted from the start of 2023, up to two days before the election.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"../elections2024/president_polls.csv"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">show_col_types =</span> F)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glimpse</span>(data)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 18,095
+Columns: 52
+$ poll_id                   &lt;dbl&gt; 89372, 89372, 89372, 89372, 89372, 89372, 89…
+$ pollster_id               &lt;dbl&gt; 1528, 1528, 1528, 1528, 1528, 1528, 1528, 15…
+$ pollster                  &lt;chr&gt; "AtlasIntel", "AtlasIntel", "AtlasIntel", "A…
+$ sponsor_ids               &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ sponsors                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ display_name              &lt;chr&gt; "AtlasIntel", "AtlasIntel", "AtlasIntel", "A…
+$ pollster_rating_id        &lt;dbl&gt; 546, 546, 546, 546, 546, 546, 546, 546, 546,…
+$ pollster_rating_name      &lt;chr&gt; "AtlasIntel", "AtlasIntel", "AtlasIntel", "A…
+$ numeric_grade             &lt;dbl&gt; 2.7, 2.7, 2.7, 2.7, 2.7, 2.7, 2.7, 2.7, 2.7,…
+$ pollscore                 &lt;dbl&gt; -0.8, -0.8, -0.8, -0.8, -0.8, -0.8, -0.8, -0…
+$ methodology               &lt;chr&gt; "Online Ad", "Online Ad", "Online Ad", "Onli…
+$ transparency_score        &lt;dbl&gt; 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,…
+$ state                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, "Arizona", "Ariz…
+$ start_date                &lt;chr&gt; "11/3/24", "11/3/24", "11/3/24", "11/3/24", …
+$ end_date                  &lt;chr&gt; "11/4/24", "11/4/24", "11/4/24", "11/4/24", …
+$ sponsor_candidate_id      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ sponsor_candidate         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ sponsor_candidate_party   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ endorsed_candidate_id     &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ endorsed_candidate_name   &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ endorsed_candidate_party  &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ question_id               &lt;dbl&gt; 216453, 216453, 216453, 216453, 216453, 2164…
+$ sample_size               &lt;dbl&gt; 2703, 2703, 2703, 2703, 2703, 2703, 2703, 87…
+$ population                &lt;chr&gt; "lv", "lv", "lv", "lv", "lv", "lv", "lv", "l…
+$ subpopulation             &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ population_full           &lt;chr&gt; "lv", "lv", "lv", "lv", "lv", "lv", "lv", "l…
+$ tracking                  &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ created_at                &lt;chr&gt; "11/4/24 19:06", "11/4/24 19:06", "11/4/24 1…
+$ notes                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ url                       &lt;chr&gt; "https://atlasintel.org/poll/usa-national-20…
+$ url_article               &lt;chr&gt; "https://atlasintel.org/poll/usa-national-20…
+$ url_topline               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ url_crosstab              &lt;chr&gt; "https://cdn.atlasintel.org/f1cec70d-8eae-44…
+$ source                    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ internal                  &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ partisan                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ race_id                   &lt;dbl&gt; 8914, 8914, 8914, 8914, 8914, 8914, 8914, 87…
+$ cycle                     &lt;dbl&gt; 2024, 2024, 2024, 2024, 2024, 2024, 2024, 20…
+$ office_type               &lt;chr&gt; "U.S. President", "U.S. President", "U.S. Pr…
+$ seat_number               &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ seat_name                 &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ election_date             &lt;chr&gt; "11/5/24", "11/5/24", "11/5/24", "11/5/24", …
+$ stage                     &lt;chr&gt; "general", "general", "general", "general", …
+$ nationwide_batch          &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
+$ ranked_choice_reallocated &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
+$ ranked_choice_round       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ hypothetical              &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FA…
+$ party                     &lt;chr&gt; "DEM", "REP", "GRE", "IND", "LIB", "DEM", "R…
+$ answer                    &lt;chr&gt; "Harris", "Trump", "Stein", "West", "Oliver"…
+$ candidate_id              &lt;dbl&gt; 16661, 16651, 31116, 31097, 31790, 16661, 16…
+$ candidate_name            &lt;chr&gt; "Kamala Harris", "Donald Trump", "Jill Stein…
+$ pct                       &lt;dbl&gt; 48.1, 49.2, 1.1, 0.3, 0.1, 48.8, 50.0, 45.9,…</code></pre>
+</div>
+</div>
+</section>
+<section id="preprocessing" class="level1">
+<h1>Preprocessing</h1>
+<p>Some preprocessing and cleaning is needed here, mainly I want to include only recent polls to avoid dealing with a large number of candidates, and transforming the percentage of votes to a probability:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">data_clean <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(poll_id, state, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">poll_date =</span> start_date, question_id, candidate_name, sample_size, pct) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># selecting relevant cols only</span></span>
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pct =</span> pct <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>,               <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># transforming to probabilities</span></span>
+<span id="cb5-4">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">poll_date =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mdy</span>(poll_date)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># transforming to 'date' types</span></span>
+<span id="cb5-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">year</span>(poll_date) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2024</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">month</span>(poll_date) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># only recent polls to control for speculative candidates</span></span>
+<span id="cb5-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">candidate_name =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">relevel</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(candidate_name), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ref =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Donald Trump"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Defining 'Trump' to be the reference level</span></span>
+<span id="cb5-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(poll_id) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span>                  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># some polls have several q's, this keeps only the main 'who would you vote for' question</span></span>
+<span id="cb5-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(question_id <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(question_id)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb5-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ungroup</span>()</span></code></pre></div>
+</div>
+</section>
+<section id="modeling" class="level1">
+<h1>Modeling</h1>
+<p>From a statistical point of view, an election poll is a multiclass classification problem: It estimates the real proportion of votes for each candidate in the population, from the sampled proportions. The dependent variable is categorical and does not have any ordering. Since we don’t have any predictors other than the observed proportions, the model is what is called an <em>empty</em> model - and it’s formulation in <code>R</code> is usually represented as: <code>DV ~ 1</code>. Due to the structure of the current data, each observation (row) need to be weighted by the observed percentage. In order to include weighting by the poll’s sample size, I multiplied this percentage by the sample size.</p>
+<p>This multiclass classification problem can be represented with a series of logistic models, each models one category (candidate) against the others as a binary outcome. In order to do that, I will use the <code>categorical()</code> family implemented in <code>brms</code>.</p>
+<p>Let’s start with a simple case, and model results only for Nevada:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">data_clean_nv <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_clean <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(state <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Nevada"</span>)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">bayesian_model_nv <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brm</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">formula =</span> candidate_name<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">weights</span>(sample_size<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>pct) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,</span>
+<span id="cb7-2">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">categorical</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">link =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"logit"</span>),</span>
+<span id="cb7-3">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_clean_nv,</span>
+<span id="cb7-4">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">chains =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>,</span>
+<span id="cb7-5">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cores =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>,</span>
+<span id="cb7-6">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">iter =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4000</span>,</span>
+<span id="cb7-7">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">refresh =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb7-8">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>,</span>
+<span id="cb7-9">                         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">backend =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cmdstanr"</span>)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(bayesian_model_nv)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: categorical 
+  Links: muChaseOliver = logit; muCornelWest = logit; muJillStein = logit; muJoelSkousen = logit; muKamalaHarris = logit 
+Formula: candidate_name | weights(sample_size * pct) ~ 1 
+   Data: data_clean_nv (Number of observations: 85) 
+  Draws: 10 chains, each with iter = 4000; warmup = 2000; thin = 1;
+         total post-warmup draws = 20000
+
+Regression Coefficients:
+                         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+muChaseOliver_Intercept     -4.92      0.11    -5.14    -4.71 1.00     8712
+muCornelWest_Intercept     -15.07     10.71   -36.77    -8.70 1.00     2989
+muJillStein_Intercept       -6.10      0.20    -6.51    -5.73 1.00     8233
+muJoelSkousen_Intercept    -15.53     12.01   -39.09    -8.70 1.00     2538
+muKamalaHarris_Intercept     0.00      0.01    -0.02     0.03 1.00     9124
+                         Tail_ESS
+muChaseOliver_Intercept      9672
+muCornelWest_Intercept       1751
+muJillStein_Intercept        7736
+muJoelSkousen_Intercept      1491
+muKamalaHarris_Intercept     9396
+
+Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+</div>
+<p>few things to notice: first, Trump doesn’t have a parameter. That is because <code>brms</code> estimates each parameter in comparison to the factor’s reference level, which is set to <img src="https://latex.codecogs.com/png.latex?0">, or <img src="https://latex.codecogs.com/png.latex?1"> on the exponential scale. Second, parameter estimates are logits, as this is essentially an output of multiple logistic regressions. In order to transform these estimates into predicted vote shares for every candidate <img src="https://latex.codecogs.com/png.latex?j"> out of the <img src="https://latex.codecogs.com/png.latex?K"> total candidates, a softmax transformation need to be applied:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0AP(j)=%5Cfrac%7Be%5E%7BIntercept_j%7D%7D%7B%5Csum_%7Bk=1%7D%5EK%20e%5E%7BIntercept_k%7D%7D%0A"></p>
+<p>Extracting more precise point-estimates:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">draws_nv <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">spread_draws</span>(bayesian_model_nv, b_muChaseOliver_Intercept, b_muCornelWest_Intercept, b_muJillStein_Intercept, b_muJoelSkousen_Intercept, b_muKamalaHarris_Intercept)</span>
+<span id="cb10-2"></span>
+<span id="cb10-3">(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">median</span>(draws_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>b_muChaseOliver_Intercept), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">median</span>(draws_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>b_muCornelWest_Intercept), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">median</span>(draws_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>b_muJillStein_Intercept), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">median</span>(draws_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>b_muJoelSkousen_Intercept), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">median</span>(draws_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>b_muKamalaHarris_Intercept)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  -4.913210000 -12.452300000  -6.088395000 -12.626300000   0.002381675</code></pre>
+</div>
+</div>
+<p>For example, applying the softmax transformation in order to get the predicted vote share of Jill Stein:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.088395</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.91321</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12.4523</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.088395</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12.6263</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.002381675</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1127752</code></pre>
+</div>
+</div>
+<p>About 0.1%.</p>
+<p>The predicted vote share of Kamala Harris is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.002381675</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.91321</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12.4523</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.088395</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12.6263</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.002381675</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 49.82007</code></pre>
+</div>
+</div>
+<p>And of Donald Trump:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.91321</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12.4523</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.088395</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12.6263</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.002381675</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 49.70155</code></pre>
+</div>
+</div>
+<p>But, this is a Bayesian model so let’s not stay stuck with point estimates and look at the whole posterior distribution:</p>
+<p>Extracting draws:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">probs_nv <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> draws_nv <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb18-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>.chain, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>.iteration) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb18-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b_muChaseOliver_Intercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(b_muChaseOliver_Intercept),</span>
+<span id="cb18-4">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b_muKamalaHarris_Intercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(b_muKamalaHarris_Intercept),</span>
+<span id="cb18-5">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b_muJillStein_Intercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(b_muJillStein_Intercept),</span>
+<span id="cb18-6">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b_muCornelWest_Intercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(b_muCornelWest_Intercept),</span>
+<span id="cb18-7">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">b_muJoelSkousen_Intercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">exp</span>(b_muJoelSkousen_Intercept)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb18-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">row_sum =</span> b_muChaseOliver_Intercept <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b_muKamalaHarris_Intercept <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b_muJillStein_Intercept <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b_muCornelWest_Intercept <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b_muJoelSkousen_Intercept <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb18-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Trump =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> row_sum,</span>
+<span id="cb18-10">         <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Harris =</span> b_muKamalaHarris_Intercept <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> row_sum) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb18-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(.draw, Trump, Harris)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1">probs_nv <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb19-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_longer</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cols =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(Trump, Harris),</span>
+<span id="cb19-3">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Candidate"</span>,</span>
+<span id="cb19-4">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"prob"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb19-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> prob <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Candidate)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb19-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stat_slab</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray24"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb19-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#2166AC"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#B2182B"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb19-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">48</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">52</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">48</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">52</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb19-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted vote share in %"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb19-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb19-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb19-12">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb19-13">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>())</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Very close!</p>
+<p>And what is the predicted difference between the two main candidates?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">probs_nv <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb20-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff =</span> Trump <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> Harris) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb20-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">after_stat</span>(x <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb20-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stat_slab</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray24"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb20-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linetype =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"dashed"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb20-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#2166AC"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#B2182B"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris win"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump win"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb20-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb20-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted vote share difference in %"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" "</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb20-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb20-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb20-11">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb20-12">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>())</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Again, very close (with a slight advantage to Harris).</p>
+<p>Another useful measure from Bayesian statistics is the probability of direction (pd). Due to the winner-takes-all electoral system in 48 of the 50 states, the difference doesn’t really matter. So what is the probability that each candidate will win?</p>
+<p>The probability that Trump will win is seen in the red area in the plot above, that is the probability that the difference in vote share is positive:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1">diff <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> probs_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Trump <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> probs_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Harris</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(diff[diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(diff)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.42815</code></pre>
+</div>
+</div>
+<p>Trump has a 42.82% chance of winning Nevada.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(diff[diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(diff)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.57185</code></pre>
+</div>
+</div>
+<p>And Harris has 57.19% chance.</p>
+<p>Let’s make the plot a little more informative:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">diff_plot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> probs_nv <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb26-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff =</span> Trump <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> Harris) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb26-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff =</span> diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb26-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> diff, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">after_stat</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cut</span>(x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by more than 2%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by 1%-2%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by 1%-2%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by more than 2%"</span>))))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb26-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stat_slab</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray24"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb26-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rev</span>(RColorBrewer<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brewer.pal</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RdBu"</span>))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb26-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb26-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" "</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted Difference in %"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted difference in votes - Nevada"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb26-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb26-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb26-11">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb26-12">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb26-13">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">22</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">diff_plot</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="eliciting-a-custom-prior" class="level2">
+<h2 class="anchored" data-anchor-id="eliciting-a-custom-prior">Eliciting a custom prior</h2>
+<p>For the last model we used brms’ default prior. In order to elicit our own, For simplicity, I’ll start with the 2020 vote share between Biden and Trump:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/2020_results_nv.png" class="img-fluid figure-img"></p>
+<figcaption>2020 Results - Nevada (from <a href="https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Nevada">Wikipedia</a>)</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This part contain some math. Don’t skip it, you can understand it! But if you want to skip it, go to the ‘Modeling with a custom prior’ section.</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">prior_trump <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.4767</span></span>
+<span id="cb28-2">prior_harris <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5006</span></span></code></pre></div>
+</div>
+<p>These percentages need to be transformed to the logistic model’s scale, now using the inverse-softmax transformation:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A0.5006=softmax(Intercept_%7BHarris%7D)=%5Cfrac%7Be%5E%7BIntercept_%7BHarris%7D%7D%7D%7B%5Csum_%7Bk=1%7D%5EK%20e%5E%7BIntercept_k%7D%7D%0A"></p>
+<p>And:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A0.4767=softmax(Intercept_%7BTrump%7D)=%5Cfrac%7Be%5E%7BIntercept_%7BTrump%7D%7D%7D%7B%5Csum_%7Bk=1%7D%5EK%20e%5E%7BIntercept_k%7D%7D%0A"></p>
+<p>But with Trump’s intercept fixed to <img src="https://latex.codecogs.com/png.latex?0"> as the factor’s reference level, it’s possible to calculate the sum in the denominator:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A0.4767=%5Cfrac%7B1%7D%7B%5Csum_%7Bk=1%7D%5EK%20e%5E%7BIntercept_k%7D%7D%0A"></p>
+<p>Quick algebra gives:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Csum_%7Bk=1%7D%5EK%20e%5E%7BIntercept_k%7D=%5Cfrac%7B1%7D%7B0.4767%7D=2.097755%0A"></p>
+<p>Now it’s possible to calculate Harris’ intercept:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A0.5006=%5Cfrac%7Be%5E%7BIntercept_%7BHarris%7D%7D%7D%7B2.097755%7D%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Ae%5E%7BIntercept_%7BHarris%7D%7D=0.5006%20%5Ccdot%202.097755=1.050136%0A"></p>
+<p><img src="https://latex.codecogs.com/png.latex?%0AIntercept_%7BHarris%7D=ln(1.050136)=0.04891968%0A"></p>
+<p>A quicker way to derive these intercepts is to notice that for every candidate <img src="https://latex.codecogs.com/png.latex?j"> other than the ‘reference’ candidate <img src="https://latex.codecogs.com/png.latex?r">, the intercept is:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0AIntercept_j=ln(%5Cfrac%7BP(j)%7D%7BP(r)%7D)%0A"></p>
+<p>Where <img src="https://latex.codecogs.com/png.latex?P(j)"> and <img src="https://latex.codecogs.com/png.latex?P(r)"> are the assumed vote shares of candidate <img src="https://latex.codecogs.com/png.latex?j"> and <img src="https://latex.codecogs.com/png.latex?r"> respectively.</p>
+</section>
+</section>
+<section id="modeling-with-a-custom-prior" class="level1">
+<h1>Modeling with a custom prior</h1>
+<p>Setting the prior for Harris’ intercept, giving it relatively large standard deviation reflecting the many factors differentiating the 2024 and 2020 elections.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">prior_nv <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set_prior</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"normal(0.04891968, 0.1)"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">class =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Intercept"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dpar =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"muKamalaHarris"</span>)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1">bayesian_model_nv_wprior <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brm</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">formula =</span> candidate_name<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">weights</span>(sample_size<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>pct) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,</span>
+<span id="cb30-2">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">categorical</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">link =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"logit"</span>),</span>
+<span id="cb30-3">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_clean_nv,</span>
+<span id="cb30-4">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prior =</span> prior_nv,</span>
+<span id="cb30-5">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">chains =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>,</span>
+<span id="cb30-6">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cores =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>,</span>
+<span id="cb30-7">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">iter =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4000</span>,</span>
+<span id="cb30-8">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">refresh =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb30-9">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>,</span>
+<span id="cb30-10">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">backend =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cmdstanr"</span>)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>(bayesian_model_nv_wprior)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Family: categorical 
+  Links: muChaseOliver = logit; muCornelWest = logit; muJillStein = logit; muJoelSkousen = logit; muKamalaHarris = logit 
+Formula: candidate_name | weights(sample_size * pct) ~ 1 
+   Data: data_clean_nv (Number of observations: 85) 
+  Draws: 10 chains, each with iter = 4000; warmup = 2000; thin = 1;
+         total post-warmup draws = 20000
+
+Regression Coefficients:
+                         Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+muChaseOliver_Intercept     -4.92      0.11    -5.14    -4.71 1.00    10322
+muCornelWest_Intercept     -14.79      7.81   -36.48    -8.68 1.01     2915
+muJillStein_Intercept       -6.09      0.20    -6.50    -5.72 1.00     9801
+muJoelSkousen_Intercept    -15.41     11.07   -37.29    -8.72 1.00     2797
+muKamalaHarris_Intercept     0.00      0.01    -0.02     0.03 1.00    10356
+                         Tail_ESS
+muChaseOliver_Intercept     10191
+muCornelWest_Intercept       1659
+muJillStein_Intercept        9246
+muJoelSkousen_Intercept      1551
+muKamalaHarris_Intercept    10037
+
+Draws were sampled using sample(hmc). For each parameter, Bulk_ESS
+and Tail_ESS are effective sample size measures, and Rhat is the potential
+scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+</div>
+<p>I’ll inspect the model again, this time using the <code>brms::posterior_epred()</code> function, generating predictions on the probability scale:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1">new_data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">expand.grid</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>)</span>
+<span id="cb33-2"></span>
+<span id="cb33-3">pred_probs_nv <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">posterior_epred</span>(bayesian_model_nv_wprior, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">newdata =</span> new_data)</span></code></pre></div>
+</div>
+<p>This essentially creates a <img src="https://latex.codecogs.com/png.latex?20,000%20%5Ctimes%206"> array of 20,000 “simulated elections” based on the model, and the vote share of each of the 6 candidates. For example, here are the first 5 simulated elections and the vote share in each:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1">pred_probs_nv[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>,,]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Donald Trump Chase Oliver  Cornel West  Jill Stein Joel Skousen
+[1,]    0.4953947  0.003684427 5.757740e-05 0.001019819 1.934454e-05
+[2,]    0.4994877  0.004458325 1.934866e-06 0.001474521 1.406709e-05
+[3,]    0.5026360  0.003951306 1.079202e-06 0.001657708 8.114247e-06
+[4,]    0.5044252  0.003509907 9.118997e-07 0.001623817 1.605403e-06
+[5,]    0.4987907  0.003857605 2.889669e-06 0.001544016 5.206677e-06
+     Kamala Harris
+[1,]     0.4998241
+[2,]     0.4945634
+[3,]     0.4917458
+[4,]     0.4904386
+[5,]     0.4957995</code></pre>
+</div>
+</div>
+<p>Turning it into the same plots as before gives:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1">pred_probs_nv_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(pred_probs_nv[,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb36-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">poll_id =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n</span>()))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb36-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_longer</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cols =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span>poll_id,</span>
+<span id="cb36-4">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Candidate"</span>,</span>
+<span id="cb36-5">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportion"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb36-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Candidate =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_replace_all</span>(Candidate, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">\\</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">."</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" "</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb36-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Candidate =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_replace</span>(Candidate, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"^</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">\\</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">S* "</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>))</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1">prob_plot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> pred_probs_nv_df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb37-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(Candidate <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb37-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> Proportion, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Candidate)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb37-4">  ggdist<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stat_slab</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray24"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb37-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#2166AC"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#B2182B"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb37-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">48</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">52</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">48</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">52</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb37-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted vote share in %"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb37-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb37-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb37-10">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb37-11">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>())</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1">prob_plot</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/index_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1">diff_plot_wprior <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> pred_probs_nv_df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb39-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(Candidate <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb39-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_wider</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">id_cols =</span> poll_id,</span>
+<span id="cb39-4">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_from =</span> Candidate,</span>
+<span id="cb39-5">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_from =</span> Proportion) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb39-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff =</span> Trump <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> Harris) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb39-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff =</span> diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb39-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> diff, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">after_stat</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cut</span>(x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by more than 2%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by 1%-2%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by 1%-2%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by more than 2%"</span>))))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb39-9">  ggdist<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stat_slab</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray24"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb39-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rev</span>(RColorBrewer<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brewer.pal</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RdBu"</span>))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb39-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb39-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" "</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted Difference in %"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted difference in votes - Nevada"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Custom Prior"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb39-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb39-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb39-15">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb39-16">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb39-17">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">22</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>),</span>
+<span id="cb39-18">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.subtitle =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1">diff_plot_wprior</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/index_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>How much the custom prior has changed the result?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1">diff_plot <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> diff_plot_wprior <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb41-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">guides =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"collect"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/index_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Visually, not by much…</p>
+<p>And what about the predicted chance of each candidate of winning the state?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1">probs_nv <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> pred_probs_nv_df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb42-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(Candidate <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb42-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_wider</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">id_cols =</span> poll_id,</span>
+<span id="cb42-4">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_from =</span> Candidate,</span>
+<span id="cb42-5">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_from =</span> Proportion)</span>
+<span id="cb42-6"></span>
+<span id="cb42-7">diff <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> probs_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Trump <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> probs_nv<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Harris</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(diff[diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(diff)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.40885</code></pre>
+</div>
+</div>
+<p>Trump now has a 40.89% chance of winning Nevada, compared with the 42.82% he had before setting the prior.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(diff[diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(diff)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.59115</code></pre>
+</div>
+</div>
+<p>And Harris has 59.12% chance, a slight increase from the 57.19% she had before.</p>
+<p>Although visually there hasn’t been much of a change, the prior shifted the chances of winning by ~2% in favor of Harris.</p>
+</section>
+<section id="running-models-for-all-states" class="level1">
+<h1>Running models for all states</h1>
+<p>In this section I run the same Bayesian model for each state. The better way of doing it will be to run one big model with <code>state</code> as a categorical predictor.<sup>2</sup> This one-big-model method didn’t converge on the current data, so I resort to run a separate model for each state.</p>
+<p>Here I define some functions to run on the list of states:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1">run_b_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(state) {</span>
+<span id="cb47-2">  </span>
+<span id="cb47-3">  data_clean_state <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_clean[data_clean<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>state <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> state,]</span>
+<span id="cb47-4">  </span>
+<span id="cb47-5">  bayesian_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brm</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">formula =</span> candidate_name<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">weights</span>(sample_size<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>pct) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,</span>
+<span id="cb47-6">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">categorical</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">link =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"logit"</span>),</span>
+<span id="cb47-7">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> data_clean_state,</span>
+<span id="cb47-8">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">chains =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>,</span>
+<span id="cb47-9">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cores =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>,</span>
+<span id="cb47-10">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">iter =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4000</span>,</span>
+<span id="cb47-11">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">refresh =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb47-12">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">seed =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>,</span>
+<span id="cb47-13">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">backend =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"cmdstanr"</span>)</span>
+<span id="cb47-14">  </span>
+<span id="cb47-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(bayesian_model)</span>
+<span id="cb47-16">}</span>
+<span id="cb47-17"></span>
+<span id="cb47-18">plots <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(state) {</span>
+<span id="cb47-19">  </span>
+<span id="cb47-20">  b_model <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">run_b_model</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">state =</span> state)</span>
+<span id="cb47-21">  </span>
+<span id="cb47-22">  new_data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">expand.grid</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>)</span>
+<span id="cb47-23"></span>
+<span id="cb47-24">  pred_prob <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">posterior_epred</span>(b_model, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">newdata =</span> new_data)</span>
+<span id="cb47-25"></span>
+<span id="cb47-26">  pred_prob_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(pred_prob[,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-27">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">poll_id =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n</span>()))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-28">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_longer</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cols =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span>poll_id,</span>
+<span id="cb47-29">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Candidate"</span>,</span>
+<span id="cb47-30">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proportion"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-31">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Candidate =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_squish</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_replace_all</span>(Candidate, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">\\</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">."</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" "</span>)))</span>
+<span id="cb47-32">  </span>
+<span id="cb47-33">  prob_plot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> pred_prob_df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-34">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(Candidate <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Donald Trump"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Kamala Harris"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-35">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> Proportion, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Candidate)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb47-36">  ggdist<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stat_slab</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb47-37">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb47-38">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb47-39">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb47-40">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>())</span>
+<span id="cb47-41">  </span>
+<span id="cb47-42">  </span>
+<span id="cb47-43">  diff_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> pred_prob_df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-44">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(Candidate <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Donald Trump"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Kamala Harris"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-45">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_wider</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">id_cols =</span> poll_id,</span>
+<span id="cb47-46">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_from =</span> Candidate,</span>
+<span id="cb47-47">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_from =</span> Proportion) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-48">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Donald Trump</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Kamala Harris</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span>),</span>
+<span id="cb47-49">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">state =</span> state) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-50">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff_label =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cut</span>(diff, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by more than 10%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by 10%-5%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by 5%-1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by 5%-1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by 10%-5%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by more than 10%"</span>))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-51">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff_label =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(diff_label, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">levels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by more than 10%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by 10%-5%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by 5%-1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by 5%-1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by 10%-5%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by more than 10%"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ordered =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>))</span>
+<span id="cb47-52">  </span>
+<span id="cb47-53">  diff_plot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> diff_df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb47-54">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> diff, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">after_stat</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cut</span>(x, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by more than 10%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by 10%-5%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by 5%-1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by less than 1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by 5%-1%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by 10%-5%"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump by more than 10%"</span>))))) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb47-55">    ggdist<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">stat_slab</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray30"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb47-56">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rev</span>(RColorBrewer<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brewer.pal</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RdBu"</span>))[<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sort</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unique</span>(diff_df<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>diff_label)))]) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb47-57">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Difference in %"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted Difference in %"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> glue<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glue</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"{state}"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb47-58">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb47-59">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb47-60">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb47-61">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb47-62">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">22</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))</span>
+<span id="cb47-63"></span>
+<span id="cb47-64">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">model =</span> b_model, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">prob =</span> prob_plot, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff =</span> diff_plot))</span>
+<span id="cb47-65"></span>
+<span id="cb47-66">}</span></code></pre></div>
+</div>
+<p>Running it on every state:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1">states <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lapply</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">X =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unique</span>(data_clean<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>state)[<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">is.na</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unique</span>(data_clean<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>state)))],</span>
+<span id="cb48-2">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">FUN =</span> plots)</span></code></pre></div>
+</div>
+<p>Extracting the predicted difference between Harris and Trump in each state:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1">diff_plots <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lapply</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">X =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">43</span>,</span>
+<span id="cb49-2">                     <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">FUN =</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(x) {states[[x]]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>diff})</span>
+<span id="cb49-3"></span>
+<span id="cb49-4">one_big_plot <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> patchwork<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">wrap_plots</span>(diff_plots, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ncol =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">nrow =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb49-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">guides =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"collect"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb49-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot_annotation</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">theme =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>,</span>
+<span id="cb49-7">                                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">family =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"serif"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)))</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1">one_big_plot</span></code></pre></div>
+</div>
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/one_big_plot2.png" style="width:155.0%;height:155.0%"></p>
+</section>
+<section id="expected-electoral-college-results" class="level1">
+<h1>Expected Electoral College Results</h1>
+<p>Using the Bayesian model it is possible to calculate the expected electoral college results. For each ‘simulated’ election, I will calculate the electoral votes each candidate won.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1">electors_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"../elections2024/2024_Electoral_College.csv"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">show_col_types =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Data frame containing elector count for each state</span></span></code></pre></div>
+</div>
+<p>For simulated election, the winner in each state is determined based on the predicted difference in votes (positive = Trump win, Negative = Harris win):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1">states_df_list <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lapply</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">X =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">43</span>,</span>
+<span id="cb52-2">                    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">FUN =</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(x) {states[[x]]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>diff<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>data})</span>
+<span id="cb52-3"></span>
+<span id="cb52-4">states_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">do.call</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rbind"</span>, states_df_list) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb52-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">diff_binary =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump"</span>,</span>
+<span id="cb52-6">                                 diff <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb52-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(poll_id, diff_binary, state) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb52-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">left_join</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(electors_df, State, Total), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">join_by</span>(state <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> State)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb52-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Total =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(state <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Nebraska"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Maine"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,</span>
+<span id="cb52-10">                           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.default =</span> Total)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb52-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">replace_na</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Total =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>))</span>
+<span id="cb52-12"></span>
+<span id="cb52-13"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glimpse</span>(states_df)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 860,000
+Columns: 4
+$ poll_id     &lt;fct&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,…
+$ diff_binary &lt;chr&gt; "Trump", "Trump", "Trump", "Trump", "Trump", "Trump", "Tru…
+$ state       &lt;chr&gt; "Arizona", "Arizona", "Arizona", "Arizona", "Arizona", "Ar…
+$ Total       &lt;dbl&gt; 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11…</code></pre>
+</div>
+</div>
+<p>Summing all electors for each candidate in each simulated election (and completing the picture with states that were not polled):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1">expected_electors <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> states_df <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb54-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(poll_id, diff_binary) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb54-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reframe</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tot =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(Total)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb54-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tot =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(diff_binary <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump"</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> tot <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>,</span>
+<span id="cb54-5">                         diff_binary <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris"</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> tot <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>))</span>
+<span id="cb54-6"></span>
+<span id="cb54-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(expected_electors)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  poll_id diff_binary   tot
+  &lt;fct&gt;   &lt;chr&gt;       &lt;dbl&gt;
+1 1       Harris        276
+2 1       Trump         262
+3 2       Harris        276
+4 2       Trump         262
+5 3       Harris        270
+6 3       Trump         268</code></pre>
+</div>
+</div>
+<p>Visualizing each electoral result for both candidate, and their predicted probability:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1">expected_electors <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb56-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">drop_na</span>(diff_binary) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb56-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(diff_binary, tot) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb56-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reframe</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">count =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n</span>()) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb56-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">percent =</span> count<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(count)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb56-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> tot, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> percent, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> diff_binary)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb56-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_bar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"identity"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb56-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">225</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">315</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">225</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">315</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">225</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">315</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb56-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#2166AC"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#B2182B"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb56-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Predicted Probability"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Electors Won"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Candidate"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb56-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/index_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The most probable results are a narrow electoral win for Harris, with over representation for Trump in the high end, and for Harris on the low end. This could be understood as higher probability for a Trump landslide, rather than a Harris landslide.</p>
+<p>Calculating the most probable results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1">probable_outcomes <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> expected_electors <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb57-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">drop_na</span>(diff_binary) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb57-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_wider</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_from =</span> diff_binary,</span>
+<span id="cb57-4">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_from =</span> tot,</span>
+<span id="cb57-5">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">id_cols =</span> poll_id) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb57-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">count</span>(Harris, Trump) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb57-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rename</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">count =</span> n) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb57-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">count =</span> count <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(count)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb57-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unite</span>(outcome, Harris<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>Trump, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">remove =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sep =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">":"</span>)</span></code></pre></div>
+</div>
+<p>Top 20 most probable results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1">top20_probable_outcomes <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> probable_outcomes <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb58-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arrange</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">desc</span>(count)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb58-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb58-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Winner =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(Trump <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> Harris <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump"</span>,</span>
+<span id="cb58-5">                            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.default =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris"</span>))</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(top20_probable_outcomes, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reorder</span>(outcome, count), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> count, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Winner)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb59-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_bar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stat =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"identity"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray44"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb59-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Harris"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#2166AC"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trump"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#B2182B"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb59-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb59-5">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Top 20 Most Probable Electoral Results"</span>,</span>
+<span id="cb59-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Electoral Result"</span>,</span>
+<span id="cb59-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Probability"</span>,</span>
+<span id="cb59-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Winner"</span></span>
+<span id="cb59-9">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb59-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb59-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(</span>
+<span id="cb59-12">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">angle =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>),</span>
+<span id="cb59-13">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb59-14">  )</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://tomerzipori.github.io/blog/posts/elections2024/index_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Of course there are a lot more interesting calculations and visualizations that can be derived from the current Bayesian model, and from other models. This is a first attempt at implementing Bayesian statistical methods in the election polling field, I had fun.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>For a more deep discussion on prior distributions, see this <a href="https://tomerzipori.github.io/blog/posts/bayes101/">post</a>.↩︎</p></li>
+<li id="fn2"><p>Or as a factor with random levels, but I don’t think it’s theoretically correct in the US presidential elections.↩︎</p></li>
+</ol>
+</section></div> ]]></description>
+  <category>code</category>
+  <category>Bayes</category>
+  <category>visualization</category>
+  <category>ggplot2</category>
+  <category>polls</category>
+  <guid>https://tomerzipori.github.io/blog/posts/elections2024/</guid>
+  <pubDate>Sun, 12 Jan 2025 13:11:57 GMT</pubDate>
+  <media:content url="https://tomerzipori.github.io/blog/posts/elections2024/favicon.png" medium="image" type="image/png" height="145" width="144"/>
+</item>
 </channel>
 </rss>

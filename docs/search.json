@@ -4,7 +4,7 @@
     "href": "blog.html",
     "title": "Tomer's stats blog",
     "section": "",
-    "text": "Bayesian Modeling for Psychologists, Part 2\n\n\n\n\n\n\ncode\n\n\ntutorial\n\n\nBayes\n\n\n\nMixed effects linear models, generalized linear models\n\n\n\n\n\nApr 27, 2024\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian Modeling for Psychologists, Part 1\n\n\n\n\n\n\ncode\n\n\ntutorial\n\n\nBayes\n\n\n\nUpdating our statistical skills\n\n\n\n\n\nFeb 11, 2024\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nRejecting the null hypothesis or not?\n\n\n\n\n\n\ncode\n\n\ntheory\n\n\n\nWhen different interpretations of probability disagree on the meaning of p-values\n\n\n\n\n\nSep 4, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nNetflix trends\n\n\n\n\n\n\ncode\n\n\ntext analysis\n\n\nvisualization\n\n\nNLP\n\n\n\nText data visualization and analysis\n\n\n\n\n\nJun 13, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nReal Vs. Fake news in football\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\nMachine Learning\n\n\nNLP\n\n\n\nExperiment in NLP and some text classification\n\n\n\n\n\nMay 12, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nWhat makes FIFA 23 players good?\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\nMachine Learning\n\n\n\nExperimentation with Elastic-net regression and decision tree boosting.\n\n\n\n\n\nMay 6, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nWho is the leading US state in UFO reports? probably not what you thought\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\nggplot2\n\n\ntidytuesday\n\n\n\nVisualizing UFO reports per state capita\n\n\n\n\n\nApr 16, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nCage-free vs. caged hens in the US\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\nggplot2\n\n\ntidytuesday\n\n\n\n\n\n\n\n\n\nApr 12, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\nNo matching items"
+    "text": "US Presidential Elections - A Bayesian Perspective\n\n\n\n\n\n\ncode\n\n\nBayes\n\n\nvisualization\n\n\nggplot2\n\n\npolls\n\n\n\nI want to be a pollster too!\n\n\n\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian Modeling for Psychologists, Part 2\n\n\n\n\n\n\ncode\n\n\ntutorial\n\n\nBayes\n\n\n\nMixed effects linear models, generalized linear models\n\n\n\n\n\nApr 27, 2024\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nBayesian Modeling for Psychologists, Part 1\n\n\n\n\n\n\ncode\n\n\ntutorial\n\n\nBayes\n\n\n\nUpdating our statistical skills\n\n\n\n\n\nFeb 11, 2024\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nRejecting the null hypothesis or not?\n\n\n\n\n\n\ncode\n\n\ntheory\n\n\n\nWhen different interpretations of probability disagree on the meaning of p-values\n\n\n\n\n\nSep 4, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nNetflix trends\n\n\n\n\n\n\ncode\n\n\ntext analysis\n\n\nvisualization\n\n\nNLP\n\n\n\nText data visualization and analysis\n\n\n\n\n\nJun 13, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nReal Vs. Fake news in football\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\nMachine Learning\n\n\nNLP\n\n\n\nExperiment in NLP and some text classification\n\n\n\n\n\nMay 12, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nWhat makes FIFA 23 players good?\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\nMachine Learning\n\n\n\nExperimentation with Elastic-net regression and decision tree boosting.\n\n\n\n\n\nMay 6, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nWho is the leading US state in UFO reports? probably not what you thought\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\nggplot2\n\n\ntidytuesday\n\n\n\nVisualizing UFO reports per state capita\n\n\n\n\n\nApr 16, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\n\n\n\n\n\n\nCage-free vs. caged hens in the US\n\n\n\n\n\n\ncode\n\n\nvisualization\n\n\nggplot2\n\n\ntidytuesday\n\n\n\n\n\n\n\n\n\nApr 12, 2023\n\n\nTomer Zipori\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
@@ -488,5 +488,40 @@
     "title": "Bayesian Modeling for Psychologists, Part 2",
     "section": "Footnotes",
     "text": "Footnotes\n\n\nLogistic regression parameters are usually interpreted on the odds ratio of \\(p\\) instead of \\(p\\) itself.↩︎"
+  },
+  {
+    "objectID": "posts/elections2024/index.html",
+    "href": "posts/elections2024/index.html",
+    "title": "US Presidential Elections - A Bayesian Perspective",
+    "section": "",
+    "text": "library(tidyverse) # As always\nlibrary(brms)      # For Bayesian modeling\nlibrary(tidybayes) # For visualization\nlibrary(patchwork)"
+  },
+  {
+    "objectID": "posts/elections2024/index.html#prior-distributions",
+    "href": "posts/elections2024/index.html#prior-distributions",
+    "title": "US Presidential Elections - A Bayesian Perspective",
+    "section": "Prior Distributions",
+    "text": "Prior Distributions\nThe need to explicitly define a prior distribution for any Bayesian model is a point of contention. Some (rightfully) argue that this definition can’t be objective, and it is practically impossible to represent the existing body of knowledge in a single probability distribution. Others (rightfully) argue that every statistical model have prior assumptions which are rarely checked, and can influence the model as much as a prior distribution.1\nOne reason the incorporation of past studies into the prior distribution is hard, is that it depends on the specific parameters of the model.\nWhile prior elicitation can be hard in many cases, election polling is one area where it should be relatively easy! every poll is essentially the same statistical model (how many votes for red, and how many votes for blue), but every time with different data. This is the ideal scenario for a Bayesian statistician as the posterior distribution (the result) of any poll can be used as the prior distribution for the next poll!\n\nGraphic"
+  },
+  {
+    "objectID": "posts/elections2024/index.html#posterior-predictive-distributions",
+    "href": "posts/elections2024/index.html#posterior-predictive-distributions",
+    "title": "US Presidential Elections - A Bayesian Perspective",
+    "section": "Posterior Predictive Distributions",
+    "text": "Posterior Predictive Distributions\nOne tool of Bayesian statistical inference is the Posterior Predictive Distributions - PPD. This is the prediction of the model. For example, one possible PPD from a Bayesian election poll could be the expected electoral college result for each candidate, or the expected number of seats in the parliament."
+  },
+  {
+    "objectID": "posts/elections2024/index.html#eliciting-a-custom-prior",
+    "href": "posts/elections2024/index.html#eliciting-a-custom-prior",
+    "title": "US Presidential Elections - A Bayesian Perspective",
+    "section": "Eliciting a custom prior",
+    "text": "Eliciting a custom prior\nFor the last model we used brms’ default prior. In order to elicit our own, For simplicity, I’ll start with the 2020 vote share between Biden and Trump:\n\n\n\n2020 Results - Nevada (from Wikipedia)\n\n\n\n\n\n\n\n\nNote\n\n\n\nThis part contain some math. Don’t skip it, you can understand it! But if you want to skip it, go to the ‘Modeling with a custom prior’ section.\n\n\n\nprior_trump &lt;- 0.4767\nprior_harris &lt;- 0.5006\n\nThese percentages need to be transformed to the logistic model’s scale, now using the inverse-softmax transformation:\n\\[\n0.5006=softmax(Intercept_{Harris})=\\frac{e^{Intercept_{Harris}}}{\\sum_{k=1}^K e^{Intercept_k}}\n\\]\nAnd:\n\\[\n0.4767=softmax(Intercept_{Trump})=\\frac{e^{Intercept_{Trump}}}{\\sum_{k=1}^K e^{Intercept_k}}\n\\]\nBut with Trump’s intercept fixed to \\(0\\) as the factor’s reference level, it’s possible to calculate the sum in the denominator:\n\\[\n0.4767=\\frac{1}{\\sum_{k=1}^K e^{Intercept_k}}\n\\]\nQuick algebra gives:\n\\[\n\\sum_{k=1}^K e^{Intercept_k}=\\frac{1}{0.4767}=2.097755\n\\]\nNow it’s possible to calculate Harris’ intercept:\n\\[\n0.5006=\\frac{e^{Intercept_{Harris}}}{2.097755}\n\\]\n\\[\ne^{Intercept_{Harris}}=0.5006 \\cdot 2.097755=1.050136\n\\]\n\\[\nIntercept_{Harris}=ln(1.050136)=0.04891968\n\\]\nA quicker way to derive these intercepts is to notice that for every candidate \\(j\\) other than the ‘reference’ candidate \\(r\\), the intercept is:\n\\[\nIntercept_j=ln(\\frac{P(j)}{P(r)})\n\\]\nWhere \\(P(j)\\) and \\(P(r)\\) are the assumed vote shares of candidate \\(j\\) and \\(r\\) respectively."
+  },
+  {
+    "objectID": "posts/elections2024/index.html#footnotes",
+    "href": "posts/elections2024/index.html#footnotes",
+    "title": "US Presidential Elections - A Bayesian Perspective",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nFor a more deep discussion on prior distributions, see this post.↩︎\nOr as a factor with random levels, but I don’t think it’s theoretically correct in the US presidential elections.↩︎"
   }
 ]

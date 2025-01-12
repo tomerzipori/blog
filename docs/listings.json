@@ -2,6 +2,7 @@
   {
     "listing": "/blog.html",
     "items": [
+      "/posts/elections2024/index.html",
       "/posts/bayes102/index.html",
       "/posts/bayes101/index.html",
       "/posts/p_values_paradox/index.html",
