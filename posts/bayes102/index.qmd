@@ -2,7 +2,7 @@
 title: "Bayesian Modeling for Psychologists, Part 2"
 description: "Mixed effects linear models, generalized linear models"
 author: "Tomer Zipori"
-date: last-modified
+date: 2024-02-14
 categories: [code, tutorial, Bayes]
 image: "favicon.png"
 execute: 

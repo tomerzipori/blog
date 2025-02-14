@@ -2,6 +2,7 @@
 title: "US Presidential Elections - A Bayesian Perspective"
 description: "I want to be a pollster too!"
 author: "Tomer Zipori"
+date: 2025-01-12
 categories: [code, Bayes, visualization, ggplot2, polls]
 image: "favicon.png"
 execute: 

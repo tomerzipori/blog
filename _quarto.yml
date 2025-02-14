@@ -37,7 +37,7 @@ website:
       - icon: rss
         href: blog.xml
   page-footer:
-    left: "© 2024 Tomer Zipori | Part of the [R-Bloggers](https://www.r-bloggers.com/) network"
+    left: "© 2025 Tomer Zipori | Part of the [R-Bloggers](https://www.r-bloggers.com/) network"
     center: "powered by [quarto](https://quarto.org)"
     right:
       - icon: github
