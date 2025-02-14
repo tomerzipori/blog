@@ -4,7 +4,7 @@ description: "Or, why do we care about square, and not absolute, errors?"
 author: "Tomer Zipori"
 date: 2025-02-14
 categories: [code, Machine Learning]
-#image: "favicon.png"
+image: "favicon.png"
 execute: 
   warning: false
   message: false
