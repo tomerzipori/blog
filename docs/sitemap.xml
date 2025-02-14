@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://tomerzipori.github.io/blog/blog.html</loc>
-    <lastmod>2024-11-27T18:33:44.774Z</lastmod>
+    <lastmod>2025-01-13T16:01:04.036Z</lastmod>
   </url>
   <url>
     <loc>https://tomerzipori.github.io/blog/index.html</loc>
@@ -46,10 +46,14 @@
   </url>
   <url>
     <loc>https://tomerzipori.github.io/blog/posts/elections2024/index.html</loc>
-    <lastmod>2025-01-14T19:23:34.767Z</lastmod>
+    <lastmod>2025-02-14T14:24:38.816Z</lastmod>
   </url>
   <url>
     <loc>https://tomerzipori.github.io/blog/posts/micrograd/index.html</loc>
     <lastmod>2025-02-14T14:20:34.625Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tomerzipori.github.io/blog/cv.html</loc>
+    <lastmod>2025-02-14T14:24:38.808Z</lastmod>
   </url>
 </urlset>
