@@ -1,0 +1,501 @@
+---
+title: "What's Artificial Intelligence all about?"
+description: "Or, why do we care about square, and not absolute, errors?"
+author: "Tomer Zipori"
+categories: [code, Machine Learning]
+#image: "favicon.png"
+execute: 
+  warning: false
+  message: false
+  cache: false
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: right
+    embed-resources: false
+editor: visual
+---
+
+# Setup
+
+```{r}
+library(tidyverse) # As always
+library(MASS)      # Sampling from a multivariate distributions
+library(plotly)    # For 3D plots
+```
+
+OK, but what is AI *actually* about? Over the past two summers, I taught a statistics and research methods course to psychology students. Generally speaking, these students tend to be a little intimidated by this field, and as always, I tried over the summer to both empower them and spark an interest in them in the beauty and 'coolness' of statistics.
+
+One idea they liked was when I told them: *If you understand linear regression, you understand Chat GPT*. While this is obviously a simplification, I managed to convince them it is not far from the truth. If simple linear modeling is about finding the best two parameters (a slope and an intercept) to approximate a function, AI is about finding the best millions to billions of parameters to approximate a function. In this blog post I will explain one of the basic and most important concepts of modern AI - **Gradient Descent** using simple (as possible) terms and some R code.
+
+# What is a function?
+
+```{r}
+#| code-fold: true
+#| code-summary: "nothing too interesting"
+set.seed(14)
+
+nice_colors <- c("#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3", "#FDB462", "#B3DE69", "#FCCDE5", "#D9D9D9", "#BC80BD", "#CCEBC5", "#FFED6F")
+
+d <- data.frame(mvrnorm(21, mu = c(0, 1.4), Sigma = matrix(c(1, 0.4, 0.4, 1), 2)))
+
+ggplot(d, aes(X1, X2)) +
+  geom_point() +
+  labs(x = "Time Spent Studying", y = "Final Grade") +
+  theme_classic()
+```
+
+What is the relationship between the variables *Time Spent Studying* and *Final Grade*?
+
+The mission of every statistical model is to provide the best function to estimate this relationship. The function can be linear:
+
+```{r}
+#| echo: false
+ggplot(d, aes(X1, X2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "#FB8072") +
+  labs(x = "Time Spent Studying", y = "Final Grade") +
+  theme_classic()
+```
+
+It can also be quadratic:
+
+```{r}
+#| echo: false
+ggplot(d, aes(X1, X2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "#BC80BD", formula = y ~ poly(x, 2)) +
+  labs(x = "Time Spent Studying", y = "Final Grade") +
+  theme_classic()
+```
+
+And even a fifth degree polynomial:
+
+```{r}
+#| echo: false
+ggplot(d, aes(X1, X2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "#80B1D3", formula = y ~ poly(x, 5)) +
+  labs(x = "Time Spent Studying", y = "Final Grade") +
+  theme_classic()
+```
+
+Which is the best? In order to answer this question, we need to define what we want our model to maximize (or minimize). Usually, two main things are considered when evaluating our fitted lines: 1. Distance from truth, or how close the line (predictions) is to the points. 2. Complexity, or how complex is the function.
+
+Together, these two components create the **Loss** that will always look conceptually like that:\
+$$
+Loss=distance-complexity
+$$
+
+For the sake of simplicity (no pun intended), and because both simple linear regression and deep neural networks share this feature, we will ignore the complexity component of the Loss function. So what is the distance between the line and the points for the linear function?
+
+```{r}
+#| echo: false
+model <- lm(X2 ~ X1, data = d)
+d$predicted <- predict(model, d)
+
+ggplot(d, aes(x = X1, y = X2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "#FB8072") +
+  geom_segment(aes(x = X1, xend = X1, y = X2, yend = predicted), color = "gray25", linetype = "dotted") +
+  labs(x = "Time Spent Studying", y = "Final Grade") +
+  theme_classic()
+```
+
+Each gray dotted line represents the difference between the actual outcome (Final Grade) and the model’s prediction based on Time Spent Studying. In a more formal way we say that each line is:
+
+$$
+y_i-\hat{y_i}
+$$
+
+Where:\
+$y_i$ is the real outcome of point $i$\
+$\hat{y_i}$ is the predicted outcome of point $i$
+
+And the total loss can be the mean of these lines:
+
+$$
+\frac{1}{N} \sum_{i=1}^{N}(y_i-\hat{y_i})
+$$
+
+BUT, this definition is problematic as I will show in the next chapter.
+
+## Optimal = Minimum loss (intro to loss functions)
+
+Now we can calculate the loss for every model we fit, therefore the loss is actually a function of the model and is called the **Loss Function**.
+
+::: callout-note
+Models can differ in two main ways: in their structure (for example: a linear function and a 5-th degree polynomial), or in the values of their parameters (for example: these two linear functions: $y=2x-4$, $y=3x+5$). With the model structure usually chosen a-priori (or through a separate experiment), we will focus on the loss as a function of the parameters' values.
+:::
+
+So our task is to find the set of parameters $\beta$ that minimize the loss function. Let's formalize it for the linear model case: Given a linear model: $\hat{y}=\beta_0+\beta_1x$, our goal is to find the minimum of:\
+$$
+loss(\beta_0,\beta_1)=\frac{1}{N} \sum_{i=1}^{N}(y_i-\beta_0-\beta_1x_i)
+$$
+
+But, there is the catch - this function does not have a minimum point! This is because the lines we saw before can be as negative as we want, just make $\beta_0$ and $\beta_1$ negative enough. We can also notice that this function is linear with respect to $\beta_0$ and $\beta1$, therefore it has no minimum or maximum points.
+
+In order to solve this, we simply define the loss function to be the mean **Square** distance from the line - also known as the Variance.
+
+$$
+loss(\beta_0,\beta_1)=\frac{1}{N} \sum_{i=1}^{N}(y_i-\hat{y_i})^2=\frac{1}{N} \sum_{i=1}^{N}(y_i-\beta_0-\beta_1x_i)^2
+$$
+
+# Finding a function's minimum point
+
+How does this function looks like?
+
+```{r}
+parameter_values <- expand_grid(beta0 = seq(-1.5, 2.5, 0.05),
+                                beta1 = seq(-1.5, 2.5, 0.05)) |>
+  mutate(id = factor(c(1:n())))
+
+df <- parameter_values |>
+  expand_grid(d) |>
+  select(id, beta0, beta1, x = X1, y = X2) |>
+  mutate(y_pred = beta0 + beta1*x) |>
+  mutate(loss = (y - y_pred)^2) |>
+  group_by(id) |>
+  reframe(beta0 = beta0,
+          beta1 = beta1,
+          mse = mean(loss)) |>
+  distinct()
+```
+
+```{r}
+plot_ly(df, x = ~beta0, y = ~beta1, z = ~mse, type = "scatter3d", mode = "markers")
+```
+
+What is the set of parameters that produced the minimal loss?
+
+```{r}
+insight::print_html(df[df$mse == min(df$mse),])
+```
+
+We can see it in the graph as the lowest point:
+
+```{r}
+#| echo: false
+# Identify the minimum point
+min_index <- which.min(df$mse)  # Index of minimum MSE
+
+# Define colors for all points, highlighting the minimum
+df$color <- ifelse(1:nrow(df) == min_index, "red", "gray12")  # Highlight minimum in red
+df$size <- ifelse(1:nrow(df) == min_index, 10, 5)  # Increase size of the minimum point
+
+# Extract the min point coordinates
+min_point <- df[min_index, ]
+
+# Create the 3D scatter plot
+fig <- plot_ly(df, x = ~beta0, y = ~beta1, z = ~mse, type = "scatter3d", mode = "markers",
+        marker = list(size = df$size, color = df$color)) |>
+  add_markers() |>
+  layout(title = "",
+         scene = list(
+           xaxis = list(title = "beta0"),
+           yaxis = list(title = "beta1"),
+           zaxis = list(title = "MSE")
+         ))
+
+# Add vertical line from Z = min MSE to Z = max MSE
+fig <- fig |> add_trace(
+  x = rep(min_point$beta0, 2),  # Keep x constant
+  y = rep(min_point$beta1, 2),  # Keep y constant
+  z = c(min(df$mse), max(df$mse)),  # Extend line from bottom to top
+  type = "scatter3d",
+  mode = "lines",
+  line = list(color = "black", width = 4, dash = "dash")
+)
+
+# Add annotation at the minimum point
+fig <- fig |> add_text(
+  x = min_point$beta0, 
+  y = min_point$beta1, 
+  z = min_point$mse, 
+  text = "", 
+  showarrow = TRUE, 
+  arrowhead = 4, 
+  arrowsize = 1, 
+  ax = -20, 
+  ay = -30
+)
+
+# Show the plot
+fig
+```
+
+Now let's find the minimum point using a more rigorous way.
+
+## Derivatives
+
+The derivative of a function (with respect to some variable $x$) at some point is **the slope of the tangent line to the function at this point**, In other words, how much the function "goes up (or down)" at this point.
+
+Consider this simple function:
+
+```{r}
+f <- function(x) {
+  x^2 - 3*x + 2
+}
+```
+
+It's graph looks like this:
+
+```{r}
+x <- seq(-10, 10, 0.1)
+y <- f(x)
+
+ggplot(data.frame(x = x, y = y), aes(x, y)) +
+  geom_point() +
+  theme_classic()
+```
+
+What is the derivative of the function at the point $x=6$?
+
+```{r}
+df <- data.frame(x = x, y = y)
+
+ggplot(df, aes(x, y)) +
+  geom_point() +
+  geom_point(data = df[df$x == 6,], aes(x, y), color = "red", size = 3) +
+  theme_classic()
+```
+
+The function goes up at this point, therefore the derivative is positive. But exactly **How** positive? Or in other words, if we move a little bit to the right of the red point, by how much does the function increase?
+
+```{r}
+f6 <- f(6) # the value of the function at x = 6
+h <- 0.0001 # "a little bit"
+fh <- f(6 + h)
+
+(fh - f6) / h # standardizing by the amount we increased
+```
+
+The slope of the function at $x=6$ is $9$.
+
+What is the derivative of the function at $x=-5$?
+
+```{r}
+(f(-5 + h) - f(-5)) / h
+```
+
+As expected and as we can see in the graph, this derivative is negative.
+
+Why do we care? imagine that we stand on the point $x=6$ and we want to "go up", in what direction we should advance? If the function is increasing at this point - The derivative is positive - then we want to go right (increase $X$). But, if the function is decreasing at this point - The derivative is negative - then we want to go left (decrease $X$). Notice that in both scenarios we want to go **In the direction of the derivative**.
+
+So, what if we stand on the point $x=6$ and we want to "go down"? Simple, just go **In the opposite direction of the derivative**! Let's see how that works:
+
+Again, we stand on $x=6$:
+
+```{r}
+#| echo: false
+df <- data.frame(x = x, y = y)
+
+ggplot(df, aes(x, y)) +
+  geom_point() +
+  geom_point(data = df[df$x == 6,], aes(x, y), color = "red", size = 3) +
+  theme_classic()
+```
+
+Calculating the derivative:
+
+```{r}
+x0 <- 6
+fx0 <- f(x0) # the value of the function at x = 6
+h <- 0.0001 # "a little bit"
+fh <- f(x0 + h)
+
+(fh - fx0) / h # standardizing by the amount we increased
+```
+
+Stepping in the *Opposite* direction:
+
+```{r}
+step_size <- 0.1 # controlling the size of our step
+x1 <- x0 + -9*step_size
+x1
+```
+
+```{r}
+#| echo: false
+ggplot(df, aes(x, y)) +
+  geom_point() +
+  geom_point(data = df[df$x == 6,], aes(x, y), color = "red", size = 3) +
+  geom_point(data = df[df$x > 5.1 & x < 5.2,], aes(x, y), color = "green", size = 3) +
+  theme_classic()
+```
+
+Again!
+
+calculating the derivative:
+
+```{r}
+fx1 <- f(x1) # the value of the function at x = 5.1
+h <- 0.0001 # "a little bit"
+fh <- f(x1 + h)
+
+(fh - fx1) / h # standardizing by the amount we increased
+```
+
+Stepping in the opposite direction:
+
+```{r}
+step_size <- 0.1 # controlling the size of our step
+x2 <- x1 + -7.2*step_size
+x2
+```
+
+Where we landed?
+
+```{r}
+#| echo: false
+ggplot(df, aes(x, y)) +
+  geom_point() +
+  geom_point(data = df[df$x == 6,], aes(x, y), color = "red", size = 3) +
+  geom_point(data = df[df$x > 5.1 & x < 5.2,], aes(x, y), color = "green", size = 3) +
+  geom_point(data = df[df$x > 4.35 & x < 4.41,], aes(x, y), color = "purple", size = 3) +
+  theme_classic()
+```
+
+And this is *Stochastic Gradient Descent* (SGD) - Descending down the gradient (derivative) in a loop (in a stochastic manner).
+
+What about multivariate functions? for example: $f(x_1, x_2)=3x_1-4x_2+x_1x_2-5$. In this case we can calculate the derivative of each variable with respect to the outcome, also called the partial derivatives: $$
+\frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2}
+$$
+
+For example, let's calculate the partial derivative of $x_1$ with respect to $y$ in the point $x_1=-2, x_2=3$:
+
+```{r}
+g <- function(x1, x2) {
+  return(3*x1 - 4*x2 + x1*x2 - 5)
+}
+
+g0 <- g(-2, 3)
+g0
+```
+
+What happens when we increase $x_1$ by a little?
+
+```{r}
+h <- 0.0001 # a little
+gh <- g(-2 + h, 3) # notice how x2 remains constant
+
+(gh - g0) / h
+```
+
+The partial derivative of $x_1$ at the point $x_1=-2, x_2=3$ is $6$. Now we just need to calculate the partial derivative of $x_2$ at the same point and descend the gradient!
+
+## Simple Linear Regression
+
+Returning to the case of a simple linear regression, we see that the whole thing is just about some function with two parameters that we need to minimize.
+
+$$
+loss(\beta_0,\beta_1)=\frac{1}{N} \sum_{i=1}^{N}(y_i-\beta_0-\beta_1x_i)^2
+$$
+
+Let's estimate the partial derivatives of $\beta_0$ and $\beta_1$ with respect to the loss at the point $\beta_0=2, \beta_1=0.5$:
+
+::: callout-note
+The need to calculate the derivative of the loss function justifies it being the mean of *Square*, as opposed to Absolute, errors as they easier to differentiate.
+:::
+
+```{r}
+beta0 <- 2
+beta1 <- 0.5
+
+loss0 <- mean((d$X2 - beta0 - beta1*d$X1)^2)
+loss0
+```
+
+Calculating partial derivatives:
+
+```{r}
+# Partial derivative of beta0
+loss1 <- mean((d$X2 - (beta0 + 0.001) - beta1*d$X1)^2)
+
+beta0_grad <- (loss1 - loss0) / 0.001
+
+# Partial derivative of beta1
+loss1 <- mean((d$X2 - beta0 - (beta1 + 0.001)*d$X1)^2)
+
+beta1_grad <- (loss1 - loss0) / 0.001
+```
+
+Taking a step:
+
+```{r}
+step_size <- 0.1
+
+beta0 <- beta0 - step_size*beta0_grad
+beta1 <- beta1 - step_size*beta1_grad
+```
+
+Calculating the loss again:
+
+```{r}
+mean((d$X2 - beta0 - beta1*d$X1)^2)
+```
+
+The loss went down!
+
+Automating the process in a loop:
+
+```{r}
+set.seed(14)
+
+X <- d$X1
+Y <- d$X2
+
+# Hyper Parameters
+learning_rate <- 0.1 # formerly known as step_size
+h <- 0.001           # small change in parameter for calculating derivatives
+epochs <- 80         # Number of iterations
+
+# Initialing random values for parameters
+beta0 <- rnorm(1)
+beta1 <- rnorm(1)
+
+for (i in c(1:epochs)) {
+  
+  # Forward Pass (calculating model predictions)
+  Y_hat <- beta0 + beta1*X
+  
+  # Calculating Loss
+  loss <- mean((Y - Y_hat)^2)
+  
+  # Printing loss every 10th iteration
+  if (i %% 5 == 0) {
+    print(glue::glue("Epoch {i}: Loss: {loss}"))
+  }
+  
+  # Calculating Gradients
+  beta0_grad <- (mean((Y - (beta0 + h) - beta1*X)^2) - loss) / h
+  beta1_grad <- (mean((Y - beta0 - (beta1 + h)*X)^2) - loss) / h
+  
+  # Updating Parameters
+  beta0 <- beta0 - learning_rate*beta0_grad
+  beta1 <- beta1 - learning_rate*beta1_grad
+}
+```
+
+What are the final parameters?
+
+```{r}
+print(beta0)
+print(beta1)
+```
+
+What are the "real" parameters?
+
+```{r}
+coef(lm(Y ~ X))
+```
+
+Almost the same.
+
+# Conclusion
+
+In the current post we went over the basic idea underlying all of AI. Every part of the process built here was further developed and improved, most important the algorithms used to descend the gradient, but also other things, for example: the specific way of initializing the parameters and adaptive learning rates.
+
+I hope this post was interesting, and like my Psychology students, you fill like you understand AI a little bit more after it. I hope to post more in the future about other things related to AI, and maybe LLM's, inspired by my latest deep dive into them.
