@@ -44,11 +44,7 @@ The need to explicitly define a prior distribution for any Bayesian model is a p
 
 [^1]: For a more deep discussion on prior distributions, see this [post](https://tomerzipori.github.io/blog/posts/bayes101/).
 
-One reason the incorporation of past studies into the prior distribution is hard, is that it depends on the specific parameters of the model.
-
-While prior elicitation can be hard in many cases, election polling is one area where it should be relatively easy! every poll is essentially the same statistical model (how many votes for red, and how many votes for blue), but every time with different data. This is the ideal scenario for a Bayesian statistician as the posterior distribution (the result) of any poll can be used as the prior distribution for the next poll!
-
-### Graphic
+One reason the incorporation of past studies into the prior distribution is hard, is that it depends on the specific parameters of the model. While this make things hard in many cases, election polling is one area where it should be relatively easy! every poll is essentially the same statistical model (how many votes for red, and how many votes for blue), but with different data every time. This is the ideal scenario for a Bayesian statistician as the posterior distribution (the result) of any poll can be used as the prior distribution for the next poll!
 
 ## Posterior Predictive Distributions
 
@@ -68,7 +64,7 @@ glimpse(data)
 
 # Preprocessing
 
-Some preprocessing and cleaning is needed here, mainly I want to include only recent polls to avoid dealing with a large number of candidates, and transforming the percentage of votes to a probability:
+Some preprocessing and cleaning is needed here, mainly I want to include only recent polls to avoid dealing with a large number of candidates, and transforming the percentage of votes into a probability:
 
 ```{r}
 data_clean <- data |>
@@ -123,7 +119,7 @@ bayesian_model_nv <- read_rds("../elections2024/bayesian_model_nv.rds")
 summary(bayesian_model_nv)
 ```
 
-few things to notice: first, Trump doesn't have a parameter. That is because `brms` estimates each parameter in comparison to the factor's reference level, which is set to $0$, or $1$ on the exponential scale. Second, parameter estimates are logits, as this is essentially an output of multiple logistic regressions. In order to transform these estimates into predicted vote shares for every candidate $j$ out of the $K$ total candidates, a softmax transformation need to be applied:
+A few things to notice here: first, Trump doesn't have a parameter. That is because `brms` estimates each parameter in comparison to the factor's reference level, which is set to $0$, or $1$ on the exponential scale. Second, parameter estimates are logits, as this is essentially an output of multiple logistic regressions. In order to transform these estimates into predicted vote shares for every candidate $j$ out of the $K$ total candidates, a softmax transformation need to be applied:
 
 $$
 P(j)=\frac{e^{Intercept_j}}{\sum_{k=1}^K e^{Intercept_k}}
@@ -360,7 +356,7 @@ new_data <- expand.grid(x = NA)
 pred_probs_nv <- posterior_epred(bayesian_model_nv_wprior, newdata = new_data)
 ```
 
-This essentially creates a $20,000 \times 6$ array of 20,000 "simulated elections" based on the model, and the vote share of each of the 6 candidates. For example, here are the first 5 simulated elections and the vote share in each:
+This essentially creates a $20,000 \times 6$ array of 20,000 "simulated elections" based on the model, and the vote share of each of the 6 candidates. For example, here are the first five simulated elections and the vote share in each:
 
 ```{r}
 pred_probs_nv[1:5,,]
@@ -446,7 +442,7 @@ diff <- probs_nv$Trump - probs_nv$Harris
 length(diff[diff > 0]) / length(diff)
 ```
 
-Trump now has a 40.89% chance of winning Nevada, compared with the 42.82% he had before setting the prior.
+Trump now has a 40.89% chance of winning Nevada, compared with the 42.82% he had before.
 
 ```{r}
 length(diff[diff < 0]) / length(diff)

@@ -1,0 +1,176 @@
+---
+title: "Tomer Zipori's resume"
+author: Tomer Zipori
+date: "`r Sys.Date()`"
+output:
+  pagedown::html_resume:
+    # set it to true for a self-contained HTML page but it'll take longer to render
+    self_contained: true
+# uncomment this line to produce HTML and PDF in RStudio:
+knit: pagedown::chrome_print
+---
+
+# Aside
+
+![Tomer Zipori](cv-round.png){width="80%" height="\"80%"}
+
+## Contact Info {#contact}
+
+-   <i class="fa fa-envelope"></i> [tomerzip\@post.bgu.ac.il](mailto:tomerzip@post.bgu.ac.il){.email}
+-   <i class="fa fa-github"></i>
+[Github](https://github.com/tomerzipori)
+-   <i class="fa fa-twitter"></i> [Twitter](https://twitter.com/ZiporiTomer)
+-   <i class="fa fa-linkedin"></i> [LinkedIn](https://www.linkedin.com/in/tomer-zipori/) 
+-   <i class="fa fa-user"></i>
+[Personal Blog](https://tomerzipori.github.io/blog/)
+-   <i class="fa fa-phone"></i> 054-2520843
+
+## Skills {#skills}
+
+-   Experience in Frequentist and Bayesian statistical analysis, statistical learning models, and data visualization methods.
+
+-   Experience and knowledge in many Machine Learning methods: Classification, Regression and Natural Language Processing.
+
+```{r, echo=FALSE, warning=FALSE}
+library(ggplot2)
+ggplot(data = data.frame("lang" = c("R", "Python", "Github", "Excel", "SQL"), "y" = c(100, 70, 70, 70, 50)),
+                aes(x = lang, y = y, fill = lang)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("#20B341", "#111161", "#EED21C", "#5421DC", "#FFCD24")) +
+  scale_x_discrete(limits = c("R", "Python", "Github", "Excel", "SQL")) +
+  labs(title = "My Tools of work") +
+  theme(axis.title = element_blank(),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 20),
+        panel.grid = element_blank(),
+        plot.background = element_rect(fill = "#f2f2f2"),
+        panel.background = element_rect(fill = "#f2f2f2"),
+        axis.ticks = element_blank(),
+        plot.title = element_text(size = 26, hjust = 0.5),
+        legend.position = "none")
+```
+
+# Main
+
+## Tomer Zipori {#title}
+
+### General Information
+
+MA in Cognitive Psychology and Data-science. I have expertise and enthusiasm in everything Social science and data science. As a quick and independent learner, I have acquired many data science skills during my time in academia such as: Data visualization, Machine learning, data communication and more.  
+
+## Education {data-icon="graduation-cap" data-concise="true"}
+
+### Ben-Gurion University of the Negev
+
+M.A. in Cognitive Psychology and Data Science
+
+Be'er Sheva, Israel
+
+2022 - Now
+
+**Thesis**: Effects of Social-Status and Ethnicity on face individuation.\
+**Supervisor**: Dr. Niv Reggev
+
+### Hebrew University in Jerusalem
+
+B.A. in Psychology and Philosophy
+
+Jerusalem, Israel
+
+2018 - 2021
+
+**Thesis**: Inter-personal differences in the effect of parental modeling on sharing behavior during middle childhood.\
+**Supervisor**: Prof. Ariel Knafo-Noam
+
+Graduated *Magna Cum Laude*
+
+## Research Experience {data-icon="laptop"}
+
+### Computational Social Psychology (SCP)
+
+Ben-Gurion University of the Negev
+
+Be'er Sheva, Israel
+
+2024 - Now
+
+-   Investigated how different psychological interventions improved the ability of participants at detecting fake-news.
+-   Performed statistical analysis, visualizations and inferences for a meta-analysis.
+-   Self-learning various statistical methods including Ordinal Regression, Frequentist and Bayesian machine learning and meta-analyses of effect sizes.
+
+### Social, Cognition, Motivation and Brain Lab (SCMB)
+
+Ben-Gurion University of the Negev
+
+Be'er Sheva, Israel
+
+2022 - 2024
+
+-   Investigated how social-status of faces affects their identification by others.
+-   Created and implemented protocols for data organization and data sharing via documentation and the use of Github.
+-   Managing a team of research assistants.
+-   Guiding students in their research projects in the lab.
+
+### Graduate Research Assistant
+
+The Social Development Lab, Hebrew University in Jerusalem
+
+Jerusalem, Israel
+
+2019 - 2020
+
+-   Participation in the "Young Researchers" and writing an extended seminar term paper.
+
+## Professional Experience {data-icon="suitcase"}
+
+### Data Quality Specialist
+
+Planck
+
+Israel
+
+2024 - Now
+
+::: concise
+-   Was part of the data tagging and validation
+:::
+
+### Content Writer
+
+Classit
+
+Israel
+
+2021 - 2023
+
+::: concise
+-   Wrote high-school level math questions and teaching units.
+:::
+
+## Teaching Experience {data-icon="chalkboard-teacher"}
+
+### Introduction to Statistics
+
+Teaching Assistant in the Intro to statistics course for BA students.
+
+Be'er Sheva, Israel
+
+2022 - 2024
+
+### Methodology in experimental Psychology
+
+Teaching Assistant in the Methodology in experimental Psychology. course for BA students. As part of the course I have guided groups of students in forming research questions, planning and conducting experiments, statistically analyzing results, and forming conclusions.
+
+Be'er Sheva, Israel
+
+2022 - 2023
+
+### MITAM Instructor
+
+Ofek MITAM
+
+Israel
+
+2023 - Now
+
+Teaching a class of the Ofek MITAM course. The MITAM is the entrance test for advanced degrees in psychology - equivalent to the GRE.

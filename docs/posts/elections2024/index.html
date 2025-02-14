@@ -236,10 +236,7 @@ window.Quarto = {
   <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a>
   <ul class="collapse">
-  <li><a href="#prior-distributions" id="toc-prior-distributions" class="nav-link" data-scroll-target="#prior-distributions">Prior Distributions</a>
-  <ul class="collapse">
-  <li><a href="#graphic" id="toc-graphic" class="nav-link" data-scroll-target="#graphic">Graphic</a></li>
-  </ul></li>
+  <li><a href="#prior-distributions" id="toc-prior-distributions" class="nav-link" data-scroll-target="#prior-distributions">Prior Distributions</a></li>
   <li><a href="#posterior-predictive-distributions" id="toc-posterior-predictive-distributions" class="nav-link" data-scroll-target="#posterior-predictive-distributions">Posterior Predictive Distributions</a></li>
   </ul></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
@@ -278,11 +275,7 @@ window.Quarto = {
 <section id="prior-distributions" class="level2">
 <h2 class="anchored" data-anchor-id="prior-distributions">Prior Distributions</h2>
 <p>The need to explicitly define a prior distribution for any Bayesian model is a point of contention. Some (rightfully) argue that this definition can’t be objective, and it is practically impossible to represent the existing body of knowledge in a single probability distribution. Others (rightfully) argue that every statistical model have prior assumptions which are rarely checked, and can influence the model as much as a prior distribution.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<p>One reason the incorporation of past studies into the prior distribution is hard, is that it depends on the specific parameters of the model.</p>
-<p>While prior elicitation can be hard in many cases, election polling is one area where it should be relatively easy! every poll is essentially the same statistical model (how many votes for red, and how many votes for blue), but every time with different data. This is the ideal scenario for a Bayesian statistician as the posterior distribution (the result) of any poll can be used as the prior distribution for the next poll!</p>
-<section id="graphic" class="level3">
-<h3 class="anchored" data-anchor-id="graphic">Graphic</h3>
-</section>
+<p>One reason the incorporation of past studies into the prior distribution is hard, is that it depends on the specific parameters of the model. While this make things hard in many cases, election polling is one area where it should be relatively easy! every poll is essentially the same statistical model (how many votes for red, and how many votes for blue), but with different data every time. This is the ideal scenario for a Bayesian statistician as the posterior distribution (the result) of any poll can be used as the prior distribution for the next poll!</p>
 </section>
 <section id="posterior-predictive-distributions" class="level2">
 <h2 class="anchored" data-anchor-id="posterior-predictive-distributions">Posterior Predictive Distributions</h2>
@@ -357,7 +350,7 @@ $ pct                       &lt;dbl&gt; 48.1, 49.2, 1.1, 0.3, 0.1, 48.8, 50.0, 4
 </section>
 <section id="preprocessing" class="level1">
 <h1>Preprocessing</h1>
-<p>Some preprocessing and cleaning is needed here, mainly I want to include only recent polls to avoid dealing with a large number of candidates, and transforming the percentage of votes to a probability:</p>
+<p>Some preprocessing and cleaning is needed here, mainly I want to include only recent polls to avoid dealing with a large number of candidates, and transforming the percentage of votes into a probability:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(poll_id, state, <span class="at">poll_date =</span> start_date, question_id, candidate_name, sample_size, pct) <span class="sc">|&gt;</span> <span class="co"># selecting relevant cols only</span></span>
@@ -419,7 +412,7 @@ and Tail_ESS are effective sample size measures, and Rhat is the potential
 scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
-<p>few things to notice: first, Trump doesn’t have a parameter. That is because <code>brms</code> estimates each parameter in comparison to the factor’s reference level, which is set to <span class="math inline">\(0\)</span>, or <span class="math inline">\(1\)</span> on the exponential scale. Second, parameter estimates are logits, as this is essentially an output of multiple logistic regressions. In order to transform these estimates into predicted vote shares for every candidate <span class="math inline">\(j\)</span> out of the <span class="math inline">\(K\)</span> total candidates, a softmax transformation need to be applied:</p>
+<p>A few things to notice here: first, Trump doesn’t have a parameter. That is because <code>brms</code> estimates each parameter in comparison to the factor’s reference level, which is set to <span class="math inline">\(0\)</span>, or <span class="math inline">\(1\)</span> on the exponential scale. Second, parameter estimates are logits, as this is essentially an output of multiple logistic regressions. In order to transform these estimates into predicted vote shares for every candidate <span class="math inline">\(j\)</span> out of the <span class="math inline">\(K\)</span> total candidates, a softmax transformation need to be applied:</p>
 <p><span class="math display">\[
 P(j)=\frac{e^{Intercept_j}}{\sum_{k=1}^K e^{Intercept_k}}
 \]</span></p>
@@ -672,7 +665,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>pred_probs_nv <span class="ot">&lt;-</span> <span class="fu">posterior_epred</span>(bayesian_model_nv_wprior, <span class="at">newdata =</span> new_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This essentially creates a <span class="math inline">\(20,000 \times 6\)</span> array of 20,000 “simulated elections” based on the model, and the vote share of each of the 6 candidates. For example, here are the first 5 simulated elections and the vote share in each:</p>
+<p>This essentially creates a <span class="math inline">\(20,000 \times 6\)</span> array of 20,000 “simulated elections” based on the model, and the vote share of each of the 6 candidates. For example, here are the first five simulated elections and the vote share in each:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pred_probs_nv[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -782,7 +775,7 @@ scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <pre><code>[1] 0.40885</code></pre>
 </div>
 </div>
-<p>Trump now has a 40.89% chance of winning Nevada, compared with the 42.82% he had before setting the prior.</p>
+<p>Trump now has a 40.89% chance of winning Nevada, compared with the 42.82% he had before.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(diff[diff <span class="sc">&lt;</span> <span class="dv">0</span>]) <span class="sc">/</span> <span class="fu">length</span>(diff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">

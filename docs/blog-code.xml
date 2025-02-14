@@ -21947,11 +21947,7 @@ font-style: inherit;">library</span>(patchwork)</span></code></pre></div>
 <section id="prior-distributions" class="level2">
 <h2 class="anchored" data-anchor-id="prior-distributions">Prior Distributions</h2>
 <p>The need to explicitly define a prior distribution for any Bayesian model is a point of contention. Some (rightfully) argue that this definition can’t be objective, and it is practically impossible to represent the existing body of knowledge in a single probability distribution. Others (rightfully) argue that every statistical model have prior assumptions which are rarely checked, and can influence the model as much as a prior distribution.<sup>1</sup></p>
-<p>One reason the incorporation of past studies into the prior distribution is hard, is that it depends on the specific parameters of the model.</p>
-<p>While prior elicitation can be hard in many cases, election polling is one area where it should be relatively easy! every poll is essentially the same statistical model (how many votes for red, and how many votes for blue), but every time with different data. This is the ideal scenario for a Bayesian statistician as the posterior distribution (the result) of any poll can be used as the prior distribution for the next poll!</p>
-<section id="graphic" class="level3">
-<h3 class="anchored" data-anchor-id="graphic">Graphic</h3>
-</section>
+<p>One reason the incorporation of past studies into the prior distribution is hard, is that it depends on the specific parameters of the model. While this make things hard in many cases, election polling is one area where it should be relatively easy! every poll is essentially the same statistical model (how many votes for red, and how many votes for blue), but with different data every time. This is the ideal scenario for a Bayesian statistician as the posterior distribution (the result) of any poll can be used as the prior distribution for the next poll!</p>
 </section>
 <section id="posterior-predictive-distributions" class="level2">
 <h2 class="anchored" data-anchor-id="posterior-predictive-distributions">Posterior Predictive Distributions</h2>
@@ -22036,7 +22032,7 @@ $ pct                       &lt;dbl&gt; 48.1, 49.2, 1.1, 0.3, 0.1, 48.8, 50.0, 4
 </section>
 <section id="preprocessing" class="level1">
 <h1>Preprocessing</h1>
-<p>Some preprocessing and cleaning is needed here, mainly I want to include only recent polls to avoid dealing with a large number of candidates, and transforming the percentage of votes to a probability:</p>
+<p>Some preprocessing and cleaning is needed here, mainly I want to include only recent polls to avoid dealing with a large number of candidates, and transforming the percentage of votes into a probability:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">data_clean <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -22242,7 +22238,7 @@ and Tail_ESS are effective sample size measures, and Rhat is the potential
 scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 </div>
 </div>
-<p>few things to notice: first, Trump doesn’t have a parameter. That is because <code>brms</code> estimates each parameter in comparison to the factor’s reference level, which is set to <img src="https://latex.codecogs.com/png.latex?0">, or <img src="https://latex.codecogs.com/png.latex?1"> on the exponential scale. Second, parameter estimates are logits, as this is essentially an output of multiple logistic regressions. In order to transform these estimates into predicted vote shares for every candidate <img src="https://latex.codecogs.com/png.latex?j"> out of the <img src="https://latex.codecogs.com/png.latex?K"> total candidates, a softmax transformation need to be applied:</p>
+<p>A few things to notice here: first, Trump doesn’t have a parameter. That is because <code>brms</code> estimates each parameter in comparison to the factor’s reference level, which is set to <img src="https://latex.codecogs.com/png.latex?0">, or <img src="https://latex.codecogs.com/png.latex?1"> on the exponential scale. Second, parameter estimates are logits, as this is essentially an output of multiple logistic regressions. In order to transform these estimates into predicted vote shares for every candidate <img src="https://latex.codecogs.com/png.latex?j"> out of the <img src="https://latex.codecogs.com/png.latex?K"> total candidates, a softmax transformation need to be applied:</p>
 <p><img src="https://latex.codecogs.com/png.latex?%0AP(j)=%5Cfrac%7Be%5E%7BIntercept_j%7D%7D%7B%5Csum_%7Bk=1%7D%5EK%20e%5E%7BIntercept_k%7D%7D%0A"></p>
 <p>Extracting more precise point-estimates:</p>
 <div class="cell">
@@ -23271,7 +23267,7 @@ font-style: inherit;">posterior_epred</span>(bayesian_model_nv_wprior, <span cla
 background-color: null;
 font-style: inherit;">newdata =</span> new_data)</span></code></pre></div>
 </div>
-<p>This essentially creates a <img src="https://latex.codecogs.com/png.latex?20,000%20%5Ctimes%206"> array of 20,000 “simulated elections” based on the model, and the vote share of each of the 6 candidates. For example, here are the first 5 simulated elections and the vote share in each:</p>
+<p>This essentially creates a <img src="https://latex.codecogs.com/png.latex?20,000%20%5Ctimes%206"> array of 20,000 “simulated elections” based on the model, and the vote share of each of the 6 candidates. For example, here are the first five simulated elections and the vote share in each:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1">pred_probs_nv[<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -23847,7 +23843,7 @@ font-style: inherit;">length</span>(diff)</span></code></pre></div>
 <pre><code>[1] 0.40885</code></pre>
 </div>
 </div>
-<p>Trump now has a 40.89% chance of winning Nevada, compared with the 42.82% he had before setting the prior.</p>
+<p>Trump now has a 40.89% chance of winning Nevada, compared with the 42.82% he had before.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb45" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -25179,7 +25175,7 @@ font-style: inherit;">16</span>)</span>
   <category>ggplot2</category>
   <category>polls</category>
   <guid>https://tomerzipori.github.io/blog/posts/elections2024/</guid>
-  <pubDate>Sun, 12 Jan 2025 13:11:57 GMT</pubDate>
+  <pubDate>Tue, 14 Jan 2025 19:24:13 GMT</pubDate>
   <media:content url="https://tomerzipori.github.io/blog/posts/elections2024/favicon.png" medium="image" type="image/png" height="145" width="144"/>
 </item>
 </channel>
