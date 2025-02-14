@@ -19,10 +19,14 @@ pre{
   border: 1px solid #5D001E;
   color: var(--navbar-fg);
   padding: 5px 5px 5px 5px;
+  font-family: 'Fira Code', 'Courier New', monospace; /* Change font as needed */
+  font-size: 14px; /* Adjust as needed */
 }
 
 code{
   color: var(--navbar-fg);
+  font-family: 'Fira Code', 'Courier New', monospace; /* Change font as needed */
+  font-size: 14px; /* Adjust as needed */
 }
 
 /* inline code */
