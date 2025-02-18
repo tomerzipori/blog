@@ -495,6 +495,75 @@ coef(lm(Y ~ X))
 
 Almost the same.
 
+## Visualizing Our Journey
+
+We started at the left most point and made our way down the loss function.
+
+```{r}
+#| echo: false
+# Setting up grid for the loss function
+beta0_seq <- seq(-1.5, 2.5, 0.05)
+beta1_seq <- seq(-1.5, 2.5, 0.05)
+
+loss_grid <- expand.grid(beta0 = beta0_seq, beta1 = beta1_seq)
+
+# Computing the loss function for each beta0, beta1 pair
+loss_grid$loss <- apply(loss_grid, 1, function(params) {
+  mean((Y - (params[1] + params[2] * X))^2)
+})
+
+# Converting to a dataframe
+loss_df <- as.data.frame(loss_grid)
+
+# Running SGD and saving trajectory
+set.seed(14)
+
+# Hyper Parameters
+learning_rate <- 0.1 
+h <- 0.001         
+epochs <- 80        
+
+# Initializing random values for parameters
+beta0 <- rnorm(1)
+beta1 <- rnorm(1)
+
+# Storing trajectory
+sgd_path <- data.frame(epoch = 0, beta0 = beta0, beta1 = beta1, loss = mean((Y - (beta0 + beta1 * X))^2))
+
+for (i in 1:epochs) {
+  
+  # Forward Pass
+  Y_hat <- beta0 + beta1*X
+  
+  # Calculating Loss
+  loss <- mean((Y - Y_hat)^2)
+  
+  # Calculating Gradients
+  beta0_grad <- (mean((Y - (beta0 + h) - beta1*X)^2) - loss) / h
+  beta1_grad <- (mean((Y - beta0 - (beta1 + h)*X)^2) - loss) / h
+  
+  # Updating Parameters
+  beta0 <- beta0 - learning_rate * beta0_grad
+  beta1 <- beta1 - learning_rate * beta1_grad
+  
+  # Storing values
+  sgd_path <- rbind(sgd_path, data.frame(epoch = i, beta0 = beta0, beta1 = beta1, loss = loss))
+}
+
+# Plot loss function as raster + SGD path with lighter color scheme
+ggplot(loss_df, aes(x = beta0, y = beta1, fill = loss)) +
+  geom_raster(interpolate = TRUE, show.legend = F) +
+  geom_point(data = sgd_path, aes(x = beta0, y = beta1), color = "red", size = 1.5) +
+  geom_path(data = sgd_path, aes(x = beta0, y = beta1), color = "gray50", linewidth = 1) +  # Light gray path
+  scale_fill_viridis_c(option = "mako", begin = 0.1, end = 0.9, direction = -1, guide = "none") +  # Lighter color scheme
+  labs(title = "Lighter color represent lower loss",
+       x = expression(beta[0]),
+       y = expression(beta[1]),
+       fill = "Loss") +
+  theme_classic() +
+  theme(plot.title = element_text(size = 16, hjust = 0.5))
+```
+
 # Conclusion
 
 In the current post we went over the basic idea underlying all of AI. Every part of the process built here was further developed and improved, most important the algorithms used to descend the gradient, but also other things, for example: the specific way of initializing the parameters and adaptive learning rates.
